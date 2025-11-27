@@ -3,6 +3,34 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "1a2ba3c0-9111-4f70-b174-0cc8111cf49e",
+    "timestamp": 1764219499240
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "b0dc19f5-d008-4b70-a56b-26ab7370a5cf",
+    "timestamp": 1764219498631
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "80f54687-b9fd-48d8-9af2-1f3bfb245766",
+    "timestamp": 1764219498391
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "7291da21-f030-4129-9a93-f21f4e1ed66a",
+    "timestamp": 1764219498361
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "da1f843f-6232-42b6-8260-336466383083",
     "timestamp": 1764219383322
   },
@@ -670,33 +698,5 @@
     "source": "jdownloader",
     "id": "d22acdea-d6ce-4625-9e89-f3147c03953f",
     "timestamp": 1764218773421
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Airports International - Is. 4 2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "cb70d6c1-f6ff-4a73-8946-ebc4a5de8277",
-    "timestamp": 1764218773301
-  },
-  {
-    "level": "error",
-    "message": "Failed to submit to JDownloader: links.join is not a function",
-    "source": "jdownloader",
-    "id": "a12a0a4e-da0f-4307-a5f3-b9adc6ee37d2",
-    "timestamp": 1764218773110
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Air Classics - 01.2026 - using nfile.cc",
-    "source": "grabber",
-    "id": "f3e66e37-3295-4140-867c-0a220b1e9425",
-    "timestamp": 1764218772789
-  },
-  {
-    "level": "success",
-    "message": "Found 30 new items in Feed (downmagaz.net) (0 already processed)",
-    "source": "grabber",
-    "id": "2ccf67ce-3462-4e98-81d9-0e5593c0551b",
-    "timestamp": 1764218772579
   }
 ]

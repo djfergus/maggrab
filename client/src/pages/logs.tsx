@@ -47,18 +47,18 @@ export default function Logs() {
           )}
           
           {logs.map((log) => (
-            <div key={log.id} className="flex gap-3 mb-0.5 hover:bg-white/5 py-0.5 px-1 rounded-sm transition-colors leading-tight" data-testid={`log-${log.id}`}>
-              <span className="text-muted-foreground min-w-[160px]">
+            <div key={log.id} className="flex gap-1.5 mb-0.5 hover:bg-white/5 py-0.5 px-1 rounded-sm transition-colors leading-tight" data-testid={`log-${log.id}`}>
+              <span className="text-muted-foreground min-w-[140px]">
                 {new Date(log.timestamp).toISOString().replace('T', ' ').substr(0, 19)}
               </span>
               
-              <span className={`uppercase font-bold min-w-[80px] ${getLevelColor(log.level)}`}>
-                [{log.level}]
+              <span className={`uppercase font-bold min-w-[50px] ${getLevelColor(log.level)}`}>
+                [{formatLevel(log.level)}]
               </span>
 
-              <span className="text-muted-foreground min-w-[100px] flex items-center gap-2">
+              <span className="text-muted-foreground min-w-[55px] flex items-center gap-1">
                 {getSourceIcon(log.source)}
-                {log.source}
+                {formatSource(log.source)}
               </span>
 
               <span className="text-foreground whitespace-pre-wrap">{log.message}</span>
@@ -86,5 +86,18 @@ function getSourceIcon(source: string) {
     case 'grabber': return <Globe className="h-3 w-3" />;
     case 'jdownloader': return <Download className="h-3 w-3" />;
     default: return null;
+  }
+}
+
+function formatLevel(level: string) {
+  if (level === 'success') return 'ok';
+  return level;
+}
+
+function formatSource(source: string) {
+  switch (source) {
+    case 'jdownloader': return 'myjd';
+    case 'grabber': return 'grab';
+    default: return source;
   }
 }
