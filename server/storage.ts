@@ -8,6 +8,7 @@ const FEEDS_FILE = path.join(DATA_DIR, "feeds.json");
 const LOGS_FILE = path.join(DATA_DIR, "logs.json");
 const STATS_FILE = path.join(DATA_DIR, "stats.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
+const PROCESSED_FILE = path.join(DATA_DIR, "processed.json");
 
 export interface IStorage {
   // Feeds
@@ -28,6 +29,10 @@ export interface IStorage {
   // Settings
   getSettings(): Promise<Settings>;
   updateSettings(updates: Partial<Settings>): Promise<Settings>;
+  
+  // Processed URLs (deduplication)
+  isProcessed(url: string): Promise<boolean>;
+  markProcessed(url: string): Promise<void>;
 }
 
 export class FileStorage implements IStorage {
@@ -146,6 +151,21 @@ export class FileStorage implements IStorage {
     const newSettings = { ...settings, ...updates };
     await this.writeJSON(SETTINGS_FILE, newSettings);
     return newSettings;
+  }
+
+  async isProcessed(url: string): Promise<boolean> {
+    const processed = await this.readJSON<string[]>(PROCESSED_FILE, []);
+    return processed.includes(url);
+  }
+
+  async markProcessed(url: string): Promise<void> {
+    const processed = await this.readJSON<string[]>(PROCESSED_FILE, []);
+    if (!processed.includes(url)) {
+      processed.push(url);
+      // Keep only the last 1000 URLs to prevent unlimited growth
+      const trimmed = processed.slice(-1000);
+      await this.writeJSON(PROCESSED_FILE, trimmed);
+    }
   }
 }
 

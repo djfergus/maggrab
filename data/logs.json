@@ -3,6 +3,405 @@
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
+    "id": "9ef2668b-c41b-44c7-bea1-130051d676a2",
+    "timestamp": 1764213486263
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e28131b2-9045-495e-a797-3cef20f9a3ca",
+    "timestamp": 1764213486261
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Barron's - 11.24.2025",
+    "source": "grabber",
+    "id": "c4dfc069-3295-4686-9441-74bf67bfab0c",
+    "timestamp": 1764213486256
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "b412dc25-c182-438a-93f1-6d0bcc44f878",
+    "timestamp": 1764213486074
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "09597312-4685-4056-8a6c-7b14875884da",
+    "timestamp": 1764213486073
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: The Economist USA - 11.22.2025",
+    "source": "grabber",
+    "id": "574ff3c5-3be9-4f56-8104-78d1477b4152",
+    "timestamp": 1764213486071
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "7ca25513-9585-4885-99a7-3892e0f7619d",
+    "timestamp": 1764213485897
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "011266d7-0d18-41c8-80ae-3df8b553764a",
+    "timestamp": 1764213485896
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: New Zealand Listener - 11.29.2025",
+    "source": "grabber",
+    "id": "4d087fe1-0d6d-49d5-b609-ca1e4d6a3a68",
+    "timestamp": 1764213485894
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "8a0b3204-4301-4471-acc7-97e1555a52cd",
+    "timestamp": 1764213485553
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "6156b647-5952-4456-9b50-ee18c6dd9bdb",
+    "timestamp": 1764213485552
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Cityscape Global - 11.2025",
+    "source": "grabber",
+    "id": "8b8e9a5a-1d6e-4f43-bc33-6e0b5c565f26",
+    "timestamp": 1764213485549
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "f6920ec2-682e-4788-996e-89aa423620f0",
+    "timestamp": 1764213485373
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "1268ae9f-9091-479b-878e-00af662945d6",
+    "timestamp": 1764213485371
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: International Kirmes & Park Revue - 12.2025",
+    "source": "grabber",
+    "id": "b78d4388-c44e-4f7a-8db6-8e6e444e3786",
+    "timestamp": 1764213485369
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "c5e86ab6-17a1-431b-9f6f-a3ad783e616e",
+    "timestamp": 1764213484983
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "c041db3b-fe4a-441e-8822-58921547743d",
+    "timestamp": 1764213484981
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Hobby Farms - 01/02 2026",
+    "source": "grabber",
+    "id": "7a81b1a9-13cd-4737-8969-995523086ae3",
+    "timestamp": 1764213484979
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "44b36224-f056-408a-ba09-b20f618b2f0b",
+    "timestamp": 1764213484793
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "478af94c-6521-44c1-8985-19a9d8301fc9",
+    "timestamp": 1764213484792
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: The Economic Times Wealth - 11.24.2025",
+    "source": "grabber",
+    "id": "03a823ce-50c3-4396-b678-590ba4fcd01d",
+    "timestamp": 1764213484790
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9f25ad4e-3c35-488b-893b-4a7acf0e04b6",
+    "timestamp": 1764213484611
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "96cbd239-b61f-4cbf-a99f-0b502e58d34e",
+    "timestamp": 1764213484507
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Inside Housing - 11.2025",
+    "source": "grabber",
+    "id": "2df79373-cd7f-4ff8-8883-c286f18a4546",
+    "timestamp": 1764213483818
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9b4ea4cc-de85-417d-8521-13bb5887b901",
+    "timestamp": 1764213483263
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "02e466cd-9efa-4e83-b041-6798ef602111",
+    "timestamp": 1764213483261
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Ambition - 11/12 2025",
+    "source": "grabber",
+    "id": "33accea8-6d0d-4333-9f4c-940d8d5a1eb3",
+    "timestamp": 1764213483260
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "798dc333-476f-42c2-877b-d1d4bb8dad8e",
+    "timestamp": 1764213483069
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "6eec0a8d-441c-4f69-a767-2b0e90efafd8",
+    "timestamp": 1764213483068
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: The European Business Review - 11/12 2025",
+    "source": "grabber",
+    "id": "de7fddf6-68d2-4572-81dc-67eea0634b42",
+    "timestamp": 1764213483066
+  },
+  {
+    "level": "success",
+    "message": "Found 23 new items in Feed (downmagaz.net) (7 already processed)",
+    "source": "grabber",
+    "id": "094ed5fd-5ca0-43d7-aa28-5b40d8d1473e",
+    "timestamp": 1764213482627
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "16d477f2-db1f-489f-b9ed-c22b7e8cfdad",
+    "timestamp": 1764213482138
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "8f75a260-4db8-4450-8c70-d178eb50c18a",
+    "timestamp": 1764213482109
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "f2086623-1160-4fdd-b02b-30730c1e2849",
+    "timestamp": 1764213480609
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "047b16e8-b8e1-41f5-85df-6e083d9b962e",
+    "timestamp": 1764213480607
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Newsmax - 12.2025",
+    "source": "grabber",
+    "id": "0f30d753-14a2-4491-8e37-b762dd0a2756",
+    "timestamp": 1764213480601
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "28a9ec23-9b10-413b-9acb-5547a752ac9f",
+    "timestamp": 1764213480338
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "ac213692-64c8-492d-9224-54db5d25ed1e",
+    "timestamp": 1764213480336
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Business Traveller IN - 10.2025",
+    "source": "grabber",
+    "id": "5842d4bd-0c06-44e8-abef-44d896dede2a",
+    "timestamp": 1764213480335
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9d929879-8533-49c8-8ef8-515268288041",
+    "timestamp": 1764213480044
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "153b56cd-b02e-46a5-b26a-854d8b704443",
+    "timestamp": 1764213480040
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Business Traveller IN - 11.2025",
+    "source": "grabber",
+    "id": "d4c074bb-6a90-43e4-8664-0588d7037ce6",
+    "timestamp": 1764213480037
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "429472ba-f54d-4248-8efb-83c0ef23fefa",
+    "timestamp": 1764213479770
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "eb4b470a-1792-4dc1-9a2c-720a2648f49b",
+    "timestamp": 1764213479767
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Thermal Control Business Update - 11.2025",
+    "source": "grabber",
+    "id": "e6603b04-eab1-48dd-a533-e1aec1a867ee",
+    "timestamp": 1764213479763
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "4baabb12-44fa-4d9c-83fe-0c56da3591a4",
+    "timestamp": 1764213479498
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "7a390de4-3c7a-40a1-8b59-e0f7008f64c0",
+    "timestamp": 1764213479451
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Business Today - 12.7.2025",
+    "source": "grabber",
+    "id": "cc597f25-89a6-4d0e-bd8a-b1c36c4bad8d",
+    "timestamp": 1764213479448
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "ade0e471-4292-402b-9046-e47426642f84",
+    "timestamp": 1764213479200
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "b93b92bb-5ea2-4827-aeec-b6ee3344e341",
+    "timestamp": 1764213479198
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Technology - 12.2025",
+    "source": "grabber",
+    "id": "5fdc224e-e59e-43eb-801c-abb35c6dccc4",
+    "timestamp": 1764213479196
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "ee79f1ca-2d7b-499d-8c89-5275cddd801e",
+    "timestamp": 1764213479016
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "387dc9d2-e728-47a8-802f-e8951d2e6b53",
+    "timestamp": 1764213478915
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: AI Magazine - 12.2025",
+    "source": "grabber",
+    "id": "e7c0b0f3-0de4-4ffa-95ec-fffa35481851",
+    "timestamp": 1764213478315
+  },
+  {
+    "level": "success",
+    "message": "Found 30 new items in Feed (downmagaz.net) (0 already processed)",
+    "source": "grabber",
+    "id": "59056906-3117-4016-96e9-b051e6c0c5f0",
+    "timestamp": 1764213477837
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "695332c9-bb47-451a-8702-6f99dea794cd",
+    "timestamp": 1764213476707
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "126252b3-29cf-4c50-88fb-0de2911b7d09",
+    "timestamp": 1764213476680
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
     "id": "0f3ffb06-63fa-4e40-ad4c-37ce662b1d47",
     "timestamp": 1764213263574
   },
@@ -299,383 +698,5 @@
     "source": "jdownloader",
     "id": "8b4ea4fb-ea8b-42e6-b3ee-d5bb470136dc",
     "timestamp": 1764213063708
-  },
-  {
-    "level": "info",
-    "message": "Extracted download link from: Technology - 12.2025",
-    "source": "grabber",
-    "id": "000fa948-a111-4d5a-b6ad-a433e9dcbaa1",
-    "timestamp": 1764213063706
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "bf83cd5b-00e7-49a5-ad0a-ce7cbe3eecdd",
-    "timestamp": 1764213063536
-  },
-  {
-    "level": "info",
-    "message": "Extracted download link from: AI Magazine - 12.2025",
-    "source": "grabber",
-    "id": "fd8d377e-c880-459f-95b8-e7e3abaa3ec7",
-    "timestamp": 1764213063425
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "3e03d32f-5c1c-41dc-a573-e109aab7915f",
-    "timestamp": 1764213063104
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "2e390085-7310-4976-8cd6-d4f8cba2aca3",
-    "timestamp": 1764213062882
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "162b8df3-8bf0-406e-a7f6-6c0abfb4637b",
-    "timestamp": 1764213062859
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "5ce5c2ee-bc84-4688-9c24-c944535592bd",
-    "timestamp": 1764213010934
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "00a06c6c-2b41-48a0-acd1-e9936b211427",
-    "timestamp": 1764213010753
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "05ac366a-8a57-4f33-9ce5-b8fda741be17",
-    "timestamp": 1764212766174
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "efb46a78-5666-406a-b2d7-f143870b0315",
-    "timestamp": 1764212765995
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "526473cd-dbe1-4573-ab98-31a4e5e10d97",
-    "timestamp": 1764212677099
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "149ca42e-39ea-4425-a134-eccbfa553a69",
-    "timestamp": 1764212676850
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "67bef6c8-aeae-4243-a3fc-cdb72e974f15",
-    "timestamp": 1764212676827
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "41e6a223-ea8d-4865-8c35-06bc4132cae1",
-    "timestamp": 1764212669755
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "7c71b8ca-c170-4134-b7de-fa28a6c47df4",
-    "timestamp": 1764212669482
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "e27143a8-d132-4ce8-820f-a462212cc282",
-    "timestamp": 1764212669451
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "ad1edc55-3d6c-4536-90e5-722f7dbb6f9c",
-    "timestamp": 1764212579573
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "47d62904-70b3-40ec-a5fa-16763809af85",
-    "timestamp": 1764212579047
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "75a2a077-f9ba-4c1d-825a-fc2ba51e833e",
-    "timestamp": 1764212579012
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "0d62072a-0f98-4585-8011-d68ec63fe3c1",
-    "timestamp": 1764212532919
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "df701f64-6957-4c19-8f4a-4918dd99ceb8",
-    "timestamp": 1764212532035
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "770ba995-97c9-4e28-af70-5ef3d48b3be2",
-    "timestamp": 1764212532014
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "61488a7b-420b-4ec5-8670-703b742ed9cf",
-    "timestamp": 1764212500648
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "8b312737-3157-41fa-8b41-c67327c32516",
-    "timestamp": 1764212500195
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "876145c0-6edf-4aed-b3b6-2e630162f408",
-    "timestamp": 1764212500178
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "8ae0a8ea-7658-4041-a636-15da7a6a29c7",
-    "timestamp": 1764212460449
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "8aa33ff5-f166-4c31-9792-d8c09c4d0be5",
-    "timestamp": 1764212459856
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "0707375a-44fa-43cc-92a8-e8381c2df5e2",
-    "timestamp": 1764212459829
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "74df9c47-dd2b-4cb9-905c-e88f85d66a08",
-    "timestamp": 1764212347281
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "f01b7a9f-be88-47fc-a045-c085f0e572fd",
-    "timestamp": 1764212347075
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "76c5e51e-b8f8-498b-b72e-6f48956e30b5",
-    "timestamp": 1764212231016
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "56ca2de3-49ac-43b2-b0d7-9b7730ef7a13",
-    "timestamp": 1764212230002
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "21c66599-76b1-4287-8848-f9f6d9821a52",
-    "timestamp": 1764212229972
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "1f70fa8d-5717-4c8b-bb91-a70e83200683",
-    "timestamp": 1764212063560
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "01da95e3-b148-404a-8874-55e4c42c8c58",
-    "timestamp": 1764212063348
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "8b64fd5c-e352-4462-9f5e-0519b4c7377b",
-    "timestamp": 1764212063327
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "7d22585c-05a1-4921-a9bd-e11d662377e2",
-    "timestamp": 1764212044573
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "5c73bea1-9d78-4561-a00e-be28cf0f0478",
-    "timestamp": 1764212044114
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "28469879-a322-47f2-9df7-cbbab06cd246",
-    "timestamp": 1764212044080
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "31d6a6bc-e601-4f1d-b70f-8e7bcd8b4a73",
-    "timestamp": 1764212010090
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "a28a74c3-b03a-488c-a90f-6a4346f50037",
-    "timestamp": 1764212009864
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "8ee4169b-db87-4f7f-b2ed-53876627c86c",
-    "timestamp": 1764212009837
-  },
-  {
-    "level": "info",
-    "message": "Feed removed: ae739e90-5184-440a-9973-2306ece8b1c1",
-    "source": "daemon",
-    "id": "f79cc0d2-277f-4154-81f4-a2a923b1520c",
-    "timestamp": 1764211198082
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "1a8185e0-be71-4c39-9a51-d95a4a6f4be2",
-    "timestamp": 1764211171924
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
-    "source": "scraper",
-    "id": "49cd1896-7f0a-4cde-8fd1-3c55fde0ad31",
-    "timestamp": 1764211171736
-  },
-  {
-    "level": "info",
-    "message": "New feed added: Feed (downmagaz.net)",
-    "source": "daemon",
-    "id": "699d9bc8-bd0e-41ec-bb07-1ead28087b2a",
-    "timestamp": 1764211171734
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Test Feed",
-    "source": "scraper",
-    "id": "9dce91ef-507c-4c14-8521-0fde2ec47bf4",
-    "timestamp": 1764211126762
-  },
-  {
-    "level": "info",
-    "message": "Starting scrape job for feed: Test Feed",
-    "source": "scraper",
-    "id": "e0300ca6-132b-482b-a121-c1569a1ea315",
-    "timestamp": 1764211126371
-  },
-  {
-    "level": "info",
-    "message": "New feed added: Test Feed",
-    "source": "daemon",
-    "id": "dae0b0fb-80ad-41d5-9ebb-db2497a82205",
-    "timestamp": 1764211126359
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "e73382ad-0b0a-4601-9da5-35a697a0fdb3",
-    "timestamp": 1764211116430
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "ca5c5968-0454-41b7-8a73-6421fd98f033",
-    "timestamp": 1764211088896
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "bc1e0c92-c782-46c6-8b82-21f56184069f",
-    "timestamp": 1764211052793
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "57f90b2f-7098-4a71-a4ef-7f3cf55e1cfe",
-    "timestamp": 1764211007965
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Magscrape v0.1.0",
-    "source": "daemon",
-    "id": "2a9735e5-30e5-478e-a44e-e022d058842e",
-    "timestamp": 1764210896605
   }
 ]

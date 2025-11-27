@@ -102,19 +102,37 @@ export class Scraper {
         return;
       }
 
+      // Filter out already processed items
+      const newItems = [];
+      for (const item of rssFeed.items) {
+        if (item.link && !(await storage.isProcessed(item.link))) {
+          newItems.push(item);
+        }
+      }
+
+      if (newItems.length === 0) {
+        await storage.addLog({
+          level: "info",
+          message: `No new items in ${feed.name} (${rssFeed.items.length} already processed)`,
+          source: "grabber",
+        });
+        await storage.updateFeed(feedId, { status: "idle" });
+        return;
+      }
+
       await storage.addLog({
         level: "success",
-        message: `Found ${rssFeed.items.length} items in ${feed.name}`,
+        message: `Found ${newItems.length} new items in ${feed.name} (${rssFeed.items.length - newItems.length} already processed)`,
         source: "grabber",
       });
 
-      await storage.incrementStat("totalScraped", rssFeed.items.length);
+      await storage.incrementStat("totalScraped", newItems.length);
       await storage.updateFeed(feedId, { 
-        totalFound: feed.totalFound + rssFeed.items.length 
+        totalFound: feed.totalFound + newItems.length 
       });
 
-      // Process each item
-      for (const item of rssFeed.items.slice(0, 5)) {
+      // Process each new item
+      for (const item of newItems.slice(0, 10)) {
         if (item.link) {
           try {
             const downloadUrls = await this.findDownloadLink(item.link);
@@ -131,6 +149,8 @@ export class Scraper {
                 await this.submitToJDownloader(downloadUrl);
               }
             }
+            // Mark this item as processed (even if no links found)
+            await storage.markProcessed(item.link);
           } catch (err: any) {
             await storage.addLog({
               level: "warn",
