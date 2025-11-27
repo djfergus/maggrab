@@ -135,19 +135,35 @@ export class Scraper {
       for (const item of newItems.slice(0, 10)) {
         if (item.link) {
           try {
-            const downloadUrls = await this.findDownloadLink(item.link);
-            if (downloadUrls.length > 0) {
+            const downloadLinks = await this.findDownloadLinks(item.link);
+            if (downloadLinks.length > 0) {
+              const articleTitle = item.title || item.link;
+              
+              // Prioritize novafile links, then nfile
+              const preferredLink = downloadLinks.find(l => l.host.includes('novafile'))
+                || downloadLinks.find(l => l.host.includes('nfile'))
+                || downloadLinks[0];
+              
               await storage.addLog({
                 level: "info",
-                message: `Extracted ${downloadUrls.length} download link(s) from: ${item.title || item.link}`,
+                message: `Extracted ${downloadLinks.length} link(s) from: ${articleTitle} - using ${preferredLink.host}`,
                 source: "grabber",
               });
               
-              for (const downloadUrl of downloadUrls) {
-                await storage.incrementStat("linksFound");
-                // Submit to JDownloader
-                await this.submitToJDownloader(downloadUrl);
-              }
+              // Store the preferred link as an extracted item
+              await storage.addExtractedItem({
+                feedId,
+                articleTitle,
+                articleUrl: item.link,
+                downloadUrl: preferredLink.url,
+                host: preferredLink.host,
+                submitted: false,
+              });
+              
+              await storage.incrementStat("linksFound");
+              
+              // Only submit the preferred link to JDownloader
+              await this.submitToJDownloader(preferredLink.url, articleTitle);
             }
             // Mark this item as processed (even if no links found)
             await storage.markProcessed(item.link);
@@ -173,13 +189,27 @@ export class Scraper {
     }
   }
 
-  private async findDownloadLink(url: string): Promise<string[]> {
+  private getHostFromUrl(url: string): string {
+    try {
+      const hostname = new URL(url).hostname;
+      // Extract the main domain part
+      const parts = hostname.split('.');
+      if (parts.length >= 2) {
+        return parts.slice(-2).join('.');
+      }
+      return hostname;
+    } catch {
+      return 'unknown';
+    }
+  }
+
+  private async findDownloadLinks(url: string): Promise<Array<{url: string, host: string}>> {
     try {
       const response = await axios.get(url, { timeout: 15000, headers: { 
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }});
       const $ = load(response.data);
-      const foundLinks: string[] = [];
+      const foundLinks: Array<{url: string, host: string}> = [];
       
       // Method 1: Find base64-encoded redirect links (downmagaz.net pattern)
       // These look like: /engine/go.php?url=aHR0cHM6Ly9uZmlsZS5jYy9qQllkVkI2cQ==
@@ -193,7 +223,7 @@ export class Scraper {
               // Decode the base64-encoded URL
               const decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
               if (decodedUrl.startsWith('http')) {
-                foundLinks.push(decodedUrl);
+                foundLinks.push({ url: decodedUrl, host: this.getHostFromUrl(decodedUrl) });
                 log(`Decoded base64 link: ${decodedUrl}`, "grabber");
               }
             }
@@ -215,31 +245,35 @@ export class Scraper {
         if (href) {
           for (const domain of fileHostingDomains) {
             if (href.includes(domain)) {
-              if (href.startsWith('http')) {
-                foundLinks.push(href);
-              } else {
+              let finalUrl = href;
+              if (!href.startsWith('http')) {
                 try {
-                  const absoluteUrl = new URL(href, url).toString();
-                  foundLinks.push(absoluteUrl);
+                  finalUrl = new URL(href, url).toString();
                 } catch {
-                  // Skip malformed URLs
+                  return; // Skip malformed URLs
                 }
               }
+              foundLinks.push({ url: finalUrl, host: this.getHostFromUrl(finalUrl) });
               break;
             }
           }
         }
       });
 
-      // Remove duplicates
-      return Array.from(new Set(foundLinks));
+      // Remove duplicates based on URL
+      const seen = new Set<string>();
+      return foundLinks.filter(link => {
+        if (seen.has(link.url)) return false;
+        seen.add(link.url);
+        return true;
+      });
     } catch (error: any) {
       log(`Error finding download link: ${error.message}`, "grabber");
       return [];
     }
   }
 
-  private async submitToJDownloader(url: string) {
+  private async submitToJDownloader(url: string, articleTitle: string) {
     try {
       const settings = await storage.getSettings();
       
@@ -256,7 +290,7 @@ export class Scraper {
       // For now, just log it
       await storage.addLog({
         level: "success",
-        message: `Submitted link to JDownloader2 API: ${url.substring(0, 50)}...`,
+        message: `Submitted to JDownloader: ${articleTitle}`,
         source: "jdownloader",
       });
       
