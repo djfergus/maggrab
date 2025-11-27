@@ -116,7 +116,7 @@ export default function Settings() {
                   <div>
                     <p className="font-medium text-cyan-500">Configured</p>
                     <p className="text-sm text-muted-foreground">
-                      Account: {jdStatus.email} • Will connect on next scrape
+                      Account: {jdStatus.email} • Will connect on next grab
                       {jdStatus.deviceName && <> • Device: <span className="font-mono">{jdStatus.deviceName}</span></>}
                     </p>
                   </div>
