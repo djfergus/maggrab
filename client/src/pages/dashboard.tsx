@@ -30,11 +30,10 @@ export default function Dashboard() {
     refetchInterval: 5000,
   });
 
-  const { data: extractedItems = [] } = useQuery({
+  const { data: extractedItems = [], refetch: refetchExtracted } = useQuery({
     queryKey: ["extracted"],
     queryFn: () => api.getExtracted(100),
-    refetchInterval: 10000,
-    enabled: isLinksModalOpen,
+    staleTime: 30000,
   });
 
   const createFeedMutation = useMutation({
