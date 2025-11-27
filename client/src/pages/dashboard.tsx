@@ -1,4 +1,4 @@
-import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2 } from "lucide-react";
+import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,25 @@ export default function Dashboard() {
       toast({
         title: "Feed Removed",
         description: "Feed successfully deleted.",
+      });
+    },
+  });
+
+  const scrapeFeedMutation = useMutation({
+    mutationFn: api.triggerScrape,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["logs"] });
+      toast({
+        title: "Scrape Triggered",
+        description: "Feed scraping started. Check logs for progress.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
       });
     },
   });
@@ -231,13 +250,25 @@ export default function Dashboard() {
               <div className="col-span-1 flex justify-end">
                 <StatusBadge status={feed.status} />
               </div>
-              <div className="col-span-1 flex justify-end">
+              <div className="col-span-1 flex justify-end gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => scrapeFeedMutation.mutate(feed.id)}
+                  className="h-8 w-8 p-0 hover:bg-primary/20 hover:text-primary"
+                  disabled={feed.status === 'scraping' || scrapeFeedMutation.isPending}
+                  data-testid={`button-scrape-${feed.id}`}
+                  title="Scrape Now"
+                >
+                  <RefreshCw className={`h-3 w-3 ${feed.status === 'scraping' ? 'animate-spin' : ''}`} />
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => deleteFeedMutation.mutate(feed.id)}
                   className="h-8 w-8 p-0 hover:bg-destructive/20 hover:text-destructive"
                   data-testid={`button-delete-${feed.id}`}
+                  title="Delete Feed"
                 >
                   <Trash2 className="h-3 w-3" />
                 </Button>
