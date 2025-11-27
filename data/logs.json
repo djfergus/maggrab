@@ -3,357 +3,322 @@
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "13c4eb84-96c5-4a96-887c-e2ddd6b912aa",
-    "timestamp": 1764215620961
+    "id": "cb1fb435-68f7-4c2e-ae3c-74d9c446dcec",
+    "timestamp": 1764215694976
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: India Legal - 11.24.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "7b8576d7-b2f3-438a-a7f0-9a4a8f8c6b7c",
-    "timestamp": 1764215620953
+    "id": "ca2a112c-35f2-493d-a34d-67e30ee4a6f1",
+    "timestamp": 1764215694972
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "657b4c07-3fa4-4e50-aecd-1ec4a847a366",
-    "timestamp": 1764215620780
+    "id": "ea9fec31-48da-4021-8694-1d80021e5879",
+    "timestamp": 1764215694804
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Iziar - 11.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "a0ddf768-01d9-4acf-aa1c-616196698f0d",
-    "timestamp": 1764215620777
+    "id": "03849827-4567-42aa-b1cb-be18789f879a",
+    "timestamp": 1764215694800
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "b1cac8c6-1225-43f1-83cb-4c2b2b8e1eb8",
-    "timestamp": 1764215620613
+    "id": "9815d19e-b816-4509-8cb6-194951f0a819",
+    "timestamp": 1764215694633
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: ICT Connect - 10.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "32583636-b73f-47b3-9cec-cb94b50917d5",
-    "timestamp": 1764215620611
+    "id": "e38fec1c-12ee-4f52-bf89-94556ab8d72c",
+    "timestamp": 1764215694631
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "46700c91-51e8-4dd8-a5be-bf1bf788ce98",
-    "timestamp": 1764215620449
+    "id": "0506f565-68be-4cca-931c-7f807083c6a4",
+    "timestamp": 1764215694440
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Barron's - 11.24.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "c6d08fdd-87f0-4edf-b7d6-248d433fef53",
-    "timestamp": 1764215620446
+    "id": "62cea232-aff9-4cc5-85cf-aff46f297232",
+    "timestamp": 1764215694437
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "fb9da041-6209-4173-8720-c5c4f550327d",
-    "timestamp": 1764215620265
+    "id": "90320040-b249-4080-862b-88cef58c9530",
+    "timestamp": 1764215694274
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: The Economist USA - 11.22.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "769d7707-6ff8-4e4d-a019-6d9edeafc1e3",
-    "timestamp": 1764215620263
+    "id": "93ae8a57-faaa-459b-ab09-c6492fb9bbdb",
+    "timestamp": 1764215694272
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "21dd6c25-5efe-4f03-843e-11f33532c79e",
-    "timestamp": 1764215619518
+    "id": "eff3a08b-da5c-4a1d-b289-98258d2900e1",
+    "timestamp": 1764215694092
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: New Zealand Listener - 11.29.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "c778ab1c-4cbb-4ac4-b321-5fdd5d1c7f93",
-    "timestamp": 1764215619046
+    "id": "152f1035-39da-4419-984a-81b275fce07e",
+    "timestamp": 1764215694088
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "c8befe1c-9109-47ad-bebe-e745786358c7",
-    "timestamp": 1764215618834
+    "id": "5e3b7b09-e72b-4e97-9066-f50b25dfe7b0",
+    "timestamp": 1764215693919
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Cityscape Global - 11.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "e10189ac-6829-4d78-9321-19fd46aaa5aa",
-    "timestamp": 1764215618830
+    "id": "a3b19860-2c52-44bf-85e0-f4be378af404",
+    "timestamp": 1764215693913
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "490b8da4-7ea6-438d-8d79-aa1f768a29b9",
-    "timestamp": 1764215618642
+    "id": "198ac168-84c8-4baf-921a-bd6be7ab8333",
+    "timestamp": 1764215693752
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: International Kirmes & Park Revue - 12.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "66dd4755-26d9-415a-9499-5729459f5328",
-    "timestamp": 1764215618640
+    "id": "0e86995a-9f9a-4c33-9381-25b92d58972b",
+    "timestamp": 1764215693750
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "640fe79f-0d38-4dbd-b37d-10745db63207",
-    "timestamp": 1764215618461
+    "id": "821ff763-4cd3-4570-8241-a3964f063048",
+    "timestamp": 1764215693567
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Hobby Farms - 01/02 2026 - using nfile.cc",
     "source": "grabber",
-    "id": "7eead902-d474-4d46-b65c-38623ead3db3",
-    "timestamp": 1764215618456
+    "id": "e1156625-5e9d-47f5-8ce0-4291d154f513",
+    "timestamp": 1764215693565
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "fba1aea6-f9f0-4588-9a21-fbede2e42ec5",
-    "timestamp": 1764215618260
+    "id": "fdb1a118-3631-4d29-acbd-14f21e743db7",
+    "timestamp": 1764215693395
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: The Economic Times Wealth - 11.24.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "b93c99c5-c6da-4c4c-9f00-48b6151ea5f1",
-    "timestamp": 1764215618113
+    "id": "e0b5ca15-ab31-4dc5-8f44-078526804412",
+    "timestamp": 1764215693392
   },
   {
     "level": "success",
     "message": "Found 20 new items in Feed (downmagaz.net) (10 already processed)",
     "source": "grabber",
-    "id": "a0d63c41-f19e-4e46-be41-52ac334bfbcf",
-    "timestamp": 1764215617681
+    "id": "7503d29c-4393-444a-913a-b7fb4afaa59a",
+    "timestamp": 1764215693218
   },
   {
     "level": "info",
     "message": "Starting grab job for feed: Feed (downmagaz.net)",
     "source": "grabber",
-    "id": "73fc9b04-bb27-4c74-ada1-114b6638b73c",
-    "timestamp": 1764215617451
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "0ee3dcd9-2310-43ba-bb85-5cfd87983dd2",
-    "timestamp": 1764215617417
+    "id": "5cfcb094-8973-487a-a378-18da18e979c1",
+    "timestamp": 1764215692854
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "b1aeed6e-6cb3-41d5-bd8d-767d32e84e58",
-    "timestamp": 1764215567577
+    "id": "c85d2803-6185-4f3f-a8d6-cdfaa2af3e33",
+    "timestamp": 1764215670411
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Inside Housing - 11.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "563b7635-913b-4257-a668-d076b46ffe89",
-    "timestamp": 1764215567574
+    "id": "e234ed61-62a6-4dfc-b15d-42e59b956be6",
+    "timestamp": 1764215670408
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "670006c0-3839-41ae-8253-e2f2ea045939",
-    "timestamp": 1764215567403
+    "id": "e95f512d-0b49-42cf-b52f-359b2caa563d",
+    "timestamp": 1764215670226
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Ambition - 11/12 2025 - using nfile.cc",
     "source": "grabber",
-    "id": "ba07571f-0031-4ffc-a50c-ffd66b24a199",
-    "timestamp": 1764215567401
+    "id": "484d5b50-551d-4f92-9aed-6561f97929eb",
+    "timestamp": 1764215670223
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "7cd0ace0-1d25-4339-a43b-0d4a0a9c12f3",
-    "timestamp": 1764215567229
+    "id": "4fc09842-e365-4e6e-99cf-96fe7d630639",
+    "timestamp": 1764215670064
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: The European Business Review - 11/12 2025 - using nfile.cc",
     "source": "grabber",
-    "id": "5d2d3e54-6f39-4452-a434-e2f594f1c738",
-    "timestamp": 1764215567227
+    "id": "bb51e3a2-bb70-4a79-87a9-15e254f9e594",
+    "timestamp": 1764215670059
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "43a931a0-28ae-4161-9d74-12f2265341ba",
-    "timestamp": 1764215567029
+    "id": "2bcd063a-f519-4927-b215-f9ddaa049d12",
+    "timestamp": 1764215669885
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Newsmax - 12.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "f08dc11a-2c5c-480a-b5d1-e27cae1c4b80",
-    "timestamp": 1764215567007
+    "id": "a451ea66-4bb9-462c-bbce-fc769ec16993",
+    "timestamp": 1764215669883
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "f7166af4-aeee-4cec-981d-a5450b5571e8",
-    "timestamp": 1764215566836
+    "id": "763f4576-1974-481a-940d-54c788eb9ea4",
+    "timestamp": 1764215669713
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Business Traveller IN - 10.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "613e319c-22e8-40e1-82f2-8b54a3de224e",
-    "timestamp": 1764215566834
+    "id": "2247c0cd-3f8f-4bb7-9817-e4b208369869",
+    "timestamp": 1764215669712
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "7dcef21d-81c9-4ac8-b624-9e8890b4f316",
-    "timestamp": 1764215566666
+    "id": "0b74fe9a-a42d-4ab2-8373-fddb830a6de6",
+    "timestamp": 1764215669532
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Business Traveller IN - 11.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "f17fde22-6172-4d50-a9a7-b56e6ce63368",
-    "timestamp": 1764215566664
+    "id": "09fe6227-2526-43c9-8fcf-a365b1ba282c",
+    "timestamp": 1764215669522
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "b6f94e97-e5f8-48c1-a8a7-3f7ff208dafb",
-    "timestamp": 1764215566470
+    "id": "74fd2876-7dfb-46c9-a728-00c91df694c0",
+    "timestamp": 1764215669343
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Thermal Control Business Update - 11.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "c6f46afa-5f40-46d2-8f03-216a538dc1e5",
-    "timestamp": 1764215566468
+    "id": "ca476621-fe68-4546-801f-724ba7e8cdbe",
+    "timestamp": 1764215669341
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "e1456d5b-8491-40a3-82b3-20896d090919",
-    "timestamp": 1764215566290
+    "id": "52934b3c-04df-44b6-9506-cd6220a57ed6",
+    "timestamp": 1764215669166
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Business Today - 12.7.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "32a2f52a-d879-49e2-8c8a-04872befc31d",
-    "timestamp": 1764215566287
+    "id": "22ef776f-8027-4185-810a-7b90ca281ae2",
+    "timestamp": 1764215669163
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "86fcc331-a95f-4fdf-99af-c3ed450908bb",
-    "timestamp": 1764215566104
+    "id": "e9960a7d-ebab-4c3e-a00d-751b9fccdfab",
+    "timestamp": 1764215668961
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: Technology - 12.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "872de25f-fbf1-4264-ae9f-9a30353b730d",
-    "timestamp": 1764215566101
+    "id": "c16850d6-9eaf-4c3e-82f3-cb0aa1785674",
+    "timestamp": 1764215668960
   },
   {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
-    "id": "c0f1b5e4-f3a6-4439-94d9-250d5e73e567",
-    "timestamp": 1764215565915
+    "id": "57760f4e-9e41-4e83-bd45-46108a893ac9",
+    "timestamp": 1764215668790
   },
   {
     "level": "info",
     "message": "Extracted 2 link(s) from: AI Magazine - 12.2025 - using nfile.cc",
     "source": "grabber",
-    "id": "60901efb-5287-4da9-8305-25fec427587e",
-    "timestamp": 1764215565913
+    "id": "e7244e6c-8879-4007-b760-d1a2fb937f5b",
+    "timestamp": 1764215668785
   },
   {
     "level": "success",
     "message": "Found 30 new items in Feed (downmagaz.net) (0 already processed)",
     "source": "grabber",
-    "id": "44717f9c-3d75-4438-8d51-9125d2c3461b",
-    "timestamp": 1764215565648
+    "id": "28657db3-8358-4307-8981-f4cc0fda8e45",
+    "timestamp": 1764215668557
   },
   {
     "level": "info",
     "message": "Starting grab job for feed: Feed (downmagaz.net)",
     "source": "grabber",
-    "id": "32ba2d33-9dd7-4b28-9882-b76272d5b71f",
-    "timestamp": 1764215564596
+    "id": "d276de81-c983-441c-8380-a97a8ffd0707",
+    "timestamp": 1764215668175
   },
   {
     "level": "info",
     "message": "New feed added: Feed (downmagaz.net)",
     "source": "daemon",
-    "id": "57e1744c-2000-4944-a349-e7473504dbd0",
-    "timestamp": 1764215564594
-  },
-  {
-    "level": "info",
-    "message": "Feed removed: 80fb1183-f7cc-45e1-8e16-49681a76ef39",
-    "source": "daemon",
-    "id": "1abb0e9e-e98d-44b8-be2a-63dbb7e75960",
-    "timestamp": 1764215558331
-  },
-  {
-    "level": "info",
-    "message": "No new items found in Feed (rss.qwilio.com)",
-    "source": "grabber",
-    "id": "cca5ec8a-19cb-472d-b4b1-770926d15873",
-    "timestamp": 1764215418670
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (rss.qwilio.com)",
-    "source": "grabber",
-    "id": "7efe4a8c-177c-4a57-95de-ef0129cef514",
-    "timestamp": 1764215417945
-  },
-  {
-    "level": "info",
-    "message": "New feed added: Feed (rss.qwilio.com)",
-    "source": "daemon",
-    "id": "f835ea10-edf6-434d-ad67-ab6f2c82172b",
-    "timestamp": 1764215417944
+    "id": "33d97e0b-553b-4325-bf05-b6704777f974",
+    "timestamp": 1764215668173
   },
   {
     "level": "info",
     "message": "Daemon started - Maggrab v0.1.0",
     "source": "daemon",
-    "id": "178730c5-de6d-48d6-a127-fa44484b6685",
-    "timestamp": 1764215409041
+    "id": "69cc4e8f-114d-420d-94b1-254c0de6d1fd",
+    "timestamp": 1764215657961
   }
 ]
