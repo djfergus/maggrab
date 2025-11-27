@@ -1,5 +1,33 @@
 [
   {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "e674d2e7-fd9d-4f0c-9fde-c7e8a1480168",
+    "timestamp": 1764219347041
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "479cea5a-251c-43e8-a004-cea98964892c",
+    "timestamp": 1764219347040
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "ccd57846-f7f8-4e05-836b-44de9167b4e4",
+    "timestamp": 1764219346808
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "76e4acbd-7f8d-45e3-b081-1b8c49383ca8",
+    "timestamp": 1764219346782
+  },
+  {
     "level": "success",
     "message": "Submitted to JDownloader: Jetgala - 09/11 2025",
     "source": "jdownloader",
@@ -670,33 +698,5 @@
     "source": "grabber",
     "id": "e1c3869d-10da-420e-9b48-9920fdc86eec",
     "timestamp": 1764218734554
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "b7b1834b-6b58-4788-b70d-2dd3da0d31f9",
-    "timestamp": 1764218734523
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "ef3d9bd7-3e3d-4130-aa3f-1a50ff299103",
-    "timestamp": 1764218654367
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "d73fbbc6-fe36-4bc5-9cf8-962d921ae704",
-    "timestamp": 1764218653313
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "d2c73f2e-380a-4751-924d-6c1eac42da71",
-    "timestamp": 1764218653277
   }
 ]

@@ -38,7 +38,7 @@ export default function Logs() {
       <div className="flex-1 p-6 overflow-hidden">
         <div 
           ref={containerRef}
-          className="h-full bg-black border border-border font-mono text-sm overflow-auto p-4 shadow-inner"
+          className="h-full bg-black border border-border font-mono text-xs overflow-auto p-4 shadow-inner"
         >
           {logs.length === 0 && (
             <div className="text-muted-foreground italic opacity-50 text-center mt-20">
