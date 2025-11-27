@@ -10,7 +10,11 @@ export const feedSchema = z.object({
   totalFound: z.number().default(0),
 });
 
-export const insertFeedSchema = feedSchema.omit({ id: true });
+export const insertFeedSchema = z.object({
+  name: z.string(),
+  url: z.string().url(),
+  interval: z.number().optional().default(15),
+});
 export type InsertFeed = z.infer<typeof insertFeedSchema>;
 export type Feed = z.infer<typeof feedSchema>;
 

@@ -1,5 +1,47 @@
 [
   {
+    "level": "success",
+    "message": "Found 30 items in Test Feed",
+    "source": "scraper",
+    "id": "9dce91ef-507c-4c14-8521-0fde2ec47bf4",
+    "timestamp": 1764211126762
+  },
+  {
+    "level": "info",
+    "message": "Starting scrape job for feed: Test Feed",
+    "source": "scraper",
+    "id": "e0300ca6-132b-482b-a121-c1569a1ea315",
+    "timestamp": 1764211126371
+  },
+  {
+    "level": "info",
+    "message": "New feed added: Test Feed",
+    "source": "daemon",
+    "id": "dae0b0fb-80ad-41d5-9ebb-db2497a82205",
+    "timestamp": 1764211126359
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Magscrape v0.1.0",
+    "source": "daemon",
+    "id": "e73382ad-0b0a-4601-9da5-35a697a0fdb3",
+    "timestamp": 1764211116430
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Magscrape v0.1.0",
+    "source": "daemon",
+    "id": "ca5c5968-0454-41b7-8a73-6421fd98f033",
+    "timestamp": 1764211088896
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Magscrape v0.1.0",
+    "source": "daemon",
+    "id": "bc1e0c92-c782-46c6-8b82-21f56184069f",
+    "timestamp": 1764211052793
+  },
+  {
     "level": "info",
     "message": "Daemon started - Magscrape v0.1.0",
     "source": "daemon",
