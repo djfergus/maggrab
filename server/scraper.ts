@@ -189,7 +189,17 @@ export class Scraper {
       log(`Grabbing feed: ${feed.name}`, "grabber");
 
       // Parse RSS feed
-      const rssFeed = await parser.parseURL(feed.url);
+      let rssFeed;
+      try {
+        rssFeed = await parser.parseURL(feed.url);
+      } catch (parseErr: any) {
+        // Check if this looks like an HTML page instead of RSS
+        const errMsg = parseErr.message || '';
+        if (errMsg.includes('Attribute without value') || errMsg.includes('Non-whitespace before first tag')) {
+          throw new Error(`Invalid RSS feed URL - this appears to be an HTML page, not an RSS feed. Try adding /rss.xml to the URL.`);
+        }
+        throw parseErr;
+      }
       
       if (!rssFeed.items || rssFeed.items.length === 0) {
         await storage.addLog({

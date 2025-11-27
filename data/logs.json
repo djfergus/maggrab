@@ -3,21 +3,49 @@
     "level": "info",
     "message": "Daemon started - Maggrab v0.1.0",
     "source": "daemon",
-    "id": "53b3bedb-528a-44fc-99f2-136a24eabcc3",
-    "timestamp": 1764220014634
+    "id": "f4bc4c7e-863f-4827-ae44-8aa487c04110",
+    "timestamp": 1764222259851
   },
   {
     "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "19bb7aea-844b-41e6-90c7-e24a4f4dcce0",
+    "timestamp": 1764222244463
+  },
+  {
+    "level": "info",
+    "message": "Feed removed: fee1ed53-3621-4068-a186-60def0d7f5c8",
+    "source": "daemon",
+    "id": "75ec57e0-b27f-4a63-965f-beaf80de482c",
+    "timestamp": 1764222242982
+  },
+  {
+    "level": "error",
+    "message": "Error grabbing Feed (downmagaz.net): Attribute without value\nLine: 21\nColumn: 122\nChar: >",
     "source": "grabber",
-    "id": "2790ab3d-0c1a-4964-9822-7755a0661fd4",
-    "timestamp": 1764219834558
+    "id": "4075dcfd-12b5-4851-8822-483e542c0d38",
+    "timestamp": 1764222183816
   },
   {
     "level": "info",
     "message": "Starting grab job for feed: Feed (downmagaz.net)",
     "source": "grabber",
-    "id": "15202421-19e1-4884-860e-e18c0adfe4d0",
-    "timestamp": 1764219833619
+    "id": "fd5393a3-0054-4f2c-8bba-e6f799bb9f23",
+    "timestamp": 1764222183434
+  },
+  {
+    "level": "info",
+    "message": "New feed added: Feed (downmagaz.net)",
+    "source": "daemon",
+    "id": "c0814ec8-5525-4c43-9d2d-297ce0fca568",
+    "timestamp": 1764222183432
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "e3bccb27-d4b9-4b6f-9660-b802b2af1d32",
+    "timestamp": 1764222138552
   }
 ]
