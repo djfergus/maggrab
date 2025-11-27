@@ -76,6 +76,13 @@ export const api = {
     return res.json();
   },
 
+  // Test JDownloader connection
+  async testJDConnection(): Promise<{ success: boolean; error?: string; deviceName?: string; packageCount?: number }> {
+    const res = await fetch(`${API_BASE}/jd-test`, { method: "POST" });
+    if (!res.ok) throw new Error("Failed to test JD connection");
+    return res.json();
+  },
+
   async updateSettings(updates: Partial<Settings>): Promise<Settings> {
     const res = await fetch(`${API_BASE}/settings`, {
       method: "PUT",

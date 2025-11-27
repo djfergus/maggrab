@@ -1,6 +1,69 @@
 [
   {
     "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "df484041-14f9-4d6c-a117-508c72fbbac1",
+    "timestamp": 1764218450223
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "f5ce7429-194b-4b80-81d8-ae80dd7d489f",
+    "timestamp": 1764218449972
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "24a5e15e-7556-4829-bd68-2487d7dc6bcf",
+    "timestamp": 1764218449941
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "90423a4a-054b-4d7b-9cc1-6e242f944132",
+    "timestamp": 1764218360740
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "c8a25aaf-2a49-4c89-b8d6-3d5a016d3632",
+    "timestamp": 1764218359707
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "bc2f974f-77bd-4c5e-8d30-8b75744a032c",
+    "timestamp": 1764218359664
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "6f308d3e-4016-43c2-8856-9e0138bf7c7f",
+    "timestamp": 1764218283841
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "52ea2cc3-ba96-4561-87bd-47f3ec0074d9",
+    "timestamp": 1764218283615
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "607081b3-decb-4392-b0e5-cedc682340ed",
+    "timestamp": 1764218283583
+  },
+  {
+    "level": "info",
     "message": "Settings updated",
     "source": "daemon",
     "id": "0bf316dc-faa7-45d3-9f83-fab01228e0de",
@@ -635,68 +698,5 @@
     "source": "jdownloader",
     "id": "a2ab545d-8c05-42b5-ba9b-a4fabb99afa5",
     "timestamp": 1764216149174
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Ambition - 11/12 2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "b5e85bb0-d136-456f-9108-d05a7760c1b2",
-    "timestamp": 1764216149172
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "aa4594a9-98af-4b86-8fc1-84ae416f1547",
-    "timestamp": 1764216149015
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: The European Business Review - 11/12 2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "ff4f2ff6-45f6-4f5b-9693-bbdea49118bd",
-    "timestamp": 1764216149014
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "9b4214c9-0f53-4da5-a72d-d3550d3ed296",
-    "timestamp": 1764216148844
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Newsmax - 12.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "378222be-f0d9-4b36-9344-4595599a9de4",
-    "timestamp": 1764216148842
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "c4eb4b28-7b49-4586-8285-1e3ea5374876",
-    "timestamp": 1764216148681
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Business Traveller IN - 10.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "69239edc-f66d-4e7d-9ec0-07d75e947ac0",
-    "timestamp": 1764216148679
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "c6ee93bc-92bc-4259-abf0-522399290e98",
-    "timestamp": 1764216148503
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Business Traveller IN - 11.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "afd0d067-1316-403d-9509-b2e373010468",
-    "timestamp": 1764216148486
   }
 ]

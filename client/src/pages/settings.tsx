@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Server, Trash2, RotateCcw, CheckCircle2, XCircle, ChevronDown, Info } from "lucide-react";
+import { Save, Server, Trash2, RotateCcw, CheckCircle2, XCircle, ChevronDown, Info, Zap, Loader2, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -18,6 +18,8 @@ export default function Settings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showSecurityInfo, setShowSecurityInfo] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; error?: string; deviceName?: string; packageCount?: number } | null>(null);
+  const [isTesting, setIsTesting] = useState(false);
 
   const { data: settings } = useQuery({
     queryKey: ["settings"],
@@ -81,6 +83,20 @@ export default function Settings() {
     updateSettingsMutation.mutate(formData);
   };
 
+  const handleTestConnection = async () => {
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      const result = await api.testJDConnection();
+      setTestResult(result);
+      queryClient.invalidateQueries({ queryKey: ["jdStatus"] });
+    } catch (error: any) {
+      setTestResult({ success: false, error: error.message });
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-4">
       <div className="mb-4">
@@ -100,7 +116,7 @@ export default function Settings() {
               jdStatus.connected ? (
                 <>
                   <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="font-medium text-green-500 text-sm">Connected</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {jdStatus.email}
@@ -111,7 +127,7 @@ export default function Settings() {
               ) : (
                 <>
                   <CheckCircle2 className="h-4 w-4 text-cyan-500 shrink-0" />
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="font-medium text-cyan-500 text-sm">Configured</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {jdStatus.email} • Will connect on next grab
@@ -122,7 +138,7 @@ export default function Settings() {
             ) : (
               <>
                 <XCircle className="h-4 w-4 text-yellow-500 shrink-0" />
-                <div>
+                <div className="flex-1">
                   <p className="font-medium text-yellow-500 text-sm">Not Configured</p>
                   <p className="text-xs text-muted-foreground">
                     Add credentials in Replit Secrets
@@ -130,7 +146,47 @@ export default function Settings() {
                 </div>
               </>
             )}
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-none h-7 text-xs"
+              onClick={handleTestConnection}
+              disabled={!jdStatus?.configured || isTesting}
+              data-testid="button-test-jd"
+            >
+              {isTesting ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Zap className="h-3 w-3 mr-1" />
+              )}
+              Test
+            </Button>
           </div>
+
+          {testResult && (
+            <div className={`p-3 border text-xs ${testResult.success ? 'border-green-500/30 bg-green-500/10' : 'border-red-500/30 bg-red-500/10'}`}>
+              {testResult.success ? (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                    <span className="font-medium text-green-500">Connection Successful</span>
+                  </div>
+                  <div className="text-muted-foreground pl-5 space-y-0.5">
+                    <p>Device: <span className="text-primary font-mono">{testResult.deviceName}</span></p>
+                    <p className="flex items-center gap-1">
+                      <Package className="h-3 w-3" />
+                      Packages: <span className="text-foreground font-mono">{testResult.packageCount}</span>
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <XCircle className="h-3.5 w-3.5 text-red-500" />
+                  <span className="text-red-500">{testResult.error}</span>
+                </div>
+              )}
+            </div>
+          )}
 
           <Collapsible open={showSecurityInfo} onOpenChange={setShowSecurityInfo}>
             <CollapsibleTrigger className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full">

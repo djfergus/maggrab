@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { scraper, getJDConnectionStatus } from "./scraper";
+import { scraper, getJDConnectionStatus, testJDConnection } from "./scraper";
 import { insertFeedSchema, insertLogSchema, settingsSchema } from "@shared/schema";
 import { log } from "./index";
 
@@ -93,6 +93,12 @@ export async function registerRoutes(
   app.get("/api/jd-status", async (_req, res) => {
     const status = getJDConnectionStatus();
     res.json(status);
+  });
+
+  // Test JDownloader connection
+  app.post("/api/jd-test", async (_req, res) => {
+    const result = await testJDConnection();
+    res.json(result);
   });
 
   app.put("/api/settings", async (req, res) => {

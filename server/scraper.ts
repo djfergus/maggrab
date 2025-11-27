@@ -28,6 +28,77 @@ export function getJDConnectionStatus() {
   };
 }
 
+// Test JDownloader connection and get package count
+export async function testJDConnection(): Promise<{
+  success: boolean;
+  error?: string;
+  deviceName?: string;
+  packageCount?: number;
+}> {
+  const email = process.env.MYJD_EMAIL || "";
+  const password = process.env.MYJD_PASSWORD || "";
+  const configuredDevice = process.env.MYJD_DEVICE || "";
+
+  if (!email || !password) {
+    return { success: false, error: "MyJDownloader credentials not configured" };
+  }
+
+  try {
+    // Connect to MyJDownloader cloud service
+    await jdownloaderAPI.connect(email, password);
+    
+    // Get available devices
+    const devices = await jdownloaderAPI.listDevices();
+    
+    if (!devices || devices.length === 0) {
+      jdConnected = false;
+      jdDeviceId = null;
+      jdDeviceName = null;
+      return { success: false, error: "No JDownloader devices found. Make sure JDownloader is running and connected to MyJDownloader." };
+    }
+
+    // Find the target device
+    let targetDevice = devices[0];
+    if (configuredDevice) {
+      const found = devices.find((d: any) => 
+        d.name?.toLowerCase() === configuredDevice.toLowerCase() ||
+        d.id === configuredDevice
+      );
+      if (found) targetDevice = found;
+    }
+
+    // CRITICAL: Must connect to the specific device before any operations
+    await jdownloaderAPI.connectDevice(targetDevice.id);
+
+    // Update connection state only after successful device connection
+    jdConnected = true;
+    jdDeviceId = targetDevice.id;
+    jdDeviceName = targetDevice.name;
+
+    // Get package count from download list
+    let packageCount = 0;
+    try {
+      const packages = await jdownloaderAPI.queryPackages(targetDevice.id);
+      packageCount = Array.isArray(packages) ? packages.length : 0;
+    } catch {
+      // queryPackages may fail if no packages exist - that's ok, return 0
+      packageCount = 0;
+    }
+
+    return {
+      success: true,
+      deviceName: targetDevice.name,
+      packageCount,
+    };
+  } catch (error: any) {
+    jdConnected = false;
+    jdDeviceId = null;
+    jdDeviceName = null;
+    const errorMessage = error.message || "Connection failed";
+    return { success: false, error: errorMessage };
+  }
+}
+
 export class Scraper {
   private intervals: Map<string, NodeJS.Timeout> = new Map();
   private isRunning = false;
