@@ -3,6 +3,20 @@
     "level": "success",
     "message": "Found 30 items in Feed (downmagaz.net)",
     "source": "scraper",
+    "id": "74df9c47-dd2b-4cb9-905c-e88f85d66a08",
+    "timestamp": 1764212347281
+  },
+  {
+    "level": "info",
+    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
+    "source": "scraper",
+    "id": "f01b7a9f-be88-47fc-a045-c085f0e572fd",
+    "timestamp": 1764212347075
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "scraper",
     "id": "76c5e51e-b8f8-498b-b72e-6f48956e30b5",
     "timestamp": 1764212231016
   },
