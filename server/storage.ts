@@ -1,4 +1,4 @@
-import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings } from "@shared/schema";
+import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings, type ExtractedItem, type InsertExtractedItem } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
@@ -9,6 +9,7 @@ const LOGS_FILE = path.join(DATA_DIR, "logs.json");
 const STATS_FILE = path.join(DATA_DIR, "stats.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 const PROCESSED_FILE = path.join(DATA_DIR, "processed.json");
+const EXTRACTED_FILE = path.join(DATA_DIR, "extracted.json");
 
 export interface IStorage {
   // Feeds
@@ -33,6 +34,10 @@ export interface IStorage {
   // Processed URLs (deduplication)
   isProcessed(url: string): Promise<boolean>;
   markProcessed(url: string): Promise<void>;
+  
+  // Extracted items
+  getExtractedItems(limit?: number): Promise<ExtractedItem[]>;
+  addExtractedItem(item: InsertExtractedItem): Promise<ExtractedItem>;
   
   // Data management
   clearEntries(): Promise<void>;
@@ -172,11 +177,30 @@ export class FileStorage implements IStorage {
     }
   }
 
+  async getExtractedItems(limit = 500): Promise<ExtractedItem[]> {
+    const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+    return items.slice(0, limit);
+  }
+
+  async addExtractedItem(insertItem: InsertExtractedItem): Promise<ExtractedItem> {
+    const items = await this.getExtractedItems(1000);
+    const item: ExtractedItem = {
+      ...insertItem,
+      id: randomUUID(),
+      timestamp: Date.now(),
+    };
+    items.unshift(item);
+    // Keep only the last 500 items
+    await this.writeJSON(EXTRACTED_FILE, items.slice(0, 500));
+    return item;
+  }
+
   async clearEntries(): Promise<void> {
-    // Clear logs, stats, and processed URLs but keep feeds and settings
+    // Clear logs, stats, processed URLs, and extracted items but keep feeds and settings
     await this.writeJSON(LOGS_FILE, []);
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
     await this.writeJSON(PROCESSED_FILE, []);
+    await this.writeJSON(EXTRACTED_FILE, []);
   }
 
   async resetAll(): Promise<void> {
@@ -191,6 +215,7 @@ export class FileStorage implements IStorage {
       checkInterval: 15,
     });
     await this.writeJSON(PROCESSED_FILE, []);
+    await this.writeJSON(EXTRACTED_FILE, []);
   }
 }
 

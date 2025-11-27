@@ -46,3 +46,18 @@ export const settingsSchema = z.object({
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
+
+export const extractedItemSchema = z.object({
+  id: z.string(),
+  feedId: z.string(),
+  articleTitle: z.string(),
+  articleUrl: z.string(),
+  downloadUrl: z.string(),
+  host: z.string(),
+  timestamp: z.number(),
+  submitted: z.boolean().default(false),
+});
+
+export const insertExtractedItemSchema = extractedItemSchema.omit({ id: true, timestamp: true });
+export type InsertExtractedItem = z.infer<typeof insertExtractedItemSchema>;
+export type ExtractedItem = z.infer<typeof extractedItemSchema>;
