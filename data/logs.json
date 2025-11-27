@@ -3,6 +3,27 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "a88f0573-1a16-4d53-ba0e-a340024374d3",
+    "timestamp": 1764218012045
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "0639767f-e96a-4028-a628-8a85711b6778",
+    "timestamp": 1764218011821
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "8ca6cf32-a014-4ce7-ad63-1130e124b207",
+    "timestamp": 1764218011794
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "d5cc598f-90ea-4bde-8e32-999f82b5bf73",
     "timestamp": 1764217804578
   },
@@ -677,26 +698,5 @@
     "source": "jdownloader",
     "id": "cf1cdc83-3d20-4542-9f14-50779b0e2b7d",
     "timestamp": 1764216148120
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Business Today - 12.7.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "3b8f560a-3063-4c5f-968d-d023efe8b010",
-    "timestamp": 1764216148118
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "c9b0b16d-d07f-44f0-ba99-1e1e6e6922c9",
-    "timestamp": 1764216147939
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Technology - 12.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "cecb5a1e-68b9-4be6-a249-d50fd1f44909",
-    "timestamp": 1764216147935
   }
 ]
