@@ -3,6 +3,48 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "08719ee0-c0eb-4564-a564-3e5991e3539b",
+    "timestamp": 1764214514146
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "68011114-ef19-4b6c-b35f-9aba96e74ab3",
+    "timestamp": 1764214513676
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "0d7abc8a-8aae-4288-a82a-b28e4f0ba901",
+    "timestamp": 1764214513652
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "80bc384f-6a33-47ed-9533-eb4450df5243",
+    "timestamp": 1764214508917
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "553c0b23-62d0-4728-bd3c-643ee9c21fab",
+    "timestamp": 1764214508109
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "0f5fa2e6-616a-4d28-93d4-53f306b57bb4",
+    "timestamp": 1764214508086
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "d481b8ce-0499-4825-92c8-1b95bcccfbde",
     "timestamp": 1764214400352
   },
@@ -656,47 +698,5 @@
     "source": "jdownloader",
     "id": "a2d4a90c-d602-4083-9045-d9c386372b66",
     "timestamp": 1764213989036
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "61c6132e-189e-4d93-ad9c-2c112cec8b59",
-    "timestamp": 1764213989035
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Technology - 12.2025",
-    "source": "grabber",
-    "id": "c8121448-c005-4adf-a9ac-7ae7d9450001",
-    "timestamp": 1764213989033
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "6917d2ab-537c-46c1-b9b2-4f31983c9b7b",
-    "timestamp": 1764213988836
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "25fe1dc5-11a2-4e37-ab3b-093cde559f7b",
-    "timestamp": 1764213988835
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: AI Magazine - 12.2025",
-    "source": "grabber",
-    "id": "c78567d8-ea48-47d4-9069-15902b6c437a",
-    "timestamp": 1764213988834
-  },
-  {
-    "level": "success",
-    "message": "Found 30 new items in Feed (downmagaz.net) (0 already processed)",
-    "source": "grabber",
-    "id": "19596a0e-3a8a-495b-81e0-97b8429ec5de",
-    "timestamp": 1764213988628
   }
 ]

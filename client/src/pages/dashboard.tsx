@@ -1,12 +1,14 @@
-import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw } from "lucide-react";
+import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import type { ExtractedItem } from "@shared/schema";
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -14,6 +16,7 @@ export default function Dashboard() {
   const [newFeedUrl, setNewFeedUrl] = useState("");
   const [newFeedName, setNewFeedName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
 
   const { data: feeds = [] } = useQuery({
     queryKey: ["feeds"],
@@ -25,6 +28,13 @@ export default function Dashboard() {
     queryKey: ["stats"],
     queryFn: api.getStats,
     refetchInterval: 5000,
+  });
+
+  const { data: extractedItems = [] } = useQuery({
+    queryKey: ["extracted"],
+    queryFn: () => api.getExtracted(100),
+    refetchInterval: 10000,
+    enabled: isLinksModalOpen,
   });
 
   const createFeedMutation = useMutation({
@@ -158,6 +168,8 @@ export default function Dashboard() {
           value={(stats?.linksFound || 0).toLocaleString()} 
           icon={LinkIcon} 
           color="text-purple-400"
+          onClick={() => setIsLinksModalOpen(true)}
+          clickable
         />
         <StatCard 
           label="Sent to JD2" 
@@ -166,6 +178,31 @@ export default function Dashboard() {
           color="text-emerald-400"
         />
       </div>
+
+      {/* Extracted Links Modal */}
+      <Dialog open={isLinksModalOpen} onOpenChange={setIsLinksModalOpen}>
+        <DialogContent className="bg-card border-border rounded-none max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <LinkIcon className="h-5 w-5 text-purple-400" />
+              Extracted Links
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[60vh] pr-4">
+            {extractedItems.length === 0 ? (
+              <div className="text-center text-muted-foreground py-12">
+                No links extracted yet. Add a feed and wait for the grabber to process articles.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {extractedItems.map((item) => (
+                  <ExtractedItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
 
       {/* System Status for Single Container Context */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -283,9 +320,13 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ label, value, icon: Icon, color = "text-primary" }: any) {
+function StatCard({ label, value, icon: Icon, color = "text-primary", onClick, clickable }: any) {
   return (
-    <div className="bg-card/50 border border-border p-6 relative overflow-hidden group">
+    <div 
+      className={`bg-card/50 border border-border p-6 relative overflow-hidden group ${clickable ? 'cursor-pointer hover:border-primary/50 hover:bg-card/70 transition-all' : ''}`}
+      onClick={onClick}
+      data-testid={`stat-${label.toLowerCase().replace(/\s+/g, '-')}`}
+    >
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
         <Icon className="h-16 w-16" />
       </div>
@@ -293,8 +334,54 @@ function StatCard({ label, value, icon: Icon, color = "text-primary" }: any) {
         <div className="flex items-center gap-2 mb-2">
           <Icon className={`h-4 w-4 ${color}`} />
           <span className="text-xs font-mono uppercase text-muted-foreground tracking-wider">{label}</span>
+          {clickable && <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />}
         </div>
         <div className="text-3xl font-bold font-display text-white tracking-tight">{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function ExtractedItemCard({ item }: { item: ExtractedItem }) {
+  const timeAgo = (timestamp: number) => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  };
+
+  return (
+    <div className="bg-secondary/30 border border-border p-4 space-y-2" data-testid={`extracted-item-${item.id}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-medium text-white truncate" title={item.articleTitle}>
+            {item.articleTitle}
+          </h4>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] font-mono px-2 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase">
+              {item.host}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {timeAgo(item.timestamp)}
+            </span>
+          </div>
+        </div>
+        <a
+          href={item.downloadUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-shrink-0 p-2 hover:bg-primary/20 hover:text-primary transition-colors"
+          title="Open download link"
+        >
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      </div>
+      <div className="font-mono text-xs text-muted-foreground truncate" title={item.downloadUrl}>
+        {item.downloadUrl}
       </div>
     </div>
   );

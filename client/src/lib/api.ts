@@ -1,4 +1,4 @@
-import type { Feed, ScrapeLog, Stats, Settings } from "@shared/schema";
+import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -45,6 +45,13 @@ export const api = {
   async getStats(): Promise<Stats> {
     const res = await fetch(`${API_BASE}/stats`);
     if (!res.ok) throw new Error("Failed to fetch stats");
+    return res.json();
+  },
+
+  // Extracted items
+  async getExtracted(limit = 100): Promise<ExtractedItem[]> {
+    const res = await fetch(`${API_BASE}/extracted?limit=${limit}`);
+    if (!res.ok) throw new Error("Failed to fetch extracted items");
     return res.json();
   },
 
