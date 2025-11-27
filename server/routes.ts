@@ -76,6 +76,13 @@ export async function registerRoutes(
     res.json(items);
   });
 
+  // Grabbed items (all RSS items processed)
+  app.get("/api/grabbed", async (req, res) => {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+    const items = await storage.getGrabbedItems(limit);
+    res.json(items);
+  });
+
   // Settings
   app.get("/api/settings", async (_req, res) => {
     const settings = await storage.getSettings();

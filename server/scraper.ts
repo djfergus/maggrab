@@ -135,10 +135,21 @@ export class Scraper {
       for (const item of newItems.slice(0, 10)) {
         if (item.link) {
           try {
+            const articleTitle = item.title || item.link;
             const downloadLinks = await this.findDownloadLinks(item.link);
-            if (downloadLinks.length > 0) {
-              const articleTitle = item.title || item.link;
-              
+            const hasDownload = downloadLinks.length > 0;
+            
+            // Store every grabbed item from the RSS feed
+            await storage.addGrabbedItem({
+              feedId,
+              feedName: feed.name,
+              title: articleTitle,
+              link: item.link,
+              pubDate: item.pubDate || null,
+              hasDownload,
+            });
+            
+            if (hasDownload) {
               // Prioritize novafile links, then nfile
               const preferredLink = downloadLinks.find(l => l.host.includes('novafile'))
                 || downloadLinks.find(l => l.host.includes('nfile'))
