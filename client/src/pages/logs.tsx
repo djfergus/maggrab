@@ -1,10 +1,16 @@
-import { useStore } from "@/lib/store";
 import { useEffect, useRef } from "react";
-import { Terminal, Download, Globe, Check, AlertTriangle, Info } from "lucide-react";
+import { Terminal, Download, Globe, AlertTriangle, Info } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export default function Logs() {
-  const { logs } = useStore();
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { data: logs = [] } = useQuery({
+    queryKey: ["logs"],
+    queryFn: () => api.getLogs(100),
+    refetchInterval: 2000,
+  });
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -27,7 +33,7 @@ export default function Logs() {
       </div>
 
       <div className="flex-1 p-6 overflow-hidden">
-        <div className="h-full bg-black border border-border font-mono text-sm overflow-auto p-4 shadow-inner custom-scrollbar">
+        <div className="h-full bg-black border border-border font-mono text-sm overflow-auto p-4 shadow-inner">
           {logs.length === 0 && (
             <div className="text-muted-foreground italic opacity-50 text-center mt-20">
               Waiting for daemon output...
@@ -35,7 +41,7 @@ export default function Logs() {
           )}
           
           {logs.map((log) => (
-            <div key={log.id} className="flex gap-4 mb-2 hover:bg-white/5 p-1 rounded-sm transition-colors">
+            <div key={log.id} className="flex gap-4 mb-2 hover:bg-white/5 p-1 rounded-sm transition-colors" data-testid={`log-${log.id}`}>
               <span className="text-muted-foreground min-w-[160px]">
                 {new Date(log.timestamp).toISOString().replace('T', ' ').substr(0, 19)}
               </span>

@@ -1,25 +1,48 @@
-import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Save, ShieldAlert, Server, HardDrive } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export default function Settings() {
-  const { settings, updateSettings } = useStore();
   const { toast } = useToast();
-  const [formData, setFormData] = useState(settings);
+  const queryClient = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ["settings"],
+    queryFn: api.getSettings,
+  });
+
+  const [formData, setFormData] = useState(settings || {
+    jdUrl: "",
+    jdUser: "",
+    jdDevice: "",
+    checkInterval: 15,
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: api.updateSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings"] });
+      toast({
+        title: "Configuration Saved",
+        description: "Daemon will reload with new settings automatically.",
+      });
+    },
+  });
 
   const handleSave = () => {
-    updateSettings(formData);
-    toast({
-      title: "Configuration Saved",
-      description: "Daemon will reload with new settings automatically.",
-    });
+    updateSettingsMutation.mutate(formData);
   };
+
+  // Update form data when settings load
+  if (settings && formData.jdUrl === "" && settings.jdUrl !== "") {
+    setFormData(settings);
+  }
 
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
@@ -46,6 +69,7 @@ export default function Settings() {
               value={formData.jdUrl}
               onChange={(e) => setFormData({ ...formData, jdUrl: e.target.value })}
               className="bg-background/50 rounded-none border-input font-mono"
+              data-testid="input-jd-url"
             />
           </div>
           
@@ -57,6 +81,7 @@ export default function Settings() {
                 value={formData.jdUser}
                 onChange={(e) => setFormData({ ...formData, jdUser: e.target.value })}
                 className="bg-background/50 rounded-none border-input"
+                data-testid="input-jd-user"
               />
             </div>
             <div className="grid gap-2">
@@ -66,6 +91,7 @@ export default function Settings() {
                 value={formData.jdDevice}
                 onChange={(e) => setFormData({ ...formData, jdDevice: e.target.value })}
                 className="bg-background/50 rounded-none border-input"
+                data-testid="input-jd-device"
               />
             </div>
           </div>
@@ -104,7 +130,7 @@ export default function Settings() {
               className="bg-secondary/30 rounded-none border-input font-mono text-muted-foreground cursor-not-allowed"
             />
             <p className="text-[10px] text-muted-foreground">
-              Using lightweight SQLite/JSON storage. No external database container required.
+              Using lightweight JSON file storage. No external database container required.
             </p>
           </div>
         </CardContent>
@@ -128,6 +154,7 @@ export default function Settings() {
                 value={formData.checkInterval}
                 onChange={(e) => setFormData({ ...formData, checkInterval: parseInt(e.target.value) || 15 })}
                 className="bg-background/50 rounded-none border-input w-32 font-mono"
+                data-testid="input-check-interval"
               />
               <span className="text-sm text-muted-foreground">
                 Recommended: 15-60 minutes to avoid rate limiting.
@@ -138,9 +165,14 @@ export default function Settings() {
       </Card>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none px-8">
+        <Button 
+          onClick={handleSave} 
+          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none px-8"
+          disabled={updateSettingsMutation.isPending}
+          data-testid="button-save-settings"
+        >
           <Save className="mr-2 h-4 w-4" />
-          Save Configuration
+          {updateSettingsMutation.isPending ? "Saving..." : "Save Configuration"}
         </Button>
       </div>
     </div>

@@ -1,34 +1,69 @@
-import { useStore } from "@/lib/store";
-import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus } from "lucide-react";
+import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export default function Dashboard() {
-  const { feeds, stats, addFeed } = useStore();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [newFeedUrl, setNewFeedUrl] = useState("");
   const [newFeedName, setNewFeedName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data: feeds = [] } = useQuery({
+    queryKey: ["feeds"],
+    queryFn: api.getFeeds,
+    refetchInterval: 5000,
+  });
+
+  const { data: stats } = useQuery({
+    queryKey: ["stats"],
+    queryFn: api.getStats,
+    refetchInterval: 5000,
+  });
+
+  const createFeedMutation = useMutation({
+    mutationFn: ({ url, name }: { url: string; name: string }) => api.createFeed(url, name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      setIsOpen(false);
+      setNewFeedUrl("");
+      setNewFeedName("");
+      toast({
+        title: "Feed Added",
+        description: "Successfully added to the scraper queue.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteFeedMutation = useMutation({
+    mutationFn: api.deleteFeed,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      toast({
+        title: "Feed Removed",
+        description: "Feed successfully deleted.",
+      });
+    },
+  });
+
   const handleAddFeed = () => {
     if (!newFeedUrl) return;
     
-    // Auto-generate name if not provided
     const finalName = newFeedName.trim() || `Feed (${new URL(newFeedUrl).hostname})`;
-    
-    addFeed(newFeedUrl, finalName);
-    setIsOpen(false);
-    setNewFeedUrl("");
-    setNewFeedName("");
-    toast({
-      title: "Feed Added",
-      description: `Successfully added ${finalName} to the scraper queue.`,
-    });
+    createFeedMutation.mutate({ url: newFeedUrl, name: finalName });
   };
 
   return (
@@ -41,7 +76,7 @@ export default function Dashboard() {
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none border border-primary/50 font-medium px-6">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none border border-primary/50 font-medium px-6" data-testid="button-add-feed">
               <Plus className="mr-2 h-4 w-4" />
               Add New Feed
             </Button>
@@ -59,6 +94,7 @@ export default function Dashboard() {
                   value={newFeedUrl}
                   onChange={(e) => setNewFeedUrl(e.target.value)}
                   className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                  data-testid="input-feed-url"
                 />
               </div>
               <div className="space-y-2">
@@ -69,10 +105,16 @@ export default function Dashboard() {
                   value={newFeedName}
                   onChange={(e) => setNewFeedName(e.target.value)}
                   className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                  data-testid="input-feed-name"
                 />
               </div>
-              <Button onClick={handleAddFeed} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none mt-4">
-                Add Feed
+              <Button 
+                onClick={handleAddFeed} 
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none mt-4"
+                disabled={createFeedMutation.isPending}
+                data-testid="button-submit-feed"
+              >
+                {createFeedMutation.isPending ? "Adding..." : "Add Feed"}
               </Button>
             </div>
           </DialogContent>
@@ -85,23 +127,22 @@ export default function Dashboard() {
           label="Total Feeds" 
           value={feeds.length.toString()} 
           icon={Database} 
-          trend="+2 this week" 
         />
         <StatCard 
           label="Items Scraped" 
-          value={stats.totalScraped.toLocaleString()} 
+          value={(stats?.totalScraped || 0).toLocaleString()} 
           icon={Activity} 
           color="text-blue-400"
         />
         <StatCard 
           label="Links Extracted" 
-          value={stats.linksFound.toLocaleString()} 
+          value={(stats?.linksFound || 0).toLocaleString()} 
           icon={LinkIcon} 
           color="text-purple-400"
         />
         <StatCard 
           label="Sent to JD2" 
-          value={stats.submitted.toLocaleString()} 
+          value={(stats?.submitted || 0).toLocaleString()} 
           icon={HardDrive} 
           color="text-emerald-400"
         />
@@ -116,7 +157,7 @@ export default function Dashboard() {
              </div>
              <div>
                <div className="text-xs font-mono text-muted-foreground uppercase">Storage Mode</div>
-               <div className="text-sm font-bold text-white">Local SQLite</div>
+               <div className="text-sm font-bold text-white">Local JSON</div>
              </div>
           </div>
           <div className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 border border-emerald-500/20">
@@ -164,19 +205,20 @@ export default function Dashboard() {
         <div className="divide-y divide-border">
           <div className="grid grid-cols-12 px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-wider bg-muted/20">
             <div className="col-span-4">Feed Name</div>
-            <div className="col-span-4">URL</div>
+            <div className="col-span-3">URL</div>
             <div className="col-span-2">Last Check</div>
             <div className="col-span-1 text-right">Items</div>
             <div className="col-span-1 text-right">Status</div>
+            <div className="col-span-1 text-right">Actions</div>
           </div>
           
           {feeds.map((feed) => (
-            <div key={feed.id} className="grid grid-cols-12 px-4 py-4 text-sm items-center hover:bg-white/5 transition-colors">
+            <div key={feed.id} className="grid grid-cols-12 px-4 py-4 text-sm items-center hover:bg-white/5 transition-colors" data-testid={`feed-row-${feed.id}`}>
               <div className="col-span-4 font-medium text-white flex items-center gap-2">
                 <div className="h-2 w-2 bg-primary/50 rotate-45" />
                 {feed.name}
               </div>
-              <div className="col-span-4 font-mono text-xs text-muted-foreground truncate pr-4">
+              <div className="col-span-3 font-mono text-xs text-muted-foreground truncate pr-4">
                 {feed.url}
               </div>
               <div className="col-span-2 text-muted-foreground flex items-center gap-2">
@@ -188,6 +230,17 @@ export default function Dashboard() {
               </div>
               <div className="col-span-1 flex justify-end">
                 <StatusBadge status={feed.status} />
+              </div>
+              <div className="col-span-1 flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deleteFeedMutation.mutate(feed.id)}
+                  className="h-8 w-8 p-0 hover:bg-destructive/20 hover:text-destructive"
+                  data-testid={`button-delete-${feed.id}`}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
               </div>
             </div>
           ))}
@@ -203,7 +256,7 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ label, value, icon: Icon, trend, color = "text-primary" }: any) {
+function StatCard({ label, value, icon: Icon, color = "text-primary" }: any) {
   return (
     <div className="bg-card/50 border border-border p-6 relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -215,12 +268,6 @@ function StatCard({ label, value, icon: Icon, trend, color = "text-primary" }: a
           <span className="text-xs font-mono uppercase text-muted-foreground tracking-wider">{label}</span>
         </div>
         <div className="text-3xl font-bold font-display text-white tracking-tight">{value}</div>
-        {trend && (
-          <div className="mt-2 text-xs text-emerald-500 flex items-center gap-1">
-            <ArrowUpRight className="h-3 w-3" />
-            {trend}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -1,0 +1,16 @@
+[
+  {
+    "level": "info",
+    "message": "Daemon started - Magscrape v0.1.0",
+    "source": "daemon",
+    "id": "57f90b2f-7098-4a71-a4ef-7f3cf55e1cfe",
+    "timestamp": 1764211007965
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Magscrape v0.1.0",
+    "source": "daemon",
+    "id": "2a9735e5-30e5-478e-a44e-e022d058842e",
+    "timestamp": 1764210896605
+  }
+]

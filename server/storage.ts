@@ -1,38 +1,152 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings } from "@shared/schema";
 import { randomUUID } from "crypto";
+import fs from "fs/promises";
+import path from "path";
 
-// modify the interface with any CRUD methods
-// you might need
+const DATA_DIR = process.env.DATA_DIR || "./data";
+const FEEDS_FILE = path.join(DATA_DIR, "feeds.json");
+const LOGS_FILE = path.join(DATA_DIR, "logs.json");
+const STATS_FILE = path.join(DATA_DIR, "stats.json");
+const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // Feeds
+  getFeeds(): Promise<Feed[]>;
+  getFeed(id: string): Promise<Feed | undefined>;
+  createFeed(feed: InsertFeed): Promise<Feed>;
+  updateFeed(id: string, updates: Partial<Feed>): Promise<Feed | undefined>;
+  deleteFeed(id: string): Promise<boolean>;
+  
+  // Logs
+  getLogs(limit?: number): Promise<ScrapeLog[]>;
+  addLog(log: InsertLog): Promise<ScrapeLog>;
+  
+  // Stats
+  getStats(): Promise<Stats>;
+  incrementStat(key: keyof Stats, amount?: number): Promise<Stats>;
+  
+  // Settings
+  getSettings(): Promise<Settings>;
+  updateSettings(updates: Partial<Settings>): Promise<Settings>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+export class FileStorage implements IStorage {
+  private initialized = false;
 
-  constructor() {
-    this.users = new Map();
+  private async ensureDataDir() {
+    if (!this.initialized) {
+      try {
+        await fs.mkdir(DATA_DIR, { recursive: true });
+        this.initialized = true;
+      } catch (err) {
+        console.error("Failed to create data directory:", err);
+      }
+    }
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  private async readJSON<T>(file: string, defaultValue: T): Promise<T> {
+    await this.ensureDataDir();
+    try {
+      const data = await fs.readFile(file, "utf-8");
+      return JSON.parse(data);
+    } catch {
+      return defaultValue;
+    }
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  private async writeJSON<T>(file: string, data: T): Promise<void> {
+    await this.ensureDataDir();
+    await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getFeeds(): Promise<Feed[]> {
+    return this.readJSON<Feed[]>(FEEDS_FILE, []);
+  }
+
+  async getFeed(id: string): Promise<Feed | undefined> {
+    const feeds = await this.getFeeds();
+    return feeds.find(f => f.id === id);
+  }
+
+  async createFeed(insertFeed: InsertFeed): Promise<Feed> {
+    const feeds = await this.getFeeds();
+    const feed: Feed = {
+      ...insertFeed,
+      id: randomUUID(),
+      lastChecked: null,
+      status: 'idle',
+      totalFound: 0,
+    };
+    feeds.push(feed);
+    await this.writeJSON(FEEDS_FILE, feeds);
+    return feed;
+  }
+
+  async updateFeed(id: string, updates: Partial<Feed>): Promise<Feed | undefined> {
+    const feeds = await this.getFeeds();
+    const index = feeds.findIndex(f => f.id === id);
+    if (index === -1) return undefined;
+    
+    feeds[index] = { ...feeds[index], ...updates };
+    await this.writeJSON(FEEDS_FILE, feeds);
+    return feeds[index];
+  }
+
+  async deleteFeed(id: string): Promise<boolean> {
+    const feeds = await this.getFeeds();
+    const filtered = feeds.filter(f => f.id !== id);
+    if (filtered.length === feeds.length) return false;
+    await this.writeJSON(FEEDS_FILE, filtered);
+    return true;
+  }
+
+  async getLogs(limit = 100): Promise<ScrapeLog[]> {
+    const logs = await this.readJSON<ScrapeLog[]>(LOGS_FILE, []);
+    return logs.slice(0, limit);
+  }
+
+  async addLog(insertLog: InsertLog): Promise<ScrapeLog> {
+    const logs = await this.getLogs(1000);
+    const log: ScrapeLog = {
+      ...insertLog,
+      id: randomUUID(),
+      timestamp: Date.now(),
+    };
+    logs.unshift(log);
+    await this.writeJSON(LOGS_FILE, logs.slice(0, 100));
+    return log;
+  }
+
+  async getStats(): Promise<Stats> {
+    return this.readJSON<Stats>(STATS_FILE, {
+      totalScraped: 0,
+      linksFound: 0,
+      submitted: 0,
+    });
+  }
+
+  async incrementStat(key: keyof Stats, amount = 1): Promise<Stats> {
+    const stats = await this.getStats();
+    stats[key] += amount;
+    await this.writeJSON(STATS_FILE, stats);
+    return stats;
+  }
+
+  async getSettings(): Promise<Settings> {
+    return this.readJSON<Settings>(SETTINGS_FILE, {
+      jdUrl: "http://localhost:3128",
+      jdUser: "",
+      jdDevice: "",
+      checkInterval: 15,
+    });
+  }
+
+  async updateSettings(updates: Partial<Settings>): Promise<Settings> {
+    const settings = await this.getSettings();
+    const newSettings = { ...settings, ...updates };
+    await this.writeJSON(SETTINGS_FILE, newSettings);
+    return newSettings;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new FileStorage();
