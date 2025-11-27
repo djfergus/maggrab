@@ -103,6 +103,54 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* System Status for Single Container Context */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-card/30 border border-border p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+             <div className="h-8 w-8 bg-secondary border border-border flex items-center justify-center">
+               <Database className="h-4 w-4 text-muted-foreground" />
+             </div>
+             <div>
+               <div className="text-xs font-mono text-muted-foreground uppercase">Storage Mode</div>
+               <div className="text-sm font-bold text-white">Local SQLite</div>
+             </div>
+          </div>
+          <div className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 border border-emerald-500/20">
+            CONTAINER OK
+          </div>
+        </div>
+        
+        <div className="bg-card/30 border border-border p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+             <div className="h-8 w-8 bg-secondary border border-border flex items-center justify-center">
+               <HardDrive className="h-4 w-4 text-muted-foreground" />
+             </div>
+             <div>
+               <div className="text-xs font-mono text-muted-foreground uppercase">Disk Usage</div>
+               <div className="text-sm font-bold text-white">12.4 MB / 512 MB</div>
+             </div>
+          </div>
+          <div className="h-1 w-16 bg-secondary overflow-hidden">
+            <div className="h-full bg-primary w-[5%]"></div>
+          </div>
+        </div>
+
+        <div className="bg-card/30 border border-border p-4 flex items-center justify-between">
+           <div className="flex items-center gap-3">
+             <div className="h-8 w-8 bg-secondary border border-border flex items-center justify-center">
+               <Activity className="h-4 w-4 text-muted-foreground" />
+             </div>
+             <div>
+               <div className="text-xs font-mono text-muted-foreground uppercase">Memory</div>
+               <div className="text-sm font-bold text-white">45 MB (Node.js)</div>
+             </div>
+          </div>
+           <div className="h-1 w-16 bg-secondary overflow-hidden">
+            <div className="h-full bg-blue-500 w-[15%]"></div>
+          </div>
+        </div>
+      </div>
+
       {/* Active Feeds Table */}
       <div className="border border-border bg-card/30 backdrop-blur-sm">
         <div className="p-4 border-b border-border flex justify-between items-center">

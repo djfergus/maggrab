@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Save, ShieldAlert, Server } from "lucide-react";
+import { Save, ShieldAlert, Server, HardDrive } from "lucide-react";
 import { useState } from "react";
 
 export default function Settings() {
@@ -80,6 +80,32 @@ export default function Settings() {
                 This UI is for demonstration purposes.
               </p>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-card/50 border-border rounded-none">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <HardDrive className="h-5 w-5 text-primary" />
+            <CardTitle className="font-display">Storage Configuration</CardTitle>
+          </div>
+          <CardDescription>
+            Local storage settings for the single-container deployment.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid gap-2">
+            <Label htmlFor="dbPath">Database Path</Label>
+            <Input 
+              id="dbPath" 
+              value="/data/magscrape.db"
+              disabled
+              className="bg-secondary/30 rounded-none border-input font-mono text-muted-foreground cursor-not-allowed"
+            />
+            <p className="text-[10px] text-muted-foreground">
+              Using lightweight SQLite/JSON storage. No external database container required.
+            </p>
           </div>
         </CardContent>
       </Card>
