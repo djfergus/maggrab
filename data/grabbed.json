@@ -2,6 +2,106 @@
   {
     "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
     "feedName": "Feed (downmagaz.net)",
+    "title": "India Legal - 11.24.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453315-india-legal-11242025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:17:45 +0000",
+    "hasDownload": true,
+    "id": "68bddb2a-10f1-4885-8919-dff67d582c01",
+    "timestamp": 1764216497129
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Iziar - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453319-iziar-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:21:14 +0000",
+    "hasDownload": true,
+    "id": "c6eb91e9-0ce0-420d-9f28-2a45ed14e226",
+    "timestamp": 1764216496961
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "ICT Connect - 10.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453320-ict-connect-102025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:22:22 +0000",
+    "hasDownload": true,
+    "id": "766c2e75-0b43-495f-bc8a-21bb2ce4a4fa",
+    "timestamp": 1764216496783
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Barron's - 11.24.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453299-barrons-11242025.html",
+    "pubDate": "Sat, 22 Nov 2025 16:33:40 +0000",
+    "hasDownload": true,
+    "id": "d4863498-bd35-469c-bf7e-b377ee7264db",
+    "timestamp": 1764216495428
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "The Economist USA - 11.22.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453244-the-economist-usa-11222025.html",
+    "pubDate": "Sat, 22 Nov 2025 16:33:43 +0000",
+    "hasDownload": true,
+    "id": "8278deb1-4802-4f6c-a9ee-149d90fdc301",
+    "timestamp": 1764216495191
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "New Zealand Listener - 11.29.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453383-new-zealand-listener-11292025.html",
+    "pubDate": "Mon, 24 Nov 2025 00:21:56 +0000",
+    "hasDownload": true,
+    "id": "0ff5e95a-a8d1-4706-aa2c-e0e092f462fc",
+    "timestamp": 1764216494965
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Cityscape Global - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453407-cityscape-global-112025.html",
+    "pubDate": "Mon, 24 Nov 2025 02:15:06 +0000",
+    "hasDownload": true,
+    "id": "e6dbb5c7-321d-4174-b1f9-89ae57abc442",
+    "timestamp": 1764216494768
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "International Kirmes & Park Revue - 12.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453440-international-kirmes-park-revue-122025.html",
+    "pubDate": "Mon, 24 Nov 2025 09:33:26 +0000",
+    "hasDownload": true,
+    "id": "37b13226-6f80-42a0-ab88-2990bc1f378f",
+    "timestamp": 1764216494559
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Hobby Farms - 01/02 2026",
+    "link": "https://downmagaz.net/business_magazine_economics/453446-hobby-farms-0102-2026.html",
+    "pubDate": "Mon, 24 Nov 2025 09:43:22 +0000",
+    "hasDownload": true,
+    "id": "d0d42a2c-734b-4f24-8915-36d55ca7d8bc",
+    "timestamp": 1764216494274
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "The Economic Times Wealth - 11.24.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453449-the-economic-times-wealth-11242025.html",
+    "pubDate": "Mon, 24 Nov 2025 10:03:43 +0000",
+    "hasDownload": true,
+    "id": "d26f292c-867c-4e89-98ad-503ac2f7a074",
+    "timestamp": 1764216493898
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
     "title": "Inside Housing - 11.2025",
     "link": "https://downmagaz.net/business_magazine_economics/453450-inside-housing-112025.html",
     "pubDate": "Mon, 24 Nov 2025 10:05:19 +0000",

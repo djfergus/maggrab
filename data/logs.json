@@ -3,6 +3,167 @@
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
+    "id": "7b1d75a1-9f05-4b7a-8d9a-b754dcc7e752",
+    "timestamp": 1764216497131
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: India Legal - 11.24.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "10d8b804-7bc0-4fdb-9077-369a36fda962",
+    "timestamp": 1764216497129
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9f28d7d6-9115-4598-9f45-30809b0d7c09",
+    "timestamp": 1764216496968
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Iziar - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "4b7becf9-45a7-489e-baa2-81d1993d2e8a",
+    "timestamp": 1764216496964
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "55350095-24fd-4426-bfc2-ae3768a1293a",
+    "timestamp": 1764216496787
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: ICT Connect - 10.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "b14e3d02-48a3-4246-940f-74d6502be39d",
+    "timestamp": 1764216496784
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "133234ea-f8cf-4780-98d1-c55bcd99dd38",
+    "timestamp": 1764216496086
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Barron's - 11.24.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "ba659686-0ff9-4933-8ab3-3d67fd5b570f",
+    "timestamp": 1764216495436
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "6163e870-cc46-4a9a-a8a9-a253217c43b2",
+    "timestamp": 1764216495206
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: The Economist USA - 11.22.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "4b6ffa12-1902-4dcc-af7f-c0f7b22025e3",
+    "timestamp": 1764216495201
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "4381afc3-02b6-4daa-90f1-b8a19dd9bbd9",
+    "timestamp": 1764216494970
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: New Zealand Listener - 11.29.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "235cc9d8-8b4b-4159-b5d3-75a4dcc79788",
+    "timestamp": 1764216494966
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e85adc2f-9385-4e83-8293-1ea07ffe8922",
+    "timestamp": 1764216494775
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Cityscape Global - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "4d832785-c02c-486a-ae87-2c8133dcbfbe",
+    "timestamp": 1764216494771
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "c5c4a79e-55d4-4875-bf13-65cb2587293e",
+    "timestamp": 1764216494569
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: International Kirmes & Park Revue - 12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "6847c23d-09ac-4b81-a7f1-d274aca2e327",
+    "timestamp": 1764216494564
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "33c23a96-5228-4d89-a814-6e2a18912c66",
+    "timestamp": 1764216494363
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Hobby Farms - 01/02 2026 - using nfile.cc",
+    "source": "grabber",
+    "id": "b912d38d-7d80-47fc-a037-1f2c4bad68b7",
+    "timestamp": 1764216494315
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "d48efbd2-5566-493d-8a51-80617d50eb3b",
+    "timestamp": 1764216494051
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: The Economic Times Wealth - 11.24.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "8a450282-b349-4428-beb2-52b8129bc1e4",
+    "timestamp": 1764216493899
+  },
+  {
+    "level": "success",
+    "message": "Found 20 new items in Feed (downmagaz.net) (10 already processed)",
+    "source": "grabber",
+    "id": "0a75f2bc-bbae-4615-83da-fa03ffbbefe0",
+    "timestamp": 1764216493571
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "0fd880fb-dd63-43f9-868a-f78273a7d50d",
+    "timestamp": 1764216493348
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "5e83775f-6688-40fa-a4f9-8dab5ee28eff",
+    "timestamp": 1764216493330
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
     "id": "0155c21c-5352-4c3c-a9a0-09980ac8fd7d",
     "timestamp": 1764216149343
   },

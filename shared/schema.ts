@@ -39,8 +39,8 @@ export const statsSchema = z.object({
 export type Stats = z.infer<typeof statsSchema>;
 
 export const settingsSchema = z.object({
-  jdUrl: z.string().default("http://localhost:3128"),
-  jdUser: z.string().default(""),
+  jdEmail: z.string().default(""),
+  jdPassword: z.string().default(""),
   jdDevice: z.string().default(""),
   checkInterval: z.number().default(15),
 });
