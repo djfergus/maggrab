@@ -1,0 +1,101 @@
+/projects/maggrab ❯ docker-compose up -d --build
+WARN[0000] /home/df/projects/maggrab/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Building 6.7s (10/14)                                                       
+ => [internal] load local bake definitions                                 0.0s
+ => => reading from stdin 507B                                             0.0s
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 1.05kB                                     0.0s
+ => [internal] load metadata for docker.io/library/node:20-alpine          3.4s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:1685829407  2.7s
+ => => resolve docker.io/library/node:20-alpine@sha256:16858294071a56ffd4  0.0s
+ => => sha256:6fd15b1a333d8412f468ba380d71274e0059ebf8828 6.50kB / 6.50kB  0.0s
+ => => sha256:2d35ebdb57d9971fea0cac1582aa78935adf8058b2c 3.80MB / 3.80MB  0.6s
+ => => sha256:537c6f956080bc5b44a38de0951224e37050aa22b 42.76MB / 42.76MB  1.6s
+ => => sha256:d31fb19c9d765a3839243f009b51eb48b4d9e104ceb 1.26MB / 1.26MB  0.8s
+ => => sha256:16858294071a56ffd4cce9f17b57136cc39e41507b4 7.67kB / 7.67kB  0.0s
+ => => sha256:bcd88137d802e2482c9df3cdec71e0431857ebbbdba 1.72kB / 1.72kB  0.0s
+ => => extracting sha256:2d35ebdb57d9971fea0cac1582aa78935adf8058b2cc32db  0.1s
+ => => sha256:d4cda882e05ad84150274412fb534631d499c5216411b3d 446B / 446B  1.2s
+ => => extracting sha256:537c6f956080bc5b44a38de0951224e37050aa22b362f4e5  0.8s
+ => => extracting sha256:d31fb19c9d765a3839243f009b51eb48b4d9e104cebc2ec2  0.0s
+ => => extracting sha256:d4cda882e05ad84150274412fb534631d499c5216411b3d1  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 1.61kB                                        0.0s
+ => [builder 2/6] WORKDIR /app                                             0.0s
+ => [builder 3/6] COPY package*.json ./                                    0.0s
+ => ERROR [builder 4/6] RUN npm ci                                         0.4s
+ => ERROR [production 4/6] RUN npm ci --omit=dev                           0.4s
+------
+ > [builder 4/6] RUN npm ci:
+0.400 npm error code EUSAGE
+0.401 npm error
+0.401 npm error The `npm ci` command can only install with an existing package-lock.json or
+0.401 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+0.401 npm error later to generate a package-lock.json file, then try again.
+0.401 npm error
+0.401 npm error Clean install a project
+0.401 npm error
+0.401 npm error Usage:
+0.401 npm error npm ci
+0.401 npm error
+0.401 npm error Options:
+0.401 npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+0.401 npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+0.401 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+0.401 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+0.401 npm error [--no-bin-links] [--no-fund] [--dry-run]
+0.401 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+0.401 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+0.401 npm error
+0.401 npm error aliases: clean-install, ic, install-clean, isntall-clean
+0.401 npm error
+0.401 npm error Run "npm help ci" for more info
+0.401 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-11-27T06_13_15_252Z-debug-0.log
+------
+------
+ > [production 4/6] RUN npm ci --omit=dev:
+0.404 npm error code EUSAGE
+0.404 npm error
+0.404 npm error The `npm ci` command can only install with an existing package-lock.json or
+0.404 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+0.404 npm error later to generate a package-lock.json file, then try again.
+0.404 npm error
+0.404 npm error Clean install a project
+0.404 npm error
+0.404 npm error Usage:
+0.404 npm error npm ci
+0.404 npm error
+0.404 npm error Options:
+0.404 npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+0.404 npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+0.404 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+0.404 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+0.404 npm error [--no-bin-links] [--no-fund] [--dry-run]
+0.404 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+0.404 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+0.404 npm error
+0.404 npm error aliases: clean-install, ic, install-clean, isntall-clean
+0.404 npm error
+0.404 npm error Run "npm help ci" for more info
+0.405 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-11-27T06_13_15_255Z-debug-0.log
+------
+Dockerfile:27
+
+--------------------
+
+  25 |     
+
+  26 |     # Install only production dependencies
+
+  27 | >>> RUN npm ci --omit=dev
+
+  28 |     
+
+  29 |     # Copy built files from builder (includes dist/index.cjs and dist/public/)
+
+--------------------
+
+failed to solve: process "/bin/sh -c npm ci --omit=dev" did not complete successfully: exit code: 1
+

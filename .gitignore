@@ -1,6 +1,37 @@
-node_modules
-dist
-.DS_Store
+# Dependencies
+node_modules/
+
+# Build output
+dist/
 server/public
+
+# Data (persistent storage - should not be in repo)
+data/
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# Replit specific
+.replit
+replit.nix
+.upm/
+.config/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
 vite.config.ts.*
 *.tar.gz
