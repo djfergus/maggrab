@@ -18,3 +18,4 @@ services:
 
 volumes:
   maggrab_data:
+    driver: local
