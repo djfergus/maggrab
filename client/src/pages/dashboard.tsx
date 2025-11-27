@@ -165,7 +165,7 @@ export default function Dashboard() {
         />
         <StatCard 
           label="Items Grabbed" 
-          value={(stats?.totalScraped || 0).toLocaleString()} 
+          value={grabbedItems.length.toLocaleString()} 
           icon={Activity} 
           color="text-blue-400"
           onClick={() => setIsGrabbedModalOpen(true)}
