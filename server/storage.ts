@@ -12,6 +12,18 @@ const PROCESSED_FILE = path.join(DATA_DIR, "processed.json");
 const EXTRACTED_FILE = path.join(DATA_DIR, "extracted.json");
 const GRABBED_FILE = path.join(DATA_DIR, "grabbed.json");
 
+interface ProcessedUrl {
+  url: string;
+  timestamp: number;
+}
+
+interface CleanupResult {
+  logs: number;
+  extracted: number;
+  grabbed: number;
+  processed: number;
+}
+
 export interface IStorage {
   // Feeds
   getFeeds(): Promise<Feed[]>;
@@ -48,6 +60,9 @@ export interface IStorage {
   // Data management
   clearEntries(): Promise<void>;
   resetAll(): Promise<void>;
+  
+  // Cleanup (log rotation)
+  cleanupOldData(maxAgeMs?: number): Promise<CleanupResult>;
 }
 
 export class FileStorage implements IStorage {
@@ -182,14 +197,31 @@ export class FileStorage implements IStorage {
   }
 
   async isProcessed(url: string): Promise<boolean> {
-    const processed = await this.readJSON<string[]>(PROCESSED_FILE, []);
-    return processed.includes(url);
+    const processed = await this.readJSON<ProcessedUrl[] | string[]>(PROCESSED_FILE, []);
+    // Handle both old format (string[]) and new format (ProcessedUrl[])
+    if (processed.length === 0) return false;
+    if (typeof processed[0] === 'string') {
+      return (processed as string[]).includes(url);
+    }
+    return (processed as ProcessedUrl[]).some(p => p.url === url);
   }
 
   async markProcessed(url: string): Promise<void> {
-    const processed = await this.readJSON<string[]>(PROCESSED_FILE, []);
-    if (!processed.includes(url)) {
-      processed.push(url);
+    const raw = await this.readJSON<ProcessedUrl[] | string[]>(PROCESSED_FILE, []);
+    
+    // Migrate old format (string[]) to new format (ProcessedUrl[])
+    let processed: ProcessedUrl[];
+    if (raw.length === 0) {
+      processed = [];
+    } else if (typeof raw[0] === 'string') {
+      // Migrate: assign current timestamp to all old entries
+      processed = (raw as string[]).map(url => ({ url, timestamp: Date.now() }));
+    } else {
+      processed = raw as ProcessedUrl[];
+    }
+    
+    if (!processed.some(p => p.url === url)) {
+      processed.push({ url, timestamp: Date.now() });
       // Keep only the last 1000 URLs to prevent unlimited growth
       const trimmed = processed.slice(-1000);
       await this.writeJSON(PROCESSED_FILE, trimmed);
@@ -260,6 +292,61 @@ export class FileStorage implements IStorage {
     await this.writeJSON(PROCESSED_FILE, []);
     await this.writeJSON(EXTRACTED_FILE, []);
     await this.writeJSON(GRABBED_FILE, []);
+  }
+
+  async cleanupOldData(maxAgeMs: number = 60 * 24 * 60 * 60 * 1000): Promise<CleanupResult> {
+    // Default: 60 days (approximately 2 months)
+    const cutoffTime = Date.now() - maxAgeMs;
+    const result: CleanupResult = { logs: 0, extracted: 0, grabbed: 0, processed: 0 };
+
+    // Clean logs
+    const logs = await this.readJSON<ScrapeLog[]>(LOGS_FILE, []);
+    const freshLogs = logs.filter(log => log.timestamp > cutoffTime);
+    result.logs = logs.length - freshLogs.length;
+    if (result.logs > 0) {
+      await this.writeJSON(LOGS_FILE, freshLogs);
+    }
+
+    // Clean extracted items
+    const extracted = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+    const freshExtracted = extracted.filter(item => item.timestamp > cutoffTime);
+    result.extracted = extracted.length - freshExtracted.length;
+    if (result.extracted > 0) {
+      await this.writeJSON(EXTRACTED_FILE, freshExtracted);
+    }
+
+    // Clean grabbed items
+    const grabbed = await this.readJSON<GrabbedItem[]>(GRABBED_FILE, []);
+    const freshGrabbed = grabbed.filter(item => item.timestamp > cutoffTime);
+    result.grabbed = grabbed.length - freshGrabbed.length;
+    if (result.grabbed > 0) {
+      await this.writeJSON(GRABBED_FILE, freshGrabbed);
+    }
+
+    // Clean processed URLs
+    const rawProcessed = await this.readJSON<ProcessedUrl[] | string[]>(PROCESSED_FILE, []);
+    if (rawProcessed.length > 0) {
+      let processed: ProcessedUrl[];
+      
+      if (typeof rawProcessed[0] === 'string') {
+        // Migrate old format: assign old timestamp so they get cleaned up
+        // Use cutoffTime - 1 day so old entries are immediately eligible for cleanup
+        const oldTimestamp = cutoffTime - (24 * 60 * 60 * 1000);
+        processed = (rawProcessed as string[]).map(url => ({ url, timestamp: oldTimestamp }));
+      } else {
+        processed = rawProcessed as ProcessedUrl[];
+      }
+      
+      const freshProcessed = processed.filter(p => p.timestamp > cutoffTime);
+      result.processed = processed.length - freshProcessed.length;
+      
+      // Always write if we migrated or removed entries
+      if (result.processed > 0 || typeof rawProcessed[0] === 'string') {
+        await this.writeJSON(PROCESSED_FILE, freshProcessed);
+      }
+    }
+
+    return result;
   }
 }
 

@@ -1,6 +1,76 @@
 [
   {
     "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (0 already processed, 30 filtered out)",
+    "source": "grabber",
+    "id": "cf733d40-9e95-44c0-97ab-3d6cf289ba12",
+    "timestamp": 1764222946083
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "d6642236-28dd-44df-9c96-c9b5f05703d6",
+    "timestamp": 1764222945080
+  },
+  {
+    "level": "info",
+    "message": "Cleanup complete: removed 0 logs, 0 extracted, 0 grabbed, 2 processed URLs (2 total entries older than 2 months)",
+    "source": "daemon",
+    "id": "5ef6d3d7-65a9-4f7f-9c71-5de9955fd820",
+    "timestamp": 1764222945076
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "9708628d-5e98-46c0-8fad-03fd0aac2238",
+    "timestamp": 1764222945053
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (2 already processed, 28 filtered out)",
+    "source": "grabber",
+    "id": "30b520b1-9a58-4051-ad8b-2e942f48ab92",
+    "timestamp": 1764222870020
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "5bb35b2c-ab27-4da1-a44e-e466d0dd696f",
+    "timestamp": 1764222869480
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "c1a1cca6-760e-4159-b2c0-d2e8d759c5c1",
+    "timestamp": 1764222869435
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (2 already processed, 28 filtered out)",
+    "source": "grabber",
+    "id": "255603ba-a467-428c-b5e5-42ccbaf971f5",
+    "timestamp": 1764222864267
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "70cfe532-3f8a-4128-bd5e-b03373ddbf2e",
+    "timestamp": 1764222863342
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "bea3ad97-3aac-45b5-97a4-4109c9b53aea",
+    "timestamp": 1764222863313
+  },
+  {
+    "level": "info",
     "message": "Feed removed: accebd18-bcf3-4f4b-8377-1c194f433e12",
     "source": "daemon",
     "id": "1ed8d4fa-0b9a-4631-ac88-dd2586dcbbf0",

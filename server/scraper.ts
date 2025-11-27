@@ -121,10 +121,46 @@ export class Scraper {
 
     log("Grabber daemon started", "grabber");
     
+    // Run cleanup on startup (remove entries older than 2 months)
+    await this.runCleanup();
+    
+    // Schedule daily cleanup (every 24 hours)
+    this.scheduleCleanup();
+    
     // Load all feeds and start monitoring
     const feeds = await storage.getFeeds();
     for (const feed of feeds) {
       this.scheduleFeed(feed.id);
+    }
+  }
+  
+  private cleanupInterval: ReturnType<typeof setInterval> | null = null;
+  
+  private scheduleCleanup() {
+    // Run cleanup every 24 hours
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    this.cleanupInterval = setInterval(() => {
+      this.runCleanup();
+    }, twentyFourHours);
+  }
+  
+  private async runCleanup() {
+    try {
+      const result = await storage.cleanupOldData();
+      const total = result.logs + result.extracted + result.grabbed + result.processed;
+      
+      if (total > 0) {
+        await storage.addLog({
+          level: "info",
+          message: `Cleanup complete: removed ${result.logs} logs, ${result.extracted} extracted, ${result.grabbed} grabbed, ${result.processed} processed URLs (${total} total entries older than 2 months)`,
+          source: "daemon",
+        });
+        log(`Cleanup removed ${total} old entries`, "daemon");
+      } else {
+        log("Cleanup: no old entries to remove", "daemon");
+      }
+    } catch (err: any) {
+      log(`Cleanup error: ${err.message}`, "daemon");
     }
   }
 
@@ -134,6 +170,12 @@ export class Scraper {
       clearInterval(interval);
       this.intervals.delete(id);
     });
+    
+    // Clear cleanup interval
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
     
     await storage.addLog({
       level: "info",
