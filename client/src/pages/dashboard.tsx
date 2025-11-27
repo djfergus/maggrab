@@ -16,14 +16,18 @@ export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleAddFeed = () => {
-    if (!newFeedUrl || !newFeedName) return;
-    addFeed(newFeedUrl, newFeedName);
+    if (!newFeedUrl) return;
+    
+    // Auto-generate name if not provided
+    const finalName = newFeedName.trim() || `Feed (${new URL(newFeedUrl).hostname})`;
+    
+    addFeed(newFeedUrl, finalName);
     setIsOpen(false);
     setNewFeedUrl("");
     setNewFeedName("");
     toast({
       title: "Feed Added",
-      description: `Successfully added ${newFeedName} to the scraper queue.`,
+      description: `Successfully added ${finalName} to the scraper queue.`,
     });
   };
 
@@ -48,22 +52,22 @@ export default function Dashboard() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Feed Name</Label>
-                <Input 
-                  id="name" 
-                  placeholder="e.g. Tech News Daily" 
-                  value={newFeedName}
-                  onChange={(e) => setNewFeedName(e.target.value)}
-                  className="rounded-none bg-secondary/50 border-input focus:ring-primary"
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="url">RSS URL</Label>
                 <Input 
                   id="url" 
                   placeholder="https://..." 
                   value={newFeedUrl}
                   onChange={(e) => setNewFeedUrl(e.target.value)}
+                  className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Feed Name <span className="text-muted-foreground font-normal text-xs ml-1">(Optional - Auto-detected if empty)</span></Label>
+                <Input 
+                  id="name" 
+                  placeholder="e.g. Tech News Daily" 
+                  value={newFeedName}
+                  onChange={(e) => setNewFeedName(e.target.value)}
                   className="rounded-none bg-secondary/50 border-input focus:ring-primary"
                 />
               </div>
