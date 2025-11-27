@@ -3,6 +3,27 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "19355607-527e-43a9-a57f-f2d5b58e5361",
+    "timestamp": 1764218734776
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "e1c3869d-10da-420e-9b48-9920fdc86eec",
+    "timestamp": 1764218734554
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "b7b1834b-6b58-4788-b70d-2dd3da0d31f9",
+    "timestamp": 1764218734523
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "ef3d9bd7-3e3d-4130-aa3f-1a50ff299103",
     "timestamp": 1764218654367
   },
@@ -677,26 +698,5 @@
     "source": "grabber",
     "id": "8a450282-b349-4428-beb2-52b8129bc1e4",
     "timestamp": 1764216493899
-  },
-  {
-    "level": "success",
-    "message": "Found 20 new items in Feed (downmagaz.net) (10 already processed)",
-    "source": "grabber",
-    "id": "0a75f2bc-bbae-4615-83da-fa03ffbbefe0",
-    "timestamp": 1764216493571
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "0fd880fb-dd63-43f9-868a-f78273a7d50d",
-    "timestamp": 1764216493348
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "5e83775f-6688-40fa-a4f9-8dab5ee28eff",
-    "timestamp": 1764216493330
   }
 ]

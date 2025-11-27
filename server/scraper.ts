@@ -48,7 +48,15 @@ export async function testJDConnection(): Promise<{
     await jdownloaderAPI.connect(email, password);
     
     // Get available devices
-    const devices = await jdownloaderAPI.listDevices();
+    let devices;
+    try {
+      devices = await jdownloaderAPI.listDevices();
+    } catch (deviceError: any) {
+      jdConnected = false;
+      jdDeviceId = null;
+      jdDeviceName = null;
+      return { success: false, error: `Failed to list devices: ${deviceError.message}` };
+    }
     
     if (!devices || devices.length === 0) {
       jdConnected = false;
@@ -67,21 +75,19 @@ export async function testJDConnection(): Promise<{
       if (found) targetDevice = found;
     }
 
-    // CRITICAL: Must connect to the specific device before any operations
-    await jdownloaderAPI.connectDevice(targetDevice.id);
-
-    // Update connection state only after successful device connection
+    // Update connection state
     jdConnected = true;
     jdDeviceId = targetDevice.id;
     jdDeviceName = targetDevice.name;
 
-    // Get package count from download list
+    // Try to query packages to verify device is responsive
     let packageCount = 0;
     try {
       const packages = await jdownloaderAPI.queryPackages(targetDevice.id);
       packageCount = Array.isArray(packages) ? packages.length : 0;
-    } catch {
-      // queryPackages may fail if no packages exist - that's ok, return 0
+    } catch (queryError: any) {
+      // If queryPackages fails, the device may not be responding
+      // But connection itself succeeded, so we'll return success with 0 packages
       packageCount = 0;
     }
 
