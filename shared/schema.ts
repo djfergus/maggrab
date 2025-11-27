@@ -23,7 +23,7 @@ export const logSchema = z.object({
   timestamp: z.number(),
   level: z.enum(['info', 'success', 'warn', 'error']),
   message: z.string(),
-  source: z.enum(['daemon', 'scraper', 'jdownloader']),
+  source: z.enum(['daemon', 'grabber', 'jdownloader']),
 });
 
 export const insertLogSchema = logSchema.omit({ id: true, timestamp: true });

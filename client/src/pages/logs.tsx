@@ -78,7 +78,7 @@ function getLevelColor(level: string) {
 function getSourceIcon(source: string) {
   switch (source) {
     case 'daemon': return <Terminal className="h-3 w-3" />;
-    case 'scraper': return <Globe className="h-3 w-3" />;
+    case 'grabber': return <Globe className="h-3 w-3" />;
     case 'jdownloader': return <Download className="h-3 w-3" />;
     default: return null;
   }

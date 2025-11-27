@@ -138,7 +138,7 @@ export default function Settings() {
 
       <Card className="bg-card/50 border-border rounded-none">
         <CardHeader>
-          <CardTitle className="font-display">Scraper Settings</CardTitle>
+          <CardTitle className="font-display">Grabber Settings</CardTitle>
           <CardDescription>
             Control how often feeds are checked for new content.
           </CardDescription>

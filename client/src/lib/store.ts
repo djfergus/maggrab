@@ -8,7 +8,7 @@ export interface LogEntry {
   timestamp: number;
   level: LogLevel;
   message: string;
-  source: 'scraper' | 'daemon' | 'jdownloader';
+  source: 'grabber' | 'daemon' | 'jdownloader';
 }
 
 export interface Feed {

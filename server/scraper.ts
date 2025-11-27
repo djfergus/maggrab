@@ -20,7 +20,7 @@ export class Scraper {
       source: "daemon",
     });
 
-    log("Scraper daemon started", "scraper");
+    log("Grabber daemon started", "grabber");
     
     // Load all feeds and start monitoring
     const feeds = await storage.getFeeds();
@@ -42,7 +42,7 @@ export class Scraper {
       source: "daemon",
     });
     
-    log("Scraper daemon stopped", "scraper");
+    log("Grabber daemon stopped", "grabber");
   }
 
   async scheduleFeed(feedId: string) {
@@ -83,11 +83,11 @@ export class Scraper {
       await storage.updateFeed(feedId, { status: "scraping", lastChecked: Date.now() });
       await storage.addLog({
         level: "info",
-        message: `Starting scrape job for feed: ${feed.name}`,
-        source: "scraper",
+        message: `Starting grab job for feed: ${feed.name}`,
+        source: "grabber",
       });
 
-      log(`Scraping feed: ${feed.name}`, "scraper");
+      log(`Grabbing feed: ${feed.name}`, "grabber");
 
       // Parse RSS feed
       const rssFeed = await parser.parseURL(feed.url);
@@ -96,7 +96,7 @@ export class Scraper {
         await storage.addLog({
           level: "info",
           message: `No new items found in ${feed.name}`,
-          source: "scraper",
+          source: "grabber",
         });
         await storage.updateFeed(feedId, { status: "idle" });
         return;
@@ -105,7 +105,7 @@ export class Scraper {
       await storage.addLog({
         level: "success",
         message: `Found ${rssFeed.items.length} items in ${feed.name}`,
-        source: "scraper",
+        source: "grabber",
       });
 
       await storage.incrementStat("totalScraped", rssFeed.items.length);
@@ -122,7 +122,7 @@ export class Scraper {
               await storage.addLog({
                 level: "info",
                 message: `Extracted download link from: ${item.title || item.link}`,
-                source: "scraper",
+                source: "grabber",
               });
               await storage.incrementStat("linksFound");
 
@@ -133,7 +133,7 @@ export class Scraper {
             await storage.addLog({
               level: "warn",
               message: `Failed to process item: ${err.message}`,
-              source: "scraper",
+              source: "grabber",
             });
           }
         }
@@ -144,10 +144,10 @@ export class Scraper {
       await storage.updateFeed(feedId, { status: "error" });
       await storage.addLog({
         level: "error",
-        message: `Error scraping ${feed.name}: ${error.message}`,
-        source: "scraper",
+        message: `Error grabbing ${feed.name}: ${error.message}`,
+        source: "grabber",
       });
-      log(`Error scraping feed ${feed.name}: ${error.message}`, "scraper");
+      log(`Error grabbing feed ${feed.name}: ${error.message}`, "grabber");
     }
   }
 
@@ -204,7 +204,7 @@ export class Scraper {
 
       return null;
     } catch (error: any) {
-      log(`Error finding download link: ${error.message}`, "scraper");
+      log(`Error finding download link: ${error.message}`, "grabber");
       return null;
     }
   }
@@ -232,7 +232,7 @@ export class Scraper {
       
       await storage.incrementStat("submitted");
       
-      log(`Submitted to JDownloader: ${url}`, "scraper");
+      log(`Submitted to JDownloader: ${url}`, "grabber");
     } catch (error: any) {
       await storage.addLog({
         level: "error",

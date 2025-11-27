@@ -36,7 +36,7 @@ export default function Dashboard() {
       setNewFeedName("");
       toast({
         title: "Feed Added",
-        description: "Successfully added to the scraper queue.",
+        description: "Successfully added to the grabber queue.",
       });
     },
     onError: (error: Error) => {
@@ -65,8 +65,8 @@ export default function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
       queryClient.invalidateQueries({ queryKey: ["logs"] });
       toast({
-        title: "Scrape Triggered",
-        description: "Feed scraping started. Check logs for progress.",
+        title: "Grab Triggered",
+        description: "Feed grabbing started. Check logs for progress.",
       });
     },
     onError: (error: Error) => {
@@ -90,7 +90,7 @@ export default function Dashboard() {
       <header className="flex justify-between items-end">
         <div>
           <h2 className="text-3xl font-display font-bold text-white mb-2">Dashboard</h2>
-          <p className="text-muted-foreground">Overview of scraping operations and queue status.</p>
+          <p className="text-muted-foreground">Overview of grabbing operations and queue status.</p>
         </div>
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -148,7 +148,7 @@ export default function Dashboard() {
           icon={Database} 
         />
         <StatCard 
-          label="Items Scraped" 
+          label="Items Grabbed" 
           value={(stats?.totalScraped || 0).toLocaleString()} 
           icon={Activity} 
           color="text-blue-400"
@@ -257,8 +257,8 @@ export default function Dashboard() {
                   onClick={() => scrapeFeedMutation.mutate(feed.id)}
                   className="h-8 w-8 p-0 hover:bg-primary/20 hover:text-primary"
                   disabled={feed.status === 'scraping' || scrapeFeedMutation.isPending}
-                  data-testid={`button-scrape-${feed.id}`}
-                  title="Scrape Now"
+                  data-testid={`button-grab-${feed.id}`}
+                  title="Grab Now"
                 >
                   <RefreshCw className={`h-3 w-3 ${feed.status === 'scraping' ? 'animate-spin' : ''}`} />
                 </Button>
@@ -278,7 +278,7 @@ export default function Dashboard() {
           
           {feeds.length === 0 && (
             <div className="p-8 text-center text-muted-foreground">
-              No feeds configured. Add one to start scraping.
+              No feeds configured. Add one to start grabbing.
             </div>
           )}
         </div>
@@ -309,7 +309,7 @@ function StatusBadge({ status }: { status: string }) {
     return (
       <span className="inline-flex items-center px-2 py-1 rounded-none bg-blue-500/10 text-blue-400 text-[10px] font-mono border border-blue-500/20 uppercase">
         <Activity className="h-3 w-3 mr-1 animate-spin" />
-        Scraping
+        Grabbing
       </span>
     );
   }
