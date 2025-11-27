@@ -153,28 +153,52 @@ export class Scraper {
 
   private async findDownloadLink(url: string): Promise<string | null> {
     try {
-      const response = await axios.get(url, { timeout: 10000 });
+      const response = await axios.get(url, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0' } });
       const $ = load(response.data);
       
-      // Look for common download link patterns
-      const downloadSelectors = [
-        'a[href*="download"]',
-        'a[href*=".torrent"]',
-        'a[href*="magnet:"]',
-        'a[class*="download"]',
-        'a[id*="download"]',
+      // First, try to find file hosting service links (novafile, nfile, etc.)
+      const fileHostingPatterns = [
+        /https?:\/\/(novafile|nfile|mega|mediafire|dropbox)\.org\/[^\s"'<>]+/gi,
+        /https?:\/\/(novafile|nfile)\.cc\/[^\s"'<>]+/gi,
+        /href=["']([^"']*(?:novafile|nfile|mega|mediafire|dropbox)[^"']*)/gi,
       ];
 
-      for (const selector of downloadSelectors) {
-        const link = $(selector).first().attr("href");
+      // Check all text content for file hosting links
+      const bodyText = $.html();
+      for (const pattern of fileHostingPatterns) {
+        const match = bodyText.match(pattern);
+        if (match) {
+          // Return the first valid match
+          const link = match[0].replace('href="', '').replace("href='", '').replace('"', '').replace("'", '');
+          if (link && (link.startsWith('http://') || link.startsWith('https://'))) {
+            return link;
+          }
+        }
+      }
+
+      // Fallback: Look for links with common download hosting domains
+      const downloadLinks = [
+        $('a[href*="novafile.org"]').first().attr("href"),
+        $('a[href*="nfile.cc"]').first().attr("href"),
+        $('a[href*="mega"]').first().attr("href"),
+        $('a[href*="mediafire"]').first().attr("href"),
+        $('a[href*="download"]').first().attr("href"),
+        $('a[href*=".torrent"]').first().attr("href"),
+      ];
+
+      for (const link of downloadLinks) {
         if (link) {
           // Return absolute URL
           if (link.startsWith("http") || link.startsWith("magnet:")) {
             return link;
           }
           // Convert relative to absolute
-          const base = new URL(url);
-          return new URL(link, base.origin).toString();
+          try {
+            const base = new URL(url);
+            return new URL(link, base.origin).toString();
+          } catch {
+            continue;
+          }
         }
       }
 
