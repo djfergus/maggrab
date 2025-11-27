@@ -224,9 +224,8 @@ export default function Dashboard() {
         <div className="divide-y divide-border">
           <div className="grid grid-cols-12 px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-wider bg-muted/20">
             <div className="col-span-4">Feed Name</div>
-            <div className="col-span-3">URL</div>
+            <div className="col-span-4">URL</div>
             <div className="col-span-2">Last Check</div>
-            <div className="col-span-1 text-right">Items</div>
             <div className="col-span-1 text-right">Status</div>
             <div className="col-span-1 text-right">Actions</div>
           </div>
@@ -237,15 +236,12 @@ export default function Dashboard() {
                 <div className="h-2 w-2 bg-primary/50 rotate-45" />
                 {feed.name}
               </div>
-              <div className="col-span-3 font-mono text-xs text-muted-foreground truncate pr-4">
+              <div className="col-span-4 font-mono text-xs text-muted-foreground truncate pr-4">
                 {feed.url}
               </div>
               <div className="col-span-2 text-muted-foreground flex items-center gap-2">
                 <Clock className="h-3 w-3" />
                 {feed.lastChecked ? new Date(feed.lastChecked).toLocaleTimeString() : 'Never'}
-              </div>
-              <div className="col-span-1 text-right font-mono">
-                {feed.totalFound}
               </div>
               <div className="col-span-1 flex justify-end">
                 <StatusBadge status={feed.status} />
