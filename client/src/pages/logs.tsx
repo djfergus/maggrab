@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 export default function Logs() {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const initialScrollDone = useRef(false);
 
   const { data: logs = [] } = useQuery({
     queryKey: ["logs"],
@@ -12,9 +13,11 @@ export default function Logs() {
     refetchInterval: 2000,
   });
 
+  // Only scroll to bottom on initial load, no animation
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    if (containerRef.current && logs.length > 0 && !initialScrollDone.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      initialScrollDone.current = true;
     }
   }, [logs]);
 
@@ -33,14 +36,17 @@ export default function Logs() {
       </div>
 
       <div className="flex-1 p-6 overflow-hidden">
-        <div className="h-full bg-black border border-border font-mono text-sm overflow-auto p-4 shadow-inner">
+        <div 
+          ref={containerRef}
+          className="h-full bg-black border border-border font-mono text-sm overflow-auto p-4 shadow-inner"
+        >
           {logs.length === 0 && (
             <div className="text-muted-foreground italic opacity-50 text-center mt-20">
               Waiting for daemon output...
             </div>
           )}
           
-          {[...logs].reverse().map((log) => (
+          {logs.map((log) => (
             <div key={log.id} className="flex gap-4 mb-2 hover:bg-white/5 p-1 rounded-sm transition-colors" data-testid={`log-${log.id}`}>
               <span className="text-muted-foreground min-w-[160px]">
                 {new Date(log.timestamp).toISOString().replace('T', ' ').substr(0, 19)}
@@ -58,7 +64,6 @@ export default function Logs() {
               <span className="text-foreground whitespace-pre-wrap">{log.message}</span>
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
       </div>
     </div>
