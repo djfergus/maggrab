@@ -10,13 +10,23 @@ export const api = {
     return res.json();
   },
 
-  async createFeed(url: string, name: string): Promise<Feed> {
+  async createFeed(url: string, name: string, filter?: string): Promise<Feed> {
     const res = await fetch(`${API_BASE}/feeds`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, name, interval: 15 }),
+      body: JSON.stringify({ url, name, filter: filter || null, interval: 15 }),
     });
     if (!res.ok) throw new Error("Failed to create feed");
+    return res.json();
+  },
+
+  async updateFeed(id: string, updates: { name?: string; url?: string; filter?: string | null; interval?: number }): Promise<Feed> {
+    const res = await fetch(`${API_BASE}/feeds/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+    if (!res.ok) throw new Error("Failed to update feed");
     return res.json();
   },
 

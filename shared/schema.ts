@@ -4,6 +4,7 @@ export const feedSchema = z.object({
   id: z.string(),
   name: z.string(),
   url: z.string().url(),
+  filter: z.string().nullable().default(null),
   interval: z.number().default(15),
   lastChecked: z.number().nullable(),
   status: z.enum(['idle', 'scraping', 'error']).default('idle'),
@@ -13,6 +14,7 @@ export const feedSchema = z.object({
 export const insertFeedSchema = z.object({
   name: z.string(),
   url: z.string().url(),
+  filter: z.string().nullable().optional().default(null),
   interval: z.number().optional().default(15),
 });
 export type InsertFeed = z.infer<typeof insertFeedSchema>;

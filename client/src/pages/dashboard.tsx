@@ -1,4 +1,4 @@
-import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw, ExternalLink } from "lucide-react";
+import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw, ExternalLink, Pencil, Filter } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,16 +8,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import type { ExtractedItem, GrabbedItem } from "@shared/schema";
+import type { ExtractedItem, GrabbedItem, Feed } from "@shared/schema";
 
 export default function Dashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [newFeedUrl, setNewFeedUrl] = useState("");
   const [newFeedName, setNewFeedName] = useState("");
+  const [newFeedFilter, setNewFeedFilter] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
   const [isGrabbedModalOpen, setIsGrabbedModalOpen] = useState(false);
+  const [editingFeed, setEditingFeed] = useState<Feed | null>(null);
+  const [editForm, setEditForm] = useState({ name: "", url: "", filter: "", interval: 15 });
 
   const { data: feeds = [] } = useQuery({
     queryKey: ["feeds"],
@@ -44,15 +47,36 @@ export default function Dashboard() {
   });
 
   const createFeedMutation = useMutation({
-    mutationFn: ({ url, name }: { url: string; name: string }) => api.createFeed(url, name),
+    mutationFn: ({ url, name, filter }: { url: string; name: string; filter?: string }) => api.createFeed(url, name, filter),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
       setIsOpen(false);
       setNewFeedUrl("");
       setNewFeedName("");
+      setNewFeedFilter("");
       toast({
         title: "Feed Added",
         description: "Successfully added to the grabber queue.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateFeedMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: { name?: string; url?: string; filter?: string | null; interval?: number } }) => 
+      api.updateFeed(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      setEditingFeed(null);
+      toast({
+        title: "Feed Updated",
+        description: "Feed settings saved successfully.",
       });
     },
     onError: (error: Error) => {
@@ -98,7 +122,30 @@ export default function Dashboard() {
     if (!newFeedUrl) return;
     
     const finalName = newFeedName.trim() || `Feed (${new URL(newFeedUrl).hostname})`;
-    createFeedMutation.mutate({ url: newFeedUrl, name: finalName });
+    createFeedMutation.mutate({ url: newFeedUrl, name: finalName, filter: newFeedFilter || undefined });
+  };
+
+  const openEditDialog = (feed: Feed) => {
+    setEditingFeed(feed);
+    setEditForm({
+      name: feed.name,
+      url: feed.url,
+      filter: feed.filter || "",
+      interval: feed.interval,
+    });
+  };
+
+  const handleUpdateFeed = () => {
+    if (!editingFeed) return;
+    updateFeedMutation.mutate({
+      id: editingFeed.id,
+      updates: {
+        name: editForm.name,
+        url: editForm.url,
+        filter: editForm.filter || null,
+        interval: editForm.interval,
+      },
+    });
   };
 
   return (
@@ -133,7 +180,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="name">Feed Name <span className="text-muted-foreground font-normal text-xs ml-1">(Optional - Auto-detected if empty)</span></Label>
+                <Label htmlFor="name">Feed Name <span className="text-muted-foreground font-normal text-xs ml-1">(Optional)</span></Label>
                 <Input 
                   id="name" 
                   placeholder="e.g. Tech News Daily" 
@@ -142,6 +189,21 @@ export default function Dashboard() {
                   className="rounded-none bg-secondary/50 border-input focus:ring-primary"
                   data-testid="input-feed-name"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="filter" className="flex items-center gap-2">
+                  <Filter className="h-3 w-3" />
+                  Title Filter <span className="text-muted-foreground font-normal text-xs ml-1">(Optional - only grab matching items)</span>
+                </Label>
+                <Input 
+                  id="filter" 
+                  placeholder="e.g. aviation, photography" 
+                  value={newFeedFilter}
+                  onChange={(e) => setNewFeedFilter(e.target.value)}
+                  className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                  data-testid="input-feed-filter"
+                />
+                <p className="text-[10px] text-muted-foreground">Case-insensitive. Only items with this text in the title will be processed.</p>
               </div>
               <Button 
                 onClick={handleAddFeed} 
@@ -155,6 +217,75 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
       </header>
+
+      {/* Edit Feed Dialog */}
+      <Dialog open={!!editingFeed} onOpenChange={(open) => !open && setEditingFeed(null)}>
+        <DialogContent className="bg-card border-border rounded-none">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Pencil className="h-4 w-4" />
+              Edit Feed
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Feed Name</Label>
+              <Input 
+                id="edit-name" 
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                data-testid="input-edit-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-url">RSS URL</Label>
+              <Input 
+                id="edit-url" 
+                value={editForm.url}
+                onChange={(e) => setEditForm({ ...editForm, url: e.target.value })}
+                className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                data-testid="input-edit-url"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-filter" className="flex items-center gap-2">
+                <Filter className="h-3 w-3" />
+                Title Filter
+              </Label>
+              <Input 
+                id="edit-filter" 
+                placeholder="Leave empty to grab all items"
+                value={editForm.filter}
+                onChange={(e) => setEditForm({ ...editForm, filter: e.target.value })}
+                className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                data-testid="input-edit-filter"
+              />
+              <p className="text-[10px] text-muted-foreground">Case-insensitive. Only items with this text in the title will be processed.</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-interval">Check Interval (minutes)</Label>
+              <Input 
+                id="edit-interval" 
+                type="number"
+                min="1"
+                value={editForm.interval}
+                onChange={(e) => setEditForm({ ...editForm, interval: parseInt(e.target.value) || 15 })}
+                className="rounded-none bg-secondary/50 border-input focus:ring-primary w-24"
+                data-testid="input-edit-interval"
+              />
+            </div>
+            <Button 
+              onClick={handleUpdateFeed} 
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none mt-4"
+              disabled={updateFeedMutation.isPending}
+              data-testid="button-save-feed"
+            >
+              {updateFeedMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -305,21 +436,37 @@ export default function Dashboard() {
         </div>
         <div className="divide-y divide-border">
           <div className="grid grid-cols-12 px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-wider bg-muted/20">
-            <div className="col-span-4">Feed Name</div>
-            <div className="col-span-4">URL</div>
+            <div className="col-span-3">Feed Name</div>
+            <div className="col-span-3">URL</div>
+            <div className="col-span-2">Filter</div>
             <div className="col-span-2">Last Check</div>
             <div className="col-span-1 text-right">Status</div>
             <div className="col-span-1 text-right">Actions</div>
           </div>
           
           {feeds.map((feed) => (
-            <div key={feed.id} className="grid grid-cols-12 px-4 py-4 text-sm items-center hover:bg-white/5 transition-colors" data-testid={`feed-row-${feed.id}`}>
-              <div className="col-span-4 font-medium text-white flex items-center gap-2">
+            <div 
+              key={feed.id} 
+              className="grid grid-cols-12 px-4 py-4 text-sm items-center hover:bg-white/5 transition-colors cursor-pointer" 
+              data-testid={`feed-row-${feed.id}`}
+              onClick={() => openEditDialog(feed)}
+            >
+              <div className="col-span-3 font-medium text-white flex items-center gap-2">
                 <div className="h-2 w-2 bg-primary/50 rotate-45" />
                 {feed.name}
               </div>
-              <div className="col-span-4 font-mono text-xs text-muted-foreground truncate pr-4">
+              <div className="col-span-3 font-mono text-xs text-muted-foreground truncate pr-4">
                 {feed.url}
+              </div>
+              <div className="col-span-2 font-mono text-xs text-muted-foreground truncate pr-2">
+                {feed.filter ? (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
+                    <Filter className="h-2.5 w-2.5" />
+                    {feed.filter}
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground/50">—</span>
+                )}
               </div>
               <div className="col-span-2 text-muted-foreground flex items-center gap-2">
                 <Clock className="h-3 w-3" />
@@ -328,7 +475,7 @@ export default function Dashboard() {
               <div className="col-span-1 flex justify-end">
                 <StatusBadge status={feed.status} />
               </div>
-              <div className="col-span-1 flex justify-end gap-2">
+              <div className="col-span-1 flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                 <Button
                   variant="ghost"
                   size="sm"

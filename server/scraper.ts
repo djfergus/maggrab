@@ -202,26 +202,42 @@ export class Scraper {
       }
 
       // Filter out already processed items
-      const newItems = [];
+      const unprocessedItems = [];
       for (const item of rssFeed.items) {
         if (item.link && !(await storage.isProcessed(item.link))) {
-          newItems.push(item);
+          unprocessedItems.push(item);
         }
       }
 
+      // Apply title filter if configured
+      let newItems = unprocessedItems;
+      let filteredCount = 0;
+      if (feed.filter && feed.filter.trim()) {
+        const filterLower = feed.filter.toLowerCase();
+        newItems = unprocessedItems.filter(item => {
+          const title = (item.title || '').toLowerCase();
+          return title.includes(filterLower);
+        });
+        filteredCount = unprocessedItems.length - newItems.length;
+      }
+
       if (newItems.length === 0) {
+        const alreadyProcessed = rssFeed.items.length - unprocessedItems.length;
+        const filterMsg = filteredCount > 0 ? `, ${filteredCount} filtered out` : '';
         await storage.addLog({
           level: "info",
-          message: `No new items in ${feed.name} (${rssFeed.items.length} already processed)`,
+          message: `No new items in ${feed.name} (${alreadyProcessed} already processed${filterMsg})`,
           source: "grabber",
         });
         await storage.updateFeed(feedId, { status: "idle" });
         return;
       }
 
+      const alreadyProcessed = rssFeed.items.length - unprocessedItems.length;
+      const filterMsg = filteredCount > 0 ? `, ${filteredCount} filtered out` : '';
       await storage.addLog({
         level: "success",
-        message: `Found ${newItems.length} new items in ${feed.name} (${rssFeed.items.length - newItems.length} already processed)`,
+        message: `Found ${newItems.length} new items in ${feed.name} (${alreadyProcessed} already processed${filterMsg})`,
         source: "grabber",
       });
 

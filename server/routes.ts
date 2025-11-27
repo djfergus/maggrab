@@ -39,6 +39,31 @@ export async function registerRoutes(
     }
   });
 
+  app.put("/api/feeds/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const updates = req.body;
+      const feed = await storage.updateFeed(id, updates);
+      
+      if (feed) {
+        // Reschedule the feed with new settings
+        await scraper.unscheduleFeed(id);
+        await scraper.scheduleFeed(id);
+        
+        await storage.addLog({
+          level: "info",
+          message: `Feed updated: ${feed.name}`,
+          source: "daemon",
+        });
+        res.json(feed);
+      } else {
+        res.status(404).json({ error: "Feed not found" });
+      }
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   app.delete("/api/feeds/:id", async (req, res) => {
     const { id } = req.params;
     const success = await storage.deleteFeed(id);
