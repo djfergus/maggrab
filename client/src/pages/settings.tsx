@@ -41,6 +41,8 @@ export default function Settings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["logs"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
+      queryClient.invalidateQueries({ queryKey: ["extracted"] });
+      queryClient.invalidateQueries({ queryKey: ["grabbed"] });
       toast({
         title: "Entries Cleared",
         description: "Logs, stats, and processed URLs have been reset.",
