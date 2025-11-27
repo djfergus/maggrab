@@ -1,5 +1,33 @@
 [
   {
+    "level": "info",
+    "message": "Feed removed: ae739e90-5184-440a-9973-2306ece8b1c1",
+    "source": "daemon",
+    "id": "f79cc0d2-277f-4154-81f4-a2a923b1520c",
+    "timestamp": 1764211198082
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "scraper",
+    "id": "1a8185e0-be71-4c39-9a51-d95a4a6f4be2",
+    "timestamp": 1764211171924
+  },
+  {
+    "level": "info",
+    "message": "Starting scrape job for feed: Feed (downmagaz.net)",
+    "source": "scraper",
+    "id": "49cd1896-7f0a-4cde-8fd1-3c55fde0ad31",
+    "timestamp": 1764211171736
+  },
+  {
+    "level": "info",
+    "message": "New feed added: Feed (downmagaz.net)",
+    "source": "daemon",
+    "id": "699d9bc8-bd0e-41ec-bb07-1ead28087b2a",
+    "timestamp": 1764211171734
+  },
+  {
     "level": "success",
     "message": "Found 30 items in Test Feed",
     "source": "scraper",

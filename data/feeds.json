@@ -1,10 +1,10 @@
 [
   {
-    "name": "Test Feed",
+    "name": "Feed (downmagaz.net)",
     "url": "https://downmagaz.net/business_magazine_economics/rss.xml",
     "interval": 15,
-    "id": "ae739e90-5184-440a-9973-2306ece8b1c1",
-    "lastChecked": 1764211126359,
+    "id": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "lastChecked": 1764211171734,
     "status": "idle",
     "totalFound": 30
   }
