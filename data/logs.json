@@ -1,5 +1,250 @@
 [
   {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "7ce82c86-2a97-4127-add5-fc73765b1997",
+    "timestamp": 1764213090970
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "4dc41c3f-f692-4d9d-b0e7-bc4158a7075a",
+    "timestamp": 1764213090853
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Business Traveller IN - 11.2025",
+    "source": "grabber",
+    "id": "020f72bc-d78a-480a-96da-552f34b06092",
+    "timestamp": 1764213090350
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "0f3a85d5-dfdc-43fd-84f6-55cc746980f6",
+    "timestamp": 1764213089955
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "1d7262b9-fabf-4613-a779-403ece20b37f",
+    "timestamp": 1764213089925
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Thermal Control Business Update - 11.2025",
+    "source": "grabber",
+    "id": "4acacc15-7b45-4000-a943-f68f4f3e90cc",
+    "timestamp": 1764213089921
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "2ee43b48-6651-489c-a460-47c9e2ce775c",
+    "timestamp": 1764213089735
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e807ee78-66eb-45e2-8616-47f689f4c700",
+    "timestamp": 1764213089734
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Business Today - 12.7.2025",
+    "source": "grabber",
+    "id": "1fb55a91-ec81-440c-b367-3f63335d42e8",
+    "timestamp": 1764213089731
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9ac220ef-f966-4787-a106-d158f6c53d9f",
+    "timestamp": 1764213089551
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "8c5f12f0-47aa-4b42-83af-18e60e1d1048",
+    "timestamp": 1764213089544
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Technology - 12.2025",
+    "source": "grabber",
+    "id": "427a4b00-4ccd-435a-a954-733ac79c96fa",
+    "timestamp": 1764213089542
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "3a6a959e-62ad-48fd-825f-fdaff252fa40",
+    "timestamp": 1764213089359
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "f2deadd5-8299-4dbd-a478-61ab1c2dd92b",
+    "timestamp": 1764213089207
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: AI Magazine - 12.2025",
+    "source": "grabber",
+    "id": "df75a481-6878-4d95-b765-36e8c539ebb9",
+    "timestamp": 1764213089075
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "11b0dfbf-f945-4e9a-bb46-7f8c1db9fc76",
+    "timestamp": 1764213088681
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "0fe06a95-b68e-4cda-a9b3-393dee29945d",
+    "timestamp": 1764213088464
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "e794ea4e-ba21-42d7-9989-a3e7b2278163",
+    "timestamp": 1764213088445
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "b98dd2b6-4768-4fa3-8a2b-f82b9804dce0",
+    "timestamp": 1764213064204
+  },
+  {
+    "level": "info",
+    "message": "Extracted download link from: Business Traveller IN - 11.2025",
+    "source": "grabber",
+    "id": "cc80332f-544c-455b-8ee6-639e0bc4fe3f",
+    "timestamp": 1764213064202
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "27579dc8-ecd8-4c0c-8ddc-21d5f84442cc",
+    "timestamp": 1764213064039
+  },
+  {
+    "level": "info",
+    "message": "Extracted download link from: Thermal Control Business Update - 11.2025",
+    "source": "grabber",
+    "id": "bbccc17c-f5e6-4af4-a64c-f9b3d1187829",
+    "timestamp": 1764213064037
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9a3dbf30-418e-466f-baf3-9e41ddc6b223",
+    "timestamp": 1764213063879
+  },
+  {
+    "level": "info",
+    "message": "Extracted download link from: Business Today - 12.7.2025",
+    "source": "grabber",
+    "id": "51f09da8-ee88-4603-a789-4592230af6ff",
+    "timestamp": 1764213063877
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "8b4ea4fb-ea8b-42e6-b3ee-d5bb470136dc",
+    "timestamp": 1764213063708
+  },
+  {
+    "level": "info",
+    "message": "Extracted download link from: Technology - 12.2025",
+    "source": "grabber",
+    "id": "000fa948-a111-4d5a-b6ad-a433e9dcbaa1",
+    "timestamp": 1764213063706
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "bf83cd5b-00e7-49a5-ad0a-ce7cbe3eecdd",
+    "timestamp": 1764213063536
+  },
+  {
+    "level": "info",
+    "message": "Extracted download link from: AI Magazine - 12.2025",
+    "source": "grabber",
+    "id": "fd8d377e-c880-459f-95b8-e7e3abaa3ec7",
+    "timestamp": 1764213063425
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "3e03d32f-5c1c-41dc-a573-e109aab7915f",
+    "timestamp": 1764213063104
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "2e390085-7310-4976-8cd6-d4f8cba2aca3",
+    "timestamp": 1764213062882
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "162b8df3-8bf0-406e-a7f6-6c0abfb4637b",
+    "timestamp": 1764213062859
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "5ce5c2ee-bc84-4688-9c24-c944535592bd",
+    "timestamp": 1764213010934
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "00a06c6c-2b41-48a0-acd1-e9936b211427",
+    "timestamp": 1764213010753
+  },
+  {
+    "level": "success",
+    "message": "Found 30 items in Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "05ac366a-8a57-4f33-9ce5-b8fda741be17",
+    "timestamp": 1764212766174
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "efb46a78-5666-406a-b2d7-f143870b0315",
+    "timestamp": 1764212765995
+  },
+  {
     "level": "success",
     "message": "Found 30 items in Feed (downmagaz.net)",
     "source": "grabber",

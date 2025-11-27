@@ -117,17 +117,19 @@ export class Scraper {
       for (const item of rssFeed.items.slice(0, 5)) {
         if (item.link) {
           try {
-            const downloadUrl = await this.findDownloadLink(item.link);
-            if (downloadUrl) {
+            const downloadUrls = await this.findDownloadLink(item.link);
+            if (downloadUrls.length > 0) {
               await storage.addLog({
                 level: "info",
-                message: `Extracted download link from: ${item.title || item.link}`,
+                message: `Extracted ${downloadUrls.length} download link(s) from: ${item.title || item.link}`,
                 source: "grabber",
               });
-              await storage.incrementStat("linksFound");
-
-              // Submit to JDownloader
-              await this.submitToJDownloader(downloadUrl);
+              
+              for (const downloadUrl of downloadUrls) {
+                await storage.incrementStat("linksFound");
+                // Submit to JDownloader
+                await this.submitToJDownloader(downloadUrl);
+              }
             }
           } catch (err: any) {
             await storage.addLog({
@@ -151,61 +153,69 @@ export class Scraper {
     }
   }
 
-  private async findDownloadLink(url: string): Promise<string | null> {
+  private async findDownloadLink(url: string): Promise<string[]> {
     try {
-      const response = await axios.get(url, { timeout: 10000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+      const response = await axios.get(url, { timeout: 15000, headers: { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }});
       const $ = load(response.data);
+      const foundLinks: string[] = [];
       
-      // First, try to find file hosting service links (novafile, nfile, etc.)
-      const fileHostingPatterns = [
-        /https?:\/\/(novafile|nfile|mega|mediafire|dropbox)\.org\/[^\s"'<>]+/gi,
-        /https?:\/\/(novafile|nfile)\.cc\/[^\s"'<>]+/gi,
-        /href=["']([^"']*(?:novafile|nfile|mega|mediafire|dropbox)[^"']*)/gi,
-      ];
-
-      // Check all text content for file hosting links
-      const bodyText = $.html();
-      for (const pattern of fileHostingPatterns) {
-        const match = bodyText.match(pattern);
-        if (match) {
-          // Return the first valid match
-          const link = match[0].replace('href="', '').replace("href='", '').replace('"', '').replace("'", '');
-          if (link && (link.startsWith('http://') || link.startsWith('https://'))) {
-            return link;
-          }
-        }
-      }
-
-      // Fallback: Look for links with common download hosting domains
-      const downloadLinks = [
-        $('a[href*="novafile.org"]').first().attr("href"),
-        $('a[href*="nfile.cc"]').first().attr("href"),
-        $('a[href*="mega"]').first().attr("href"),
-        $('a[href*="mediafire"]').first().attr("href"),
-        $('a[href*="download"]').first().attr("href"),
-        $('a[href*=".torrent"]').first().attr("href"),
-      ];
-
-      for (const link of downloadLinks) {
-        if (link) {
-          // Return absolute URL
-          if (link.startsWith("http") || link.startsWith("magnet:")) {
-            return link;
-          }
-          // Convert relative to absolute
+      // Method 1: Find base64-encoded redirect links (downmagaz.net pattern)
+      // These look like: /engine/go.php?url=aHR0cHM6Ly9uZmlsZS5jYy9qQllkVkI2cQ==
+      $('a[href*="engine/go.php?url="]').each((_, el) => {
+        const href = $(el).attr('href');
+        if (href) {
           try {
-            const base = new URL(url);
-            return new URL(link, base.origin).toString();
-          } catch {
-            continue;
+            const urlObj = new URL(href, url);
+            const encodedUrl = urlObj.searchParams.get('url');
+            if (encodedUrl) {
+              // Decode the base64-encoded URL
+              const decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
+              if (decodedUrl.startsWith('http')) {
+                foundLinks.push(decodedUrl);
+                log(`Decoded base64 link: ${decodedUrl}`, "grabber");
+              }
+            }
+          } catch (e) {
+            // Skip malformed URLs
           }
         }
-      }
+      });
 
-      return null;
+      // Method 2: Look for direct file hosting links
+      const fileHostingDomains = [
+        'nfile.cc', 'novafile.org', 'turbobit.net', 'trbt.cc',
+        'rapidgator.net', 'nitroflare.com', 'mega.nz', 'mediafire.com',
+        'katfile.com', 'uploadgig.com', 'filefox.cc'
+      ];
+      
+      $('a[href]').each((_, el) => {
+        const href = $(el).attr('href');
+        if (href) {
+          for (const domain of fileHostingDomains) {
+            if (href.includes(domain)) {
+              if (href.startsWith('http')) {
+                foundLinks.push(href);
+              } else {
+                try {
+                  const absoluteUrl = new URL(href, url).toString();
+                  foundLinks.push(absoluteUrl);
+                } catch {
+                  // Skip malformed URLs
+                }
+              }
+              break;
+            }
+          }
+        }
+      });
+
+      // Remove duplicates
+      return Array.from(new Set(foundLinks));
     } catch (error: any) {
       log(`Error finding download link: ${error.message}`, "grabber");
-      return null;
+      return [];
     }
   }
 
