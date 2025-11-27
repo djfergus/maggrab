@@ -3,6 +3,34 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "da1f843f-6232-42b6-8260-336466383083",
+    "timestamp": 1764219383322
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "ad5e224d-8996-4665-9874-c266f5b207ac",
+    "timestamp": 1764219382847
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "b888e675-e71e-4044-94d9-6b7a6f8f1b8e",
+    "timestamp": 1764219382248
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "6d8316c9-b119-4949-b66b-b78588005435",
+    "timestamp": 1764219382219
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "e674d2e7-fd9d-4f0c-9fde-c7e8a1480168",
     "timestamp": 1764219347041
   },
@@ -670,33 +698,5 @@
     "source": "grabber",
     "id": "2ccf67ce-3462-4e98-81d9-0e5593c0551b",
     "timestamp": 1764218772579
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "912120bd-7391-4863-b728-78ed6966f97e",
-    "timestamp": 1764218772209
-  },
-  {
-    "level": "info",
-    "message": "New feed added: Feed (downmagaz.net)",
-    "source": "daemon",
-    "id": "1ffe59a2-ef05-4458-9100-62d200fd7315",
-    "timestamp": 1764218772204
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "19355607-527e-43a9-a57f-f2d5b58e5361",
-    "timestamp": 1764218734776
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "e1c3869d-10da-420e-9b48-9920fdc86eec",
-    "timestamp": 1764218734554
   }
 ]

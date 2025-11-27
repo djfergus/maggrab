@@ -47,7 +47,7 @@ export default function Logs() {
           )}
           
           {logs.map((log) => (
-            <div key={log.id} className="flex gap-4 mb-2 hover:bg-white/5 p-1 rounded-sm transition-colors" data-testid={`log-${log.id}`}>
+            <div key={log.id} className="flex gap-3 mb-0.5 hover:bg-white/5 py-0.5 px-1 rounded-sm transition-colors leading-tight" data-testid={`log-${log.id}`}>
               <span className="text-muted-foreground min-w-[160px]">
                 {new Date(log.timestamp).toISOString().replace('T', ' ').substr(0, 19)}
               </span>
