@@ -1,302 +1,202 @@
 [
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Newsweek USA - 11.28.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453102-newsweek-usa-11282025.html",
-    "downloadUrl": "https://nfile.cc/j5lGBR5q",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "483551a7-1f6c-4074-abfd-6d1adcd10772",
-    "timestamp": 1764214886768
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Open - 1.12.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453277-open-1122025.html",
-    "downloadUrl": "https://nfile.cc/j0OaGr1q",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "bfa673be-5f3b-432a-9145-4085d3a9ed1e",
-    "timestamp": 1764214886594
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Forbes ME - 11.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453278-forbes-me-112025.html",
-    "downloadUrl": "https://nfile.cc/QpxrdaPQ",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "f09ab90d-a55a-409f-bdd7-4f0b728b7169",
-    "timestamp": 1764214886422
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Inbound Logistics - 11.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453291-inbound-logistics-112025.html",
-    "downloadUrl": "https://nfile.cc/QzGrxAWL",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "bf65b1ff-4c94-49d9-9b3a-f712f2048dd0",
-    "timestamp": 1764214886234
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "National Review - 01.2026",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453118-national-review-012026.html",
-    "downloadUrl": "https://nfile.cc/LDO0RvNQ",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "aa8c143b-4d8a-4cfd-be4f-0494275d6344",
-    "timestamp": 1764214886058
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "India Today - 1.12.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453300-india-today-1122025.html",
-    "downloadUrl": "https://nfile.cc/j78bAAbQ",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "5500e103-f626-4422-94c2-880e7d8a7337",
-    "timestamp": 1764214884903
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "InBound Sauth Africa Business - 10.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453309-inbound-sauth-africa-business-102025.html",
-    "downloadUrl": "https://nfile.cc/LrbD001L",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "3b402ca0-1c9a-4512-9418-696577e01d80",
-    "timestamp": 1764214884345
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "InBound Sauth Africa Business - 11.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453310-inbound-sauth-africa-business-112025.html",
-    "downloadUrl": "https://nfile.cc/joBk88aq",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "692e5ac3-b36e-4ee7-a835-0d7e7adf8876",
-    "timestamp": 1764214884163
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Investors India - 11.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453313-investors-india-112025.html",
-    "downloadUrl": "https://nfile.cc/QpxrddNQ",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "e170e1f0-ff3d-4b76-bc5c-740779fade6e",
-    "timestamp": 1764214883975
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "articleTitle": "Hotelier IN - 11.2025",
-    "articleUrl": "https://downmagaz.net/business_magazine_economics/453314-hotelier-in-112025.html",
-    "downloadUrl": "https://nfile.cc/Ql79EEmj",
-    "host": "nfile.cc",
-    "submitted": false,
-    "id": "3f8a0122-d231-4078-861c-fd24d4a7c9ac",
-    "timestamp": 1764214883690
-  },
-  {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "India Legal - 11.24.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453315-india-legal-11242025.html",
     "downloadUrl": "https://nfile.cc/L2Naee0L",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "d40f72fe-8f97-45e1-972f-d269fed42d76",
-    "timestamp": 1764214715916
+    "id": "8fca220f-974c-4293-8ef5-cf41a873e9a4",
+    "timestamp": 1764215620956
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Iziar - 11.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453319-iziar-112025.html",
     "downloadUrl": "https://nfile.cc/Ld0WAAdL",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "86da4f26-2a79-4a91-9781-aafe2dee1bcd",
-    "timestamp": 1764214715737
+    "id": "4da58485-288b-403b-bd86-aa30a6f66c3c",
+    "timestamp": 1764215620778
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "ICT Connect - 10.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453320-ict-connect-102025.html",
     "downloadUrl": "https://nfile.cc/QkdgxxyL",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "598c1aa0-3166-4571-a3a1-9a722690605a",
-    "timestamp": 1764214715563
+    "id": "63f913b3-125e-410d-8317-f3e2ed5739ec",
+    "timestamp": 1764215620612
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Barron's - 11.24.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453299-barrons-11242025.html",
     "downloadUrl": "https://nfile.cc/q4npdAnQ",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "b017bfb2-b13a-4b79-a973-aa7bdb9b6f1f",
-    "timestamp": 1764214715020
+    "id": "d1f893d3-7090-4abd-ba6c-f8a4f28d7e2d",
+    "timestamp": 1764215620447
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "The Economist USA - 11.22.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453244-the-economist-usa-11222025.html",
     "downloadUrl": "https://nfile.cc/Q14bGRnj",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "7c4ea656-2224-40f3-94f0-2ca67661a5a8",
-    "timestamp": 1764214714471
+    "id": "a0c24031-b778-45de-92ce-669fac98b82e",
+    "timestamp": 1764215620264
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "New Zealand Listener - 11.29.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453383-new-zealand-listener-11292025.html",
     "downloadUrl": "https://nfile.cc/j0OaJkDq",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "2b272b0a-52b0-409b-ad45-8baaaa8a20bd",
-    "timestamp": 1764214714279
+    "id": "7df9328f-6d0d-4992-8b64-156ddd4bea5a",
+    "timestamp": 1764215619427
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Cityscape Global - 11.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453407-cityscape-global-112025.html",
     "downloadUrl": "https://nfile.cc/Q14bZ3Pj",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "42f48f25-0263-4b22-bd2c-38f400ac33fa",
-    "timestamp": 1764214714110
+    "id": "fcea7ea2-ef7d-43a2-bd73-eaa8fb7c8d50",
+    "timestamp": 1764215618832
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "International Kirmes & Park Revue - 12.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453440-international-kirmes-park-revue-122025.html",
     "downloadUrl": "https://nfile.cc/jVEyxkAq",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "288b9d9e-8d61-4b05-9943-2fc1368e5330",
-    "timestamp": 1764214713942
+    "id": "4f95607d-5e29-4af1-9c3d-140667cb7313",
+    "timestamp": 1764215618641
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Hobby Farms - 01/02 2026",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453446-hobby-farms-0102-2026.html",
     "downloadUrl": "https://nfile.cc/jO5xAMPL",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "fdf3b1c2-ed1e-47c5-884f-af01a37f68af",
-    "timestamp": 1764214713765
+    "id": "4d188c72-49cb-4f9e-8089-c977c09f06c1",
+    "timestamp": 1764215618457
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "The Economic Times Wealth - 11.24.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453449-the-economic-times-wealth-11242025.html",
     "downloadUrl": "https://nfile.cc/QJYrkxdj",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "9283664e-048c-4ec6-983e-48847810df8d",
-    "timestamp": 1764214713567
+    "id": "2aa251d4-916b-4005-aee4-2331af729261",
+    "timestamp": 1764215618114
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Inside Housing - 11.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453450-inside-housing-112025.html",
     "downloadUrl": "https://nfile.cc/joBkrVaq",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "f94260d2-802e-4c1b-89a2-4207bb8a0422",
-    "timestamp": 1764214631187
+    "id": "392c2dab-f77b-4899-9820-ac302859936e",
+    "timestamp": 1764215567575
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Ambition - 11/12 2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453489-ambition-1112-2025.html",
     "downloadUrl": "https://nfile.cc/L3DeKy8q",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "ffd87141-1eec-4850-8539-02f0b78b6296",
-    "timestamp": 1764214631010
+    "id": "e393053b-0cd9-4d5d-bdf3-d4d213914cab",
+    "timestamp": 1764215567401
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "The European Business Review - 11/12 2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453532-the-european-business-review-1112-2025.html",
     "downloadUrl": "https://nfile.cc/j8lwYdWj",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "af27896a-a82d-44db-9f31-eb1bb992d88f",
-    "timestamp": 1764214630837
+    "id": "a6f18fe6-1dc5-42bf-b20b-95fd216e1cc1",
+    "timestamp": 1764215567228
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Newsmax - 12.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453593-newsmax-122025.html",
     "downloadUrl": "https://nfile.cc/Q6Z5WlrQ",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "bc47056b-28a9-4c51-95b9-b3c70df7543c",
-    "timestamp": 1764214630668
+    "id": "9af61c10-81af-4334-bd2e-bd40e567971c",
+    "timestamp": 1764215567019
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Business Traveller IN - 10.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/448410-business-traveller-in-102025.html",
     "downloadUrl": "https://nfile.cc/QGX4V9oL",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "ad9d0dfd-faa7-45b8-aded-dd92d18e38fc",
-    "timestamp": 1764214630506
+    "id": "ddabb05c-9de5-423f-b6b0-5529e23175d7",
+    "timestamp": 1764215566834
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Business Traveller IN - 11.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/451236-business-traveller-in-112025.html",
     "downloadUrl": "https://nfile.cc/QZrzPGAQ",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "5bfee337-c360-4c7c-af67-ca01e5aa1510",
-    "timestamp": 1764214630328
+    "id": "b220f797-c4fd-443b-a144-8df348acba8d",
+    "timestamp": 1764215566665
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Thermal Control Business Update - 11.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453658-thermal-control-business-update-112025.html",
     "downloadUrl": "https://nfile.cc/j5lG73Rq",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "9dcfdb88-7f33-4534-9a23-bbf5db5c3f9e",
-    "timestamp": 1764214630153
+    "id": "cf81ad31-db7e-463f-975f-5093ebbb934e",
+    "timestamp": 1764215566468
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Business Today - 12.7.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453665-business-today-1272025.html",
     "downloadUrl": "https://nfile.cc/Q9nvEeYL",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "d91062fe-7f25-4d83-86ef-ac77319f7e8b",
-    "timestamp": 1764214629985
+    "id": "5ed71de2-d598-4055-9349-c4a60b367d90",
+    "timestamp": 1764215566289
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "Technology - 12.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453677-technology-122025.html",
     "downloadUrl": "https://nfile.cc/QNzxVR4Q",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "af7a4103-a2de-4228-a177-55f268a44562",
-    "timestamp": 1764214629778
+    "id": "13d843f0-34df-4e75-b214-4afe8b4281cc",
+    "timestamp": 1764215566102
   },
   {
-    "feedId": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
+    "feedId": "facd111c-219a-486e-b12f-a531dfb0ea16",
     "articleTitle": "AI Magazine - 12.2025",
     "articleUrl": "https://downmagaz.net/business_magazine_economics/453678-ai-magazine-122025.html",
     "downloadUrl": "https://nfile.cc/jBYdVB6q",
     "host": "nfile.cc",
     "submitted": false,
-    "id": "d3e322e6-bc45-443b-9cda-eebaa630618d",
-    "timestamp": 1764214629596
+    "id": "e8591d6a-7284-4704-a47e-d5e08af1f873",
+    "timestamp": 1764215565914
   }
 ]
