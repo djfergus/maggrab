@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Save, ShieldAlert, Server, HardDrive } from "lucide-react";
+import { Save, ShieldAlert, Server, HardDrive, Trash2, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -32,6 +33,30 @@ export default function Settings() {
         title: "Configuration Saved",
         description: "Daemon will reload with new settings automatically.",
       });
+    },
+  });
+
+  const clearEntriesMutation = useMutation({
+    mutationFn: api.clearEntries,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["logs"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+      toast({
+        title: "Entries Cleared",
+        description: "Logs, stats, and processed URLs have been reset.",
+      });
+    },
+  });
+
+  const resetAppMutation = useMutation({
+    mutationFn: api.resetApp,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast({
+        title: "App Reset",
+        description: "All data has been wiped. Refreshing page...",
+      });
+      setTimeout(() => window.location.reload(), 1000);
     },
   });
 
@@ -175,6 +200,99 @@ export default function Settings() {
           {updateSettingsMutation.isPending ? "Saving..." : "Save Configuration"}
         </Button>
       </div>
+
+      <Card className="bg-red-500/5 border-red-500/30 rounded-none">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-red-500" />
+            <CardTitle className="font-display text-red-500">Danger Zone</CardTitle>
+          </div>
+          <CardDescription>
+            These actions cannot be undone. Please be certain.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between p-4 border border-red-500/20 bg-red-500/5">
+            <div>
+              <h4 className="font-semibold text-foreground">Clear Entries</h4>
+              <p className="text-sm text-muted-foreground">
+                Clears all logs, stats, and processed URLs. Your RSS feeds and settings will be preserved.
+              </p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="border-red-500/50 text-red-500 hover:bg-red-500/10 rounded-none"
+                  disabled={clearEntriesMutation.isPending}
+                  data-testid="button-clear-entries"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {clearEntriesMutation.isPending ? "Clearing..." : "Clear Entries"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="rounded-none border-border bg-card">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear All Entries?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will delete all logs, reset statistics, and clear the list of processed URLs. 
+                    Your RSS feeds and settings will be kept.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="rounded-none">Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    className="bg-red-500 hover:bg-red-600 rounded-none"
+                    onClick={() => clearEntriesMutation.mutate()}
+                  >
+                    Clear Entries
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+          <div className="flex items-center justify-between p-4 border border-red-500/20 bg-red-500/5">
+            <div>
+              <h4 className="font-semibold text-foreground">Reset App</h4>
+              <p className="text-sm text-muted-foreground">
+                Wipes all data including feeds, logs, stats, settings, and processed URLs. Fresh start.
+              </p>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  className="rounded-none"
+                  disabled={resetAppMutation.isPending}
+                  data-testid="button-reset-app"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  {resetAppMutation.isPending ? "Resetting..." : "Reset App"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="rounded-none border-border bg-card">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Entire App?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete ALL data: feeds, logs, statistics, settings, and processed URLs. 
+                    The app will be restored to its initial state. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="rounded-none">Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    className="bg-red-500 hover:bg-red-600 rounded-none"
+                    onClick={() => resetAppMutation.mutate()}
+                  >
+                    Reset Everything
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

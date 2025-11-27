@@ -107,5 +107,26 @@ export async function registerRoutes(
     res.json({ message: "Scrape triggered" });
   });
 
+  // Clear entries (logs, stats, processed URLs) but keep feeds and settings
+  app.post("/api/clear-entries", async (_req, res) => {
+    await storage.clearEntries();
+    await storage.addLog({
+      level: "info",
+      message: "Entries cleared - logs, stats, and processed URLs reset",
+      source: "daemon",
+    });
+    log("Entries cleared by user", "daemon");
+    res.json({ success: true });
+  });
+
+  // Reset everything (full app reset)
+  app.post("/api/reset", async (_req, res) => {
+    await scraper.stop();
+    await storage.resetAll();
+    await scraper.start();
+    log("App reset - all data wiped", "daemon");
+    res.json({ success: true });
+  });
+
   return httpServer;
 }

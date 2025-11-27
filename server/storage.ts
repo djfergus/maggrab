@@ -33,6 +33,10 @@ export interface IStorage {
   // Processed URLs (deduplication)
   isProcessed(url: string): Promise<boolean>;
   markProcessed(url: string): Promise<void>;
+  
+  // Data management
+  clearEntries(): Promise<void>;
+  resetAll(): Promise<void>;
 }
 
 export class FileStorage implements IStorage {
@@ -166,6 +170,27 @@ export class FileStorage implements IStorage {
       const trimmed = processed.slice(-1000);
       await this.writeJSON(PROCESSED_FILE, trimmed);
     }
+  }
+
+  async clearEntries(): Promise<void> {
+    // Clear logs, stats, and processed URLs but keep feeds and settings
+    await this.writeJSON(LOGS_FILE, []);
+    await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
+    await this.writeJSON(PROCESSED_FILE, []);
+  }
+
+  async resetAll(): Promise<void> {
+    // Wipe everything
+    await this.writeJSON(FEEDS_FILE, []);
+    await this.writeJSON(LOGS_FILE, []);
+    await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
+    await this.writeJSON(SETTINGS_FILE, {
+      jdUrl: "http://localhost:3128",
+      jdUser: "",
+      jdDevice: "",
+      checkInterval: 15,
+    });
+    await this.writeJSON(PROCESSED_FILE, []);
   }
 }
 

@@ -64,4 +64,19 @@ export const api = {
     if (!res.ok) throw new Error("Failed to update settings");
     return res.json();
   },
+
+  // Data management
+  async clearEntries(): Promise<void> {
+    const res = await fetch(`${API_BASE}/clear-entries`, {
+      method: "POST",
+    });
+    if (!res.ok) throw new Error("Failed to clear entries");
+  },
+
+  async resetApp(): Promise<void> {
+    const res = await fetch(`${API_BASE}/reset`, {
+      method: "POST",
+    });
+    if (!res.ok) throw new Error("Failed to reset app");
+  },
 };
