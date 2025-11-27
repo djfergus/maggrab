@@ -1,4 +1,4 @@
-import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem } from "@shared/schema";
+import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -52,6 +52,13 @@ export const api = {
   async getExtracted(limit = 100): Promise<ExtractedItem[]> {
     const res = await fetch(`${API_BASE}/extracted?limit=${limit}`);
     if (!res.ok) throw new Error("Failed to fetch extracted items");
+    return res.json();
+  },
+
+  // Grabbed items (all RSS articles processed)
+  async getGrabbed(limit = 100): Promise<GrabbedItem[]> {
+    const res = await fetch(`${API_BASE}/grabbed?limit=${limit}`);
+    if (!res.ok) throw new Error("Failed to fetch grabbed items");
     return res.json();
   },
 

@@ -4,8 +4,18 @@
     "url": "https://downmagaz.net/business_magazine_economics/rss.xml",
     "interval": 15,
     "id": "8dbb6bf8-c645-4483-8e47-2fe9845f3086",
-    "lastChecked": 1764215057291,
+    "lastChecked": 1764215258939,
     "status": "idle",
     "totalFound": 699
+  },
+  {
+    "name": "Feed (rss.qwilio.com)",
+    "url": "https://rss.qwilio.com/api/query.php?user=rss&t=1p6gzFET5iOuvcQxdDpTJO&f=rss",
+    "interval": 15,
+    "id": "dcda16fe-0998-4d5e-ba5b-f2f74de55bc0",
+    "lastChecked": 1764215275168,
+    "status": "scraping",
+    "totalFound": 0
   }
+] }
 ]

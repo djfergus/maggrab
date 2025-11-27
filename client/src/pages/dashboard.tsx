@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import type { ExtractedItem } from "@shared/schema";
+import type { ExtractedItem, GrabbedItem } from "@shared/schema";
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [newFeedName, setNewFeedName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
+  const [isGrabbedModalOpen, setIsGrabbedModalOpen] = useState(false);
 
   const { data: feeds = [] } = useQuery({
     queryKey: ["feeds"],
@@ -33,6 +34,12 @@ export default function Dashboard() {
   const { data: extractedItems = [], refetch: refetchExtracted } = useQuery({
     queryKey: ["extracted"],
     queryFn: () => api.getExtracted(100),
+    staleTime: 30000,
+  });
+
+  const { data: grabbedItems = [] } = useQuery({
+    queryKey: ["grabbed"],
+    queryFn: () => api.getGrabbed(100),
     staleTime: 30000,
   });
 
@@ -161,6 +168,8 @@ export default function Dashboard() {
           value={(stats?.totalScraped || 0).toLocaleString()} 
           icon={Activity} 
           color="text-blue-400"
+          onClick={() => setIsGrabbedModalOpen(true)}
+          clickable
         />
         <StatCard 
           label="Links Extracted" 
@@ -202,6 +211,37 @@ export default function Dashboard() {
                 </div>
                 {extractedItems.map((item) => (
                   <ExtractedItemRow key={item.id} item={item} />
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Grabbed Items Modal */}
+      <Dialog open={isGrabbedModalOpen} onOpenChange={setIsGrabbedModalOpen}>
+        <DialogContent className="bg-card border-border rounded-none max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Activity className="h-5 w-5 text-blue-400" />
+              Items Grabbed ({grabbedItems.length})
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[60vh]">
+            {grabbedItems.length === 0 ? (
+              <div className="text-center text-muted-foreground py-12">
+                No items grabbed yet. Add a feed and wait for the grabber to process articles.
+              </div>
+            ) : (
+              <div className="border border-border bg-secondary/20">
+                <div className="flex items-center gap-3 py-1.5 px-3 bg-muted/30 border-b border-border text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="w-16 text-center">Status</span>
+                  <span className="w-24">Feed</span>
+                  <span className="flex-1">Title</span>
+                  <span className="w-14 text-right">Time</span>
+                </div>
+                {grabbedItems.map((item) => (
+                  <GrabbedItemRow key={item.id} item={item} />
                 ))}
               </div>
             )}
@@ -347,18 +387,18 @@ function StatCard({ label, value, icon: Icon, color = "text-primary", onClick, c
   );
 }
 
-function ExtractedItemRow({ item }: { item: ExtractedItem }) {
-  const timeAgo = (timestamp: number) => {
-    const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    if (seconds < 60) return `${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
-  };
+function timeAgo(timestamp: number) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
 
+function ExtractedItemRow({ item }: { item: ExtractedItem }) {
   return (
     <div className="flex items-center gap-3 py-2 px-3 hover:bg-secondary/30 border-b border-border/50 last:border-b-0" data-testid={`extracted-item-${item.id}`}>
       <span className="text-[9px] font-mono px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase flex-shrink-0 w-20 text-center truncate">
@@ -375,6 +415,35 @@ function ExtractedItemRow({ item }: { item: ExtractedItem }) {
         title={item.downloadUrl}
       >
         {item.downloadUrl.replace(/^https?:\/\//, '')}
+      </a>
+      <span className="text-[10px] text-muted-foreground flex-shrink-0 w-14 text-right">
+        {timeAgo(item.timestamp)}
+      </span>
+    </div>
+  );
+}
+
+function GrabbedItemRow({ item }: { item: GrabbedItem }) {
+  return (
+    <div className="flex items-center gap-3 py-2 px-3 hover:bg-secondary/30 border-b border-border/50 last:border-b-0" data-testid={`grabbed-item-${item.id}`}>
+      <span className={`text-[9px] font-mono px-1.5 py-0.5 uppercase flex-shrink-0 w-16 text-center ${
+        item.hasDownload 
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+          : 'bg-muted/50 text-muted-foreground border border-border'
+      }`}>
+        {item.hasDownload ? 'Found' : 'No Link'}
+      </span>
+      <span className="text-[10px] font-mono text-muted-foreground truncate w-24" title={item.feedName}>
+        {item.feedName}
+      </span>
+      <a
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-white truncate flex-1 hover:text-primary hover:underline"
+        title={item.title}
+      >
+        {item.title}
       </a>
       <span className="text-[10px] text-muted-foreground flex-shrink-0 w-14 text-right">
         {timeAgo(item.timestamp)}
