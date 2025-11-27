@@ -61,3 +61,18 @@ export const extractedItemSchema = z.object({
 export const insertExtractedItemSchema = extractedItemSchema.omit({ id: true, timestamp: true });
 export type InsertExtractedItem = z.infer<typeof insertExtractedItemSchema>;
 export type ExtractedItem = z.infer<typeof extractedItemSchema>;
+
+export const grabbedItemSchema = z.object({
+  id: z.string(),
+  feedId: z.string(),
+  feedName: z.string(),
+  title: z.string(),
+  link: z.string(),
+  pubDate: z.string().nullable(),
+  hasDownload: z.boolean().default(false),
+  timestamp: z.number(),
+});
+
+export const insertGrabbedItemSchema = grabbedItemSchema.omit({ id: true, timestamp: true });
+export type InsertGrabbedItem = z.infer<typeof insertGrabbedItemSchema>;
+export type GrabbedItem = z.infer<typeof grabbedItemSchema>;
