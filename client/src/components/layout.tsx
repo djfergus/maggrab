@@ -21,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Activity className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-display font-bold text-xl tracking-tight text-white">MAGSCRAPE</h1>
+              <h1 className="font-display font-bold text-xl tracking-tight text-white">MAGGRAB</h1>
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">v0.1.0-beta</p>
             </div>
           </div>

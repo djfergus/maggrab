@@ -16,7 +16,7 @@ export class Scraper {
     
     await storage.addLog({
       level: "info",
-      message: "Daemon started - Magscrape v0.1.0",
+      message: "Daemon started - Maggrab v0.1.0",
       source: "daemon",
     });
 

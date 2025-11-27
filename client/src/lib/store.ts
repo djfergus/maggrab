@@ -122,7 +122,7 @@ export const useStore = create<AppState>()(
       }))
     }),
     {
-      name: 'magscrape-storage',
+      name: 'maggrab-storage',
     }
   )
 );

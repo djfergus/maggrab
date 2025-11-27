@@ -125,7 +125,7 @@ export default function Settings() {
             <Label htmlFor="dbPath">Database Path</Label>
             <Input 
               id="dbPath" 
-              value="/data/magscrape.db"
+              value="/data/maggrab.db"
               disabled
               className="bg-secondary/30 rounded-none border-input font-mono text-muted-foreground cursor-not-allowed"
             />
