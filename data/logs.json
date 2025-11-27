@@ -1,6 +1,13 @@
 [
   {
     "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "74401134-47e9-4bfa-9c31-efbdda976efe",
+    "timestamp": 1764225728907
+  },
+  {
+    "level": "info",
     "message": "Feed removed: 5e8832e1-cc4b-4dad-86a1-21c828cb9eb6",
     "source": "daemon",
     "id": "d79bfdc3-1b35-4a18-b2a2-b14a7522b4a4",
