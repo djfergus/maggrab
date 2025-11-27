@@ -1,6 +1,27 @@
 [
   {
     "level": "info",
+    "message": "Settings updated",
+    "source": "daemon",
+    "id": "0bf316dc-faa7-45d3-9f83-fab01228e0de",
+    "timestamp": 1764218062621
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "c389d052-8a16-455a-8789-80cdf5e50e49",
+    "timestamp": 1764218048095
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "a39cf798-bf88-4de7-b136-7b39d2998567",
+    "timestamp": 1764218047717
+  },
+  {
+    "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
     "id": "a88f0573-1a16-4d53-ba0e-a340024374d3",
@@ -677,26 +698,5 @@
     "source": "grabber",
     "id": "afd0d067-1316-403d-9509-b2e373010468",
     "timestamp": 1764216148486
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "743a3b16-5f7a-4da3-b91f-356194c766d2",
-    "timestamp": 1764216148305
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Thermal Control Business Update - 11.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "1be3300c-3ba1-4326-b674-d5a7a62dd59e",
-    "timestamp": 1764216148301
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "cf1cdc83-3d20-4542-9f14-50779b0e2b7d",
-    "timestamp": 1764216148120
   }
 ]
