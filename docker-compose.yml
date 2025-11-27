@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  maggrab:
+    build: .
+    container_name: maggrab
+    restart: unless-stopped
+    ports:
+      - "45001:45001"
+    environment:
+      - NODE_ENV=production
+      - PORT=45001
+      - DATA_DIR=/app/data
+      - MYJD_EMAIL=${MYJD_EMAIL}
+      - MYJD_PASSWORD=${MYJD_PASSWORD}
+    volumes:
+      - maggrab_data:/app/data
+
+volumes:
+  maggrab_data:

@@ -1,0 +1,13 @@
+node_modules
+dist
+data
+.git
+.gitignore
+*.md
+.env
+.env.*
+.replit
+replit.nix
+.upm
+.config
+*.log

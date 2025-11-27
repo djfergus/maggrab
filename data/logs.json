@@ -3,6 +3,27 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (0 already processed, 30 filtered out)",
     "source": "grabber",
+    "id": "ede77de1-4142-4cb5-bd30-071b09bde47f",
+    "timestamp": 1764223372302
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "503b5024-d905-48a9-896a-a9e87e674578",
+    "timestamp": 1764223371226
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "296b4005-d821-4aa3-a383-fb1d3f43db69",
+    "timestamp": 1764223371194
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (0 already processed, 30 filtered out)",
+    "source": "grabber",
     "id": "6cdb5c8f-b700-40eb-8ef4-52d3758769a0",
     "timestamp": 1764223061126
   },
