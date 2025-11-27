@@ -1,12 +1,1 @@
-[
-  {
-    "name": "Feed (downmagaz.net)",
-    "url": "https://downmagaz.net/business_magazine_economics/rss.xml",
-    "filter": "Economist Audio",
-    "interval": 15,
-    "id": "5e8832e1-cc4b-4dad-86a1-21c828cb9eb6",
-    "lastChecked": 1764224169572,
-    "status": "idle",
-    "totalFound": 0
-  }
-]
+[]

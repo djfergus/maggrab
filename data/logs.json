@@ -1,6 +1,27 @@
 [
   {
     "level": "info",
+    "message": "Feed removed: 5e8832e1-cc4b-4dad-86a1-21c828cb9eb6",
+    "source": "daemon",
+    "id": "d79bfdc3-1b35-4a18-b2a2-b14a7522b4a4",
+    "timestamp": 1764225268768
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (0 already processed, 30 filtered out)",
+    "source": "grabber",
+    "id": "5fa9bf9e-0fe0-4f9e-875d-288dd4a6c1f1",
+    "timestamp": 1764225070614
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "3f216d79-fdf1-4855-97f3-c7b13a5b34d0",
+    "timestamp": 1764225069574
+  },
+  {
+    "level": "info",
     "message": "No new items in Feed (downmagaz.net) (0 already processed, 30 filtered out)",
     "source": "grabber",
     "id": "8dc53464-bad9-4032-9b19-287d3bfa8ce2",
