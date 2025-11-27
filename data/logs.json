@@ -1,51 +1,128 @@
 [
   {
     "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
+    "message": "Feed removed: accebd18-bcf3-4f4b-8377-1c194f433e12",
     "source": "daemon",
-    "id": "f4bc4c7e-863f-4827-ae44-8aa487c04110",
-    "timestamp": 1764222259851
+    "id": "1ed8d4fa-0b9a-4631-ac88-dd2586dcbbf0",
+    "timestamp": 1764222459810
   },
   {
     "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "19bb7aea-844b-41e6-90c7-e24a4f4dcce0",
-    "timestamp": 1764222244463
-  },
-  {
-    "level": "info",
-    "message": "Feed removed: fee1ed53-3621-4068-a186-60def0d7f5c8",
-    "source": "daemon",
-    "id": "75ec57e0-b27f-4a63-965f-beaf80de482c",
-    "timestamp": 1764222242982
-  },
-  {
-    "level": "error",
-    "message": "Error grabbing Feed (downmagaz.net): Attribute without value\nLine: 21\nColumn: 122\nChar: >",
+    "message": "No new items in Feed (downmagaz.net) (2 already processed, 28 filtered out)",
     "source": "grabber",
-    "id": "4075dcfd-12b5-4851-8822-483e542c0d38",
-    "timestamp": 1764222183816
+    "id": "51812366-a212-4291-ae64-b90e07e99cd0",
+    "timestamp": 1764222455465
   },
   {
     "level": "info",
     "message": "Starting grab job for feed: Feed (downmagaz.net)",
     "source": "grabber",
-    "id": "fd5393a3-0054-4f2c-8bba-e6f799bb9f23",
-    "timestamp": 1764222183434
+    "id": "bc0767be-e693-4e02-b7c1-8a4d82c6249d",
+    "timestamp": 1764222455089
   },
   {
     "level": "info",
     "message": "New feed added: Feed (downmagaz.net)",
     "source": "daemon",
-    "id": "c0814ec8-5525-4c43-9d2d-297ce0fca568",
-    "timestamp": 1764222183432
+    "id": "cba4c749-5ab5-49a3-989e-4c0568543d70",
+    "timestamp": 1764222455086
+  },
+  {
+    "level": "info",
+    "message": "Feed removed: 09f682d2-d887-4e87-9bc2-35610cde3ddc",
+    "source": "daemon",
+    "id": "4ab4c2b4-99b7-4a00-93ba-971d744db51d",
+    "timestamp": 1764222439527
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Business Today - 12.7.2025",
+    "source": "jdownloader",
+    "id": "2f7b6312-e919-419c-804e-7df3e0d20cfc",
+    "timestamp": 1764222398732
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Business Today - 12.7.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "9b2ba3ac-45e9-4d6e-9dd2-2fc319c1c46e",
+    "timestamp": 1764222398226
+  },
+  {
+    "level": "success",
+    "message": "Found 1 new items in Feed (downmagaz.net) (1 already processed, 28 filtered out)",
+    "source": "grabber",
+    "id": "d20f6bb8-2e12-4b18-9ddd-8961aaa63f52",
+    "timestamp": 1764222398050
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "37a2526a-d7e8-4e1c-b5cd-25c16d877e20",
+    "timestamp": 1764222397060
+  },
+  {
+    "level": "info",
+    "message": "New feed added: Feed (downmagaz.net)",
+    "source": "daemon",
+    "id": "c0b679f9-edcf-461f-9955-8e33b63cb676",
+    "timestamp": 1764222397058
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: The Economist USA - 11.22.2025",
+    "source": "jdownloader",
+    "id": "2b345662-ac70-4e37-8c34-e292a1856bfd",
+    "timestamp": 1764222331395
+  },
+  {
+    "level": "info",
+    "message": "Using JDownloader device: unraid",
+    "source": "jdownloader",
+    "id": "53e5d40e-d621-4b1d-b477-423ccfe6f798",
+    "timestamp": 1764222318803
+  },
+  {
+    "level": "success",
+    "message": "Connected to MyJDownloader",
+    "source": "jdownloader",
+    "id": "ccc879d3-436e-4320-a8df-e55e17d18017",
+    "timestamp": 1764222318696
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: The Economist USA - 11.22.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "2429a867-d8a6-4c1f-a25f-a19c443ff7f5",
+    "timestamp": 1764222318261
+  },
+  {
+    "level": "success",
+    "message": "Found 1 new items in Feed (downmagaz.net) (0 already processed, 29 filtered out)",
+    "source": "grabber",
+    "id": "3a9b89f7-1f6b-4f64-95f2-3bee296642a7",
+    "timestamp": 1764222318053
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "b1381b9e-9615-4ce3-ac02-7d4ea25ea234",
+    "timestamp": 1764222317829
+  },
+  {
+    "level": "info",
+    "message": "New feed added: Feed (downmagaz.net)",
+    "source": "daemon",
+    "id": "2c90f494-33e6-4543-b913-e5bafca9d019",
+    "timestamp": 1764222317826
   },
   {
     "level": "info",
     "message": "Daemon started - Maggrab v0.1.0",
     "source": "daemon",
-    "id": "e3bccb27-d4b9-4b6f-9660-b802b2af1d32",
-    "timestamp": 1764222138552
+    "id": "498ba1ec-f836-42b3-bda0-842a7fb3f89b",
+    "timestamp": 1764222278226
   }
 ]
