@@ -3,6 +3,27 @@
     "level": "info",
     "message": "No new items in Feed (downmagaz.net) (30 already processed)",
     "source": "grabber",
+    "id": "ef3d9bd7-3e3d-4130-aa3f-1a50ff299103",
+    "timestamp": 1764218654367
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "d73fbbc6-fe36-4bc5-9cf8-962d921ae704",
+    "timestamp": 1764218653313
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "d2c73f2e-380a-4751-924d-6c1eac42da71",
+    "timestamp": 1764218653277
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
     "id": "df484041-14f9-4d6c-a117-508c72fbbac1",
     "timestamp": 1764218450223
   },
@@ -677,26 +698,5 @@
     "source": "daemon",
     "id": "5e83775f-6688-40fa-a4f9-8dab5ee28eff",
     "timestamp": 1764216493330
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "0155c21c-5352-4c3c-a9a0-09980ac8fd7d",
-    "timestamp": 1764216149343
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 link(s) from: Inside Housing - 11.2025 - using nfile.cc",
-    "source": "grabber",
-    "id": "2d97833e-4e56-44c1-a1ad-f2778742070b",
-    "timestamp": 1764216149340
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "a2ab545d-8c05-42b5-ba9b-a4fabb99afa5",
-    "timestamp": 1764216149174
   }
 ]
