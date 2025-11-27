@@ -39,6 +39,7 @@ export interface IStorage {
   // Extracted items
   getExtractedItems(limit?: number): Promise<ExtractedItem[]>;
   addExtractedItem(item: InsertExtractedItem): Promise<ExtractedItem>;
+  markExtractedItemSubmitted(id: string): Promise<boolean>;
   
   // Grabbed items (all RSS items processed)
   getGrabbedItems(limit?: number): Promise<GrabbedItem[]>;
@@ -152,12 +153,33 @@ export class FileStorage implements IStorage {
   }
 
   async getSettings(): Promise<Settings> {
-    return this.readJSON<Settings>(SETTINGS_FILE, {
-      jdUrl: "http://localhost:3128",
-      jdUser: "",
+    const defaults: Settings = {
+      jdEmail: "",
+      jdPassword: "",
       jdDevice: "",
       checkInterval: 15,
-    });
+    };
+    
+    const stored = await this.readJSON<any>(SETTINGS_FILE, {});
+    
+    // Migrate legacy fields (jdUrl, jdUser) to new schema
+    const migrated: Partial<Settings> = {};
+    if (stored.jdUser && !stored.jdEmail) {
+      migrated.jdEmail = stored.jdUser;
+    }
+    
+    // Merge defaults with stored values, preferring new fields
+    const settings: Settings = {
+      ...defaults,
+      ...stored,
+      ...migrated,
+    };
+    
+    // Remove legacy fields if present
+    delete (settings as any).jdUrl;
+    delete (settings as any).jdUser;
+    
+    return settings;
   }
 
   async updateSettings(updates: Partial<Settings>): Promise<Settings> {
@@ -200,6 +222,16 @@ export class FileStorage implements IStorage {
     return item;
   }
 
+  async markExtractedItemSubmitted(id: string): Promise<boolean> {
+    const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+    const index = items.findIndex(item => item.id === id);
+    if (index === -1) return false;
+    
+    items[index] = { ...items[index], submitted: true };
+    await this.writeJSON(EXTRACTED_FILE, items);
+    return true;
+  }
+
   async getGrabbedItems(limit = 500): Promise<GrabbedItem[]> {
     const items = await this.readJSON<GrabbedItem[]>(GRABBED_FILE, []);
     return items.slice(0, limit);
@@ -233,8 +265,8 @@ export class FileStorage implements IStorage {
     await this.writeJSON(LOGS_FILE, []);
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
     await this.writeJSON(SETTINGS_FILE, {
-      jdUrl: "http://localhost:3128",
-      jdUser: "",
+      jdEmail: "",
+      jdPassword: "",
       jdDevice: "",
       checkInterval: 15,
     });

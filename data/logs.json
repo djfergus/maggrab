@@ -1,5 +1,250 @@
 [
   {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "d114efa1-cbe3-4cc0-87f4-0bb43e8ac4a6",
+    "timestamp": 1764216827417
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "68c1f457-4450-45c2-969b-04e4316953a5",
+    "timestamp": 1764216827092
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "1684f088-93e8-4d60-b3c9-0b7bff6036ae",
+    "timestamp": 1764216827051
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "36cc62bd-e16a-457b-8362-e9246ce71ca5",
+    "timestamp": 1764216777973
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "49e84c93-8eac-426f-9316-86d8e2be312c",
+    "timestamp": 1764216777493
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "63725c08-5db9-4fcc-b946-e9d229c7c1d1",
+    "timestamp": 1764216777458
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "99de8989-4970-4ca1-886d-0d535e26f244",
+    "timestamp": 1764216738282
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "a5d13690-d7c8-4348-97a0-b2376535d0df",
+    "timestamp": 1764216738036
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "da97a666-6f99-4b17-8d13-b184cb9186b0",
+    "timestamp": 1764216737979
+  },
+  {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "02cca626-a82f-45bc-950b-5650d9a963e9",
+    "timestamp": 1764216650672
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "9390a7f1-190b-4098-925e-c5ac1ea15f1c",
+    "timestamp": 1764216650388
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "0d7125ae-1190-4eda-957c-344cb744562a",
+    "timestamp": 1764216650369
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "15d1d2f2-d56c-430e-bff2-aef30c323f16",
+    "timestamp": 1764216609130
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Newsweek USA - 11.28.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "e2bef2f5-c52b-4cb1-a3d2-ea801b62f9b3",
+    "timestamp": 1764216609123
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "0c289cb7-4bcf-4378-bbff-e55df3e53041",
+    "timestamp": 1764216608948
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Open - 1.12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "bf99a5cd-6e73-44d5-89c9-a26035775fdc",
+    "timestamp": 1764216608946
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "f08a9022-2948-4ffe-aab8-27037eb0e3cb",
+    "timestamp": 1764216608767
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Forbes ME - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "81fa958a-4773-43ea-896e-1b64a49d08d6",
+    "timestamp": 1764216608765
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "eaccf1c1-d2d7-4319-95dd-ab75ecd6c47e",
+    "timestamp": 1764216608594
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Inbound Logistics - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "50961fae-8ef4-4366-8489-ec93df5e421c",
+    "timestamp": 1764216608590
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "a48504a6-b234-4815-8452-a88c4bba0ddd",
+    "timestamp": 1764216608420
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: National Review - 01.2026 - using nfile.cc",
+    "source": "grabber",
+    "id": "883ecc45-a7aa-4a1e-ade5-73cc1623cdec",
+    "timestamp": 1764216608417
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "2b72f9f4-bfe0-4eac-a29d-a341402a29c5",
+    "timestamp": 1764216608239
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: India Today - 1.12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "492e3399-ac2b-4ece-a35f-8a3c086e1130",
+    "timestamp": 1764216608235
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "8680f53f-6dfa-4114-b4aa-2a9b56b36b88",
+    "timestamp": 1764216607509
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: InBound Sauth Africa Business - 10.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "9f9f3ef1-8e0f-4492-a73f-305cad78c4f4",
+    "timestamp": 1764216607005
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "705afac1-5cad-4e12-a133-cb68b3ce1b28",
+    "timestamp": 1764216606761
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: InBound Sauth Africa Business - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "a5956a9f-4ae4-4a47-b1f0-b2bf419aa2c5",
+    "timestamp": 1764216606759
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "6dbb2baf-c237-4542-805a-f431633b0366",
+    "timestamp": 1764216606591
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Investors India - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "d5ffa00e-ea2f-4c67-97da-5abb116c763d",
+    "timestamp": 1764216606588
+  },
+  {
+    "level": "warn",
+    "message": "MyJDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "121f5b20-c0ae-4f72-b2a4-bde80651076c",
+    "timestamp": 1764216606415
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Hotelier IN - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "1784cb44-2a46-4eb6-a4fc-f92818b3705c",
+    "timestamp": 1764216606411
+  },
+  {
+    "level": "success",
+    "message": "Found 10 new items in Feed (downmagaz.net) (20 already processed)",
+    "source": "grabber",
+    "id": "5ca1c6e2-a7fe-4fb5-b5ae-82129f96c2a1",
+    "timestamp": 1764216606166
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "a16bcacb-eaad-4a6f-96dc-abc43877bb39",
+    "timestamp": 1764216605242
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "4c9ece21-d448-450c-8cff-1b49179717cf",
+    "timestamp": 1764216605220
+  },
+  {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",

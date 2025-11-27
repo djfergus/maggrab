@@ -2,6 +2,106 @@
   {
     "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
     "feedName": "Feed (downmagaz.net)",
+    "title": "Newsweek USA - 11.28.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453102-newsweek-usa-11282025.html",
+    "pubDate": "Fri, 21 Nov 2025 22:06:12 +0000",
+    "hasDownload": true,
+    "id": "021b247c-8232-46aa-92a9-16a6cb20a02d",
+    "timestamp": 1764216609122
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Open - 1.12.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453277-open-1122025.html",
+    "pubDate": "Sat, 22 Nov 2025 12:15:47 +0000",
+    "hasDownload": true,
+    "id": "60c69b83-836a-4b3a-9bf6-fae54d418a3a",
+    "timestamp": 1764216608945
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Forbes ME - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453278-forbes-me-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 12:16:54 +0000",
+    "hasDownload": true,
+    "id": "a5aacbdf-16d0-48aa-b94d-008b61680c00",
+    "timestamp": 1764216608764
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Inbound Logistics - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453291-inbound-logistics-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 13:15:39 +0000",
+    "hasDownload": true,
+    "id": "26b6e5dd-15a8-4e14-8fc6-61fb85f41c53",
+    "timestamp": 1764216608589
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "National Review - 01.2026",
+    "link": "https://downmagaz.net/business_magazine_economics/453118-national-review-012026.html",
+    "pubDate": "Sat, 22 Nov 2025 13:19:41 +0000",
+    "hasDownload": true,
+    "id": "ec3be56c-db01-4d73-a062-a349c6f95e56",
+    "timestamp": 1764216608412
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "India Today - 1.12.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453300-india-today-1122025.html",
+    "pubDate": "Sat, 22 Nov 2025 13:30:35 +0000",
+    "hasDownload": true,
+    "id": "3d3e1821-f06c-411d-9968-4923e4920eef",
+    "timestamp": 1764216608234
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "InBound Sauth Africa Business - 10.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453309-inbound-sauth-africa-business-102025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:10:29 +0000",
+    "hasDownload": true,
+    "id": "810c2ad6-6ce7-453a-9c72-2a43e9454310",
+    "timestamp": 1764216606978
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "InBound Sauth Africa Business - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453310-inbound-sauth-africa-business-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:11:57 +0000",
+    "hasDownload": true,
+    "id": "ef044da0-6d25-4694-8a05-bbeb7cd725c1",
+    "timestamp": 1764216606758
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Investors India - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453313-investors-india-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:15:41 +0000",
+    "hasDownload": true,
+    "id": "2e26df7c-24bd-4fac-8ef2-25ba4d0b14b8",
+    "timestamp": 1764216606587
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Hotelier IN - 11.2025",
+    "link": "https://downmagaz.net/business_magazine_economics/453314-hotelier-in-112025.html",
+    "pubDate": "Sat, 22 Nov 2025 14:16:47 +0000",
+    "hasDownload": true,
+    "id": "a95de512-0bf1-476b-aaa8-a5aac7480279",
+    "timestamp": 1764216606409
+  },
+  {
+    "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
+    "feedName": "Feed (downmagaz.net)",
     "title": "India Legal - 11.24.2025",
     "link": "https://downmagaz.net/business_magazine_economics/453315-india-legal-11242025.html",
     "pubDate": "Sat, 22 Nov 2025 14:17:45 +0000",

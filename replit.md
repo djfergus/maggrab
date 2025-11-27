@@ -42,7 +42,7 @@ The application uses a file-based storage system implemented in `server/storage.
 - **Feeds:** RSS feed sources with URL, name, check interval, status tracking, and total items found
 - **Logs:** System events with timestamp, severity level, message, and source (daemon/scraper/jdownloader)
 - **Stats:** Aggregate metrics (totalScraped, linksFound, submitted)
-- **Settings:** JDownloader connection configuration and global check intervals
+- **Settings:** MyJDownloader cloud service credentials (email/password/device) and global check intervals
 
 **Schemas:**
 Zod schemas in `shared/schema.ts` provide runtime validation and TypeScript type inference for all data models, ensuring type safety across client and server boundaries.
@@ -63,8 +63,17 @@ Background service (`server/scraper.ts`) that:
 - Maintains scheduled intervals for each feed using Node.js timers
 - Parses RSS feeds using the `rss-parser` library
 - Extracts HTML content with Cheerio for link extraction
+- Decodes base64-encoded redirect URLs (downmagaz.net pattern)
+- Submits download links to JDownloader via MyJDownloader cloud API
 - Updates feed status and statistics in real-time
 - Logs all operations for monitoring
+
+**MyJDownloader Integration:**
+Uses the `jdownloader-api` npm package to connect to the MyJDownloader cloud service:
+- Authenticates with email/password credentials configured in settings
+- Lists available JDownloader devices and selects preferred or first available
+- Submits extracted download links with autostart enabled
+- Tracks connection state and automatically reconnects on failure
 
 **Request Logging:**
 Custom middleware in `server/index.ts` logs all API requests with timing information, providing observability for debugging and monitoring.

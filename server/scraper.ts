@@ -4,7 +4,14 @@ import axios from "axios";
 import { storage } from "./storage";
 import { log } from "./index";
 
+// @ts-ignore - jdownloader-api doesn't have type definitions
+import jdownloaderAPI from "jdownloader-api";
+
 const parser = new Parser();
+
+// Track JDownloader connection state
+let jdConnected = false;
+let jdDeviceId: string | null = null;
 
 export class Scraper {
   private intervals: Map<string, NodeJS.Timeout> = new Map();
@@ -162,7 +169,7 @@ export class Scraper {
               });
               
               // Store the preferred link as an extracted item
-              await storage.addExtractedItem({
+              const extractedItem = await storage.addExtractedItem({
                 feedId,
                 articleTitle,
                 articleUrl: item.link,
@@ -174,7 +181,7 @@ export class Scraper {
               await storage.incrementStat("linksFound");
               
               // Only submit the preferred link to JDownloader
-              await this.submitToJDownloader(preferredLink.url, articleTitle);
+              await this.submitToJDownloader(preferredLink.url, articleTitle, extractedItem.id);
             }
             // Mark this item as processed (even if no links found)
             await storage.markProcessed(item.link);
@@ -284,21 +291,132 @@ export class Scraper {
     }
   }
 
-  private async submitToJDownloader(url: string, articleTitle: string) {
+  private async disconnectJD(): Promise<void> {
+    try {
+      if (jdConnected) {
+        await jdownloaderAPI.disconnect();
+      }
+    } catch {
+      // Ignore disconnect errors
+    } finally {
+      jdConnected = false;
+      jdDeviceId = null;
+    }
+  }
+
+  private async ensureJDConnection(): Promise<boolean> {
+    const settings = await storage.getSettings();
+    
+    if (!settings.jdEmail || !settings.jdPassword) {
+      return false;
+    }
+
+    // Already connected
+    if (jdConnected && jdDeviceId) {
+      return true;
+    }
+
+    try {
+      // Connect to MyJDownloader
+      await jdownloaderAPI.connect(settings.jdEmail, settings.jdPassword);
+      jdConnected = true;
+
+      await storage.addLog({
+        level: "success",
+        message: "Connected to MyJDownloader",
+        source: "jdownloader",
+      });
+      log("Connected to MyJDownloader", "jdownloader");
+
+      // Get available devices
+      let devices;
+      try {
+        devices = await jdownloaderAPI.listDevices();
+      } catch (deviceError: any) {
+        await storage.addLog({
+          level: "error",
+          message: `Failed to list devices: ${deviceError.message}`,
+          source: "jdownloader",
+        });
+        await this.disconnectJD();
+        return false;
+      }
+      
+      if (!devices || devices.length === 0) {
+        await storage.addLog({
+          level: "error",
+          message: "No JDownloader devices found. Make sure JDownloader is running.",
+          source: "jdownloader",
+        });
+        await this.disconnectJD();
+        return false;
+      }
+
+      // Use specified device or first available
+      if (settings.jdDevice) {
+        const targetDevice = devices.find((d: any) => 
+          d.name?.toLowerCase() === settings.jdDevice.toLowerCase() ||
+          d.id === settings.jdDevice
+        );
+        if (targetDevice) {
+          jdDeviceId = targetDevice.id;
+        } else {
+          await storage.addLog({
+            level: "warn",
+            message: `Device "${settings.jdDevice}" not found, using first available: ${devices[0].name}`,
+            source: "jdownloader",
+          });
+          jdDeviceId = devices[0].id;
+        }
+      } else {
+        jdDeviceId = devices[0].id;
+        await storage.addLog({
+          level: "info",
+          message: `Using JDownloader device: ${devices[0].name}`,
+          source: "jdownloader",
+        });
+      }
+
+      return true;
+    } catch (error: any) {
+      await this.disconnectJD();
+      await storage.addLog({
+        level: "error",
+        message: `Failed to connect to MyJDownloader: ${error.message}`,
+        source: "jdownloader",
+      });
+      log(`MyJDownloader connection failed: ${error.message}`, "jdownloader");
+      return false;
+    }
+  }
+
+  private async submitToJDownloader(url: string, articleTitle: string, extractedItemId?: string) {
     try {
       const settings = await storage.getSettings();
       
-      if (!settings.jdUrl || !settings.jdUser) {
+      if (!settings.jdEmail || !settings.jdPassword) {
         await storage.addLog({
           level: "warn",
-          message: "JDownloader not configured, skipping submission",
+          message: "MyJDownloader not configured, skipping submission",
           source: "jdownloader",
         });
         return;
       }
 
-      // This is a placeholder - actual JD2 API integration would go here
-      // For now, just log it
+      // Ensure we're connected
+      const connected = await this.ensureJDConnection();
+      if (!connected || !jdDeviceId) {
+        await storage.addLog({
+          level: "error",
+          message: "Cannot submit - not connected to MyJDownloader",
+          source: "jdownloader",
+        });
+        return;
+      }
+
+      // Add link to JDownloader with autostart enabled
+      await jdownloaderAPI.addLinks(url, jdDeviceId, true);
+
       await storage.addLog({
         level: "success",
         message: `Submitted to JDownloader: ${articleTitle}`,
@@ -307,8 +425,16 @@ export class Scraper {
       
       await storage.incrementStat("submitted");
       
+      // Mark the extracted item as submitted
+      if (extractedItemId) {
+        await storage.markExtractedItemSubmitted(extractedItemId);
+      }
+      
       log(`Submitted to JDownloader: ${url}`, "grabber");
     } catch (error: any) {
+      // Reset connection state on error to force reconnect
+      await this.disconnectJD();
+      
       await storage.addLog({
         level: "error",
         message: `Failed to submit to JDownloader: ${error.message}`,

@@ -5,9 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Save, ShieldAlert, Server, HardDrive, Trash2, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+
+const defaultSettings = {
+  jdEmail: "",
+  jdPassword: "",
+  jdDevice: "",
+  checkInterval: 15,
+};
 
 export default function Settings() {
   const { toast } = useToast();
@@ -18,12 +25,19 @@ export default function Settings() {
     queryFn: api.getSettings,
   });
 
-  const [formData, setFormData] = useState(settings || {
-    jdUrl: "",
-    jdUser: "",
-    jdDevice: "",
-    checkInterval: 15,
-  });
+  const [formData, setFormData] = useState(defaultSettings);
+  
+  // Sync formData with settings when loaded
+  useEffect(() => {
+    if (settings) {
+      setFormData({
+        jdEmail: settings.jdEmail ?? "",
+        jdPassword: settings.jdPassword ?? "",
+        jdDevice: settings.jdDevice ?? "",
+        checkInterval: settings.checkInterval ?? 15,
+      });
+    }
+  }, [settings]);
 
   const updateSettingsMutation = useMutation({
     mutationFn: api.updateSettings,
@@ -66,11 +80,6 @@ export default function Settings() {
     updateSettingsMutation.mutate(formData);
   };
 
-  // Update form data when settings load
-  if (settings && formData.jdUrl === "" && settings.jdUrl !== "") {
-    setFormData(settings);
-  }
-
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="mb-8">
@@ -82,44 +91,52 @@ export default function Settings() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Server className="h-5 w-5 text-primary" />
-            <CardTitle className="font-display">JDownloader 2 API</CardTitle>
+            <CardTitle className="font-display">MyJDownloader</CardTitle>
           </div>
           <CardDescription>
-            Connection details for your JDownloader instance.
+            Connect to your JDownloader via the MyJDownloader cloud service.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-2">
-            <Label htmlFor="jdUrl">API Endpoint URL</Label>
+            <Label htmlFor="jdEmail">MyJDownloader Email</Label>
             <Input 
-              id="jdUrl" 
-              value={formData.jdUrl}
-              onChange={(e) => setFormData({ ...formData, jdUrl: e.target.value })}
-              className="bg-background/50 rounded-none border-input font-mono"
-              data-testid="input-jd-url"
+              id="jdEmail" 
+              type="email"
+              placeholder="your-email@example.com"
+              value={formData.jdEmail}
+              onChange={(e) => setFormData({ ...formData, jdEmail: e.target.value })}
+              className="bg-background/50 rounded-none border-input"
+              data-testid="input-jd-email"
             />
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="jdUser">MyJDownloader Email</Label>
+              <Label htmlFor="jdPassword">MyJDownloader Password</Label>
               <Input 
-                id="jdUser" 
-                value={formData.jdUser}
-                onChange={(e) => setFormData({ ...formData, jdUser: e.target.value })}
+                id="jdPassword" 
+                type="password"
+                placeholder="••••••••"
+                value={formData.jdPassword}
+                onChange={(e) => setFormData({ ...formData, jdPassword: e.target.value })}
                 className="bg-background/50 rounded-none border-input"
-                data-testid="input-jd-user"
+                data-testid="input-jd-password"
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="jdDevice">Device Name</Label>
               <Input 
                 id="jdDevice" 
+                placeholder="My JDownloader"
                 value={formData.jdDevice}
                 onChange={(e) => setFormData({ ...formData, jdDevice: e.target.value })}
                 className="bg-background/50 rounded-none border-input"
                 data-testid="input-jd-device"
               />
+              <p className="text-[10px] text-muted-foreground">
+                Leave empty to use the first available device.
+              </p>
             </div>
           </div>
 
@@ -128,9 +145,8 @@ export default function Settings() {
             <div className="space-y-1">
               <h4 className="text-sm font-bold text-yellow-500">Security Notice</h4>
               <p className="text-xs text-yellow-500/80">
-                In the production version, passwords and API keys should be stored in a separate 
-                <code>config.json</code> file or environment variables, not in the frontend state.
-                This UI is for demonstration purposes.
+                Your MyJDownloader credentials are stored locally in the data directory.
+                Make sure to secure access to your server instance.
               </p>
             </div>
           </div>
