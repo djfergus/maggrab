@@ -39,13 +39,18 @@ export const statsSchema = z.object({
 export type Stats = z.infer<typeof statsSchema>;
 
 export const settingsSchema = z.object({
-  jdEmail: z.string().default(""),
-  jdPassword: z.string().default(""),
-  jdDevice: z.string().default(""),
   checkInterval: z.number().default(15),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
+
+export const jdStatusSchema = z.object({
+  configured: z.boolean(),
+  email: z.string().optional(),
+  deviceName: z.string().optional(),
+});
+
+export type JDStatus = z.infer<typeof jdStatusSchema>;
 
 export const extractedItemSchema = z.object({
   id: z.string(),

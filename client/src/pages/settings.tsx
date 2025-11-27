@@ -4,15 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Save, ShieldAlert, Server, HardDrive, Trash2, RotateCcw } from "lucide-react";
+import { Save, ShieldCheck, Server, HardDrive, Trash2, RotateCcw, CheckCircle2, XCircle, Key } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 const defaultSettings = {
-  jdEmail: "",
-  jdPassword: "",
-  jdDevice: "",
   checkInterval: 15,
 };
 
@@ -25,15 +22,17 @@ export default function Settings() {
     queryFn: api.getSettings,
   });
 
+  const { data: jdStatus } = useQuery({
+    queryKey: ["jdStatus"],
+    queryFn: api.getJDStatus,
+    refetchInterval: 10000,
+  });
+
   const [formData, setFormData] = useState(defaultSettings);
   
-  // Sync formData with settings when loaded
   useEffect(() => {
     if (settings) {
       setFormData({
-        jdEmail: settings.jdEmail ?? "",
-        jdPassword: settings.jdPassword ?? "",
-        jdDevice: settings.jdDevice ?? "",
         checkInterval: settings.checkInterval ?? 15,
       });
     }
@@ -98,55 +97,57 @@ export default function Settings() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid gap-2">
-            <Label htmlFor="jdEmail">MyJDownloader Email</Label>
-            <Input 
-              id="jdEmail" 
-              type="email"
-              placeholder="your-email@example.com"
-              value={formData.jdEmail}
-              onChange={(e) => setFormData({ ...formData, jdEmail: e.target.value })}
-              className="bg-background/50 rounded-none border-input"
-              data-testid="input-jd-email"
-            />
+          <div className="flex items-center gap-3 p-4 border border-border bg-background/30">
+            {jdStatus?.configured ? (
+              <>
+                <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                <div>
+                  <p className="font-medium text-green-500">Connected</p>
+                  <p className="text-sm text-muted-foreground">
+                    Account: {jdStatus.email}
+                    {jdStatus.deviceName && ` • Device: ${jdStatus.deviceName}`}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <XCircle className="h-5 w-5 text-yellow-500 shrink-0" />
+                <div>
+                  <p className="font-medium text-yellow-500">Not Configured</p>
+                  <p className="text-sm text-muted-foreground">
+                    Add your MyJDownloader credentials in Replit Secrets to enable downloads.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="jdPassword">MyJDownloader Password</Label>
-              <Input 
-                id="jdPassword" 
-                type="password"
-                placeholder="••••••••"
-                value={formData.jdPassword}
-                onChange={(e) => setFormData({ ...formData, jdPassword: e.target.value })}
-                className="bg-background/50 rounded-none border-input"
-                data-testid="input-jd-password"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="jdDevice">Device Name</Label>
-              <Input 
-                id="jdDevice" 
-                placeholder="My JDownloader"
-                value={formData.jdDevice}
-                onChange={(e) => setFormData({ ...formData, jdDevice: e.target.value })}
-                className="bg-background/50 rounded-none border-input"
-                data-testid="input-jd-device"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                Leave empty to use the first available device.
+
+          <div className="bg-primary/10 border border-primary/20 p-4 flex gap-3 items-start">
+            <Key className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div className="space-y-2">
+              <h4 className="text-sm font-bold text-primary">Secure Credential Storage</h4>
+              <p className="text-xs text-muted-foreground">
+                Your MyJDownloader credentials are stored securely using Replit Secrets (encrypted).
+                Add the following secrets in the Secrets tab:
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-1 font-mono">
+                <li><span className="text-primary">MYJD_EMAIL</span> - Your MyJDownloader email</li>
+                <li><span className="text-primary">MYJD_PASSWORD</span> - Your MyJDownloader password</li>
+                <li><span className="text-primary">MYJD_DEVICE</span> - (Optional) JDownloader device name</li>
+              </ul>
+              <p className="text-xs text-muted-foreground mt-2">
+                After adding secrets, restart the app for changes to take effect.
               </p>
             </div>
           </div>
 
-          <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 flex gap-3 items-start">
-            <ShieldAlert className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+          <div className="bg-green-500/10 border border-green-500/20 p-4 flex gap-3 items-start">
+            <ShieldCheck className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="text-sm font-bold text-yellow-500">Security Notice</h4>
-              <p className="text-xs text-yellow-500/80">
-                Your MyJDownloader credentials are stored locally in the data directory.
-                Make sure to secure access to your server instance.
+              <h4 className="text-sm font-bold text-green-500">Security Notice</h4>
+              <p className="text-xs text-green-500/80">
+                Your credentials are encrypted and never exposed in the code or logs.
+                They are safe even in public projects.
               </p>
             </div>
           </div>
@@ -222,7 +223,7 @@ export default function Settings() {
       <Card className="bg-red-500/5 border-red-500/30 rounded-none">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-red-500" />
+            <Trash2 className="h-5 w-5 text-red-500" />
             <CardTitle className="font-display text-red-500">Danger Zone</CardTitle>
           </div>
           <CardDescription>

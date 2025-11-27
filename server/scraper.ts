@@ -304,10 +304,22 @@ export class Scraper {
     }
   }
 
-  private async ensureJDConnection(): Promise<boolean> {
-    const settings = await storage.getSettings();
+  private getJDCredentials(): { email: string; password: string; device: string } | null {
+    const email = process.env.MYJD_EMAIL || "";
+    const password = process.env.MYJD_PASSWORD || "";
+    const device = process.env.MYJD_DEVICE || "";
     
-    if (!settings.jdEmail || !settings.jdPassword) {
+    if (!email || !password) {
+      return null;
+    }
+    
+    return { email, password, device };
+  }
+
+  private async ensureJDConnection(): Promise<boolean> {
+    const credentials = this.getJDCredentials();
+    
+    if (!credentials) {
       return false;
     }
 
@@ -318,7 +330,7 @@ export class Scraper {
 
     try {
       // Connect to MyJDownloader
-      await jdownloaderAPI.connect(settings.jdEmail, settings.jdPassword);
+      await jdownloaderAPI.connect(credentials.email, credentials.password);
       jdConnected = true;
 
       await storage.addLog({
@@ -353,17 +365,17 @@ export class Scraper {
       }
 
       // Use specified device or first available
-      if (settings.jdDevice) {
+      if (credentials.device) {
         const targetDevice = devices.find((d: any) => 
-          d.name?.toLowerCase() === settings.jdDevice.toLowerCase() ||
-          d.id === settings.jdDevice
+          d.name?.toLowerCase() === credentials.device.toLowerCase() ||
+          d.id === credentials.device
         );
         if (targetDevice) {
           jdDeviceId = targetDevice.id;
         } else {
           await storage.addLog({
             level: "warn",
-            message: `Device "${settings.jdDevice}" not found, using first available: ${devices[0].name}`,
+            message: `Device "${credentials.device}" not found, using first available: ${devices[0].name}`,
             source: "jdownloader",
           });
           jdDeviceId = devices[0].id;
@@ -392,12 +404,12 @@ export class Scraper {
 
   private async submitToJDownloader(url: string, articleTitle: string, extractedItemId?: string) {
     try {
-      const settings = await storage.getSettings();
+      const credentials = this.getJDCredentials();
       
-      if (!settings.jdEmail || !settings.jdPassword) {
+      if (!credentials) {
         await storage.addLog({
           level: "warn",
-          message: "MyJDownloader not configured, skipping submission",
+          message: "MyJDownloader not configured (add MYJD_EMAIL and MYJD_PASSWORD secrets)",
           source: "jdownloader",
         });
         return;

@@ -1,4 +1,4 @@
-import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem } from "@shared/schema";
+import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem, JDStatus } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -66,6 +66,13 @@ export const api = {
   async getSettings(): Promise<Settings> {
     const res = await fetch(`${API_BASE}/settings`);
     if (!res.ok) throw new Error("Failed to fetch settings");
+    return res.json();
+  },
+
+  // JDownloader status
+  async getJDStatus(): Promise<JDStatus> {
+    const res = await fetch(`${API_BASE}/jd-status`);
+    if (!res.ok) throw new Error("Failed to fetch JD status");
     return res.json();
   },
 

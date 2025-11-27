@@ -154,30 +154,22 @@ export class FileStorage implements IStorage {
 
   async getSettings(): Promise<Settings> {
     const defaults: Settings = {
-      jdEmail: "",
-      jdPassword: "",
-      jdDevice: "",
       checkInterval: 15,
     };
     
     const stored = await this.readJSON<any>(SETTINGS_FILE, {});
     
-    // Migrate legacy fields (jdUrl, jdUser) to new schema
-    const migrated: Partial<Settings> = {};
-    if (stored.jdUser && !stored.jdEmail) {
-      migrated.jdEmail = stored.jdUser;
-    }
-    
-    // Merge defaults with stored values, preferring new fields
+    // Merge defaults with stored values
     const settings: Settings = {
       ...defaults,
-      ...stored,
-      ...migrated,
+      checkInterval: stored.checkInterval ?? defaults.checkInterval,
     };
     
-    // Remove legacy fields if present
-    delete (settings as any).jdUrl;
-    delete (settings as any).jdUser;
+    // Clean up legacy credential fields if they exist (one-time migration)
+    if (stored.jdEmail || stored.jdPassword || stored.jdDevice || stored.jdUrl || stored.jdUser) {
+      const cleanSettings = { checkInterval: settings.checkInterval };
+      await this.writeJSON(SETTINGS_FILE, cleanSettings);
+    }
     
     return settings;
   }
@@ -264,12 +256,7 @@ export class FileStorage implements IStorage {
     await this.writeJSON(FEEDS_FILE, []);
     await this.writeJSON(LOGS_FILE, []);
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
-    await this.writeJSON(SETTINGS_FILE, {
-      jdEmail: "",
-      jdPassword: "",
-      jdDevice: "",
-      checkInterval: 15,
-    });
+    await this.writeJSON(SETTINGS_FILE, { checkInterval: 15 });
     await this.writeJSON(PROCESSED_FILE, []);
     await this.writeJSON(EXTRACTED_FILE, []);
     await this.writeJSON(GRABBED_FILE, []);
