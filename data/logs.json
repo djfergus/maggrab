@@ -1,5 +1,145 @@
 [
   {
+    "level": "success",
+    "message": "Submitted to JDownloader: Air & Space Forces - 11/12 2025",
+    "source": "jdownloader",
+    "id": "508e814a-9d7a-4b91-86be-eb968c287ded",
+    "timestamp": 1764218900504
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Air & Space Forces - 11/12 2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "7fe5e4ce-91f7-4a67-bf9f-478f9c592065",
+    "timestamp": 1764218900218
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Flight International - 11.2025",
+    "source": "jdownloader",
+    "id": "13b87c8b-d9b1-49f4-91f9-28d1a8cf7679",
+    "timestamp": 1764218900043
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Flight International - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "2b09a250-14c8-41dd-ab48-a65be2fe0242",
+    "timestamp": 1764218899752
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: BBC Sky at Night - 12.2025",
+    "source": "jdownloader",
+    "id": "f3a8a86d-b1fd-450b-bd1d-ce5eed881181",
+    "timestamp": 1764218899576
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: BBC Sky at Night - 12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "deb5e552-c7fd-4b6e-ae70-a0af39b80ec1",
+    "timestamp": 1764218899283
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: RCM&E - 12.2025",
+    "source": "jdownloader",
+    "id": "443b6f4b-8744-44f0-884f-d7cf887f7c17",
+    "timestamp": 1764218899102
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: RCM&E - 12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "c1ae9ef9-30ab-4b2e-bc60-3b5b3ab13f70",
+    "timestamp": 1764218898819
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: All About Space Annual - Vol 13 2025",
+    "source": "jdownloader",
+    "id": "c334b973-fdde-4a22-b1c9-7fc62e6ec9b9",
+    "timestamp": 1764218898638
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: All About Space Annual - Vol 13 2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "7a3a5460-bcac-403d-8957-5efccd8fcac0",
+    "timestamp": 1764218898344
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: AirForces Monthly - 12.2025",
+    "source": "jdownloader",
+    "id": "814de55e-b00d-411b-a1ca-f08e0ee0c217",
+    "timestamp": 1764218898173
+  },
+  {
+    "level": "info",
+    "message": "Settings updated",
+    "source": "daemon",
+    "id": "22727da9-1ded-4594-a9d8-a0d910112c6b",
+    "timestamp": 1764218898106
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: AirForces Monthly - 12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "407f670a-21ee-4e24-ae81-d6473990c563",
+    "timestamp": 1764218897872
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Meng AIR Modeller - 12/01 2026",
+    "source": "jdownloader",
+    "id": "03027246-365d-4b9e-ae88-8ac7b515b4e8",
+    "timestamp": 1764218897676
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Meng AIR Modeller - 12/01 2026 - using nfile.cc",
+    "source": "grabber",
+    "id": "4f44f46a-ee16-47c6-b5b3-87fa20be3fb4",
+    "timestamp": 1764218897382
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Aviation News - 12.2025",
+    "source": "jdownloader",
+    "id": "15cd9444-051c-4197-aeaf-d017c4710355",
+    "timestamp": 1764218897194
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Aviation News - 12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "8f8b2e24-e4eb-4923-aa13-da465d26c53f",
+    "timestamp": 1764218896916
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Military Aviation World War II Air Combat - Mosquito 2025",
+    "source": "jdownloader",
+    "id": "5bbb0109-4d38-4b04-a38d-344bcff24507",
+    "timestamp": 1764218896733
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Military Aviation World War II Air Combat - Mosquito 2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "51d1ad58-5fca-4193-8334-d71094c498f6",
+    "timestamp": 1764218896451
+  },
+  {
+    "level": "success",
+    "message": "Submitted to JDownloader: Haus of Wisdom - Winter 2025",
+    "source": "jdownloader",
+    "id": "2572022a-e848-4d55-a270-2f3205726fb0",
+    "timestamp": 1764218896211
+  },
+  {
     "level": "info",
     "message": "Using JDownloader device: unraid",
     "source": "jdownloader",
@@ -558,145 +698,5 @@
     "source": "grabber",
     "id": "609e04e4-fba3-4463-a5f7-52582a7bdf07",
     "timestamp": 1764217319733
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "802e41fe-f345-4402-aeb4-2041dc6d6302",
-    "timestamp": 1764217319698
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "c3bd3a89-cc28-477f-97f0-d8d4b8a333b5",
-    "timestamp": 1764217261020
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "3aefab1b-1323-4c18-820d-58f3f25989c4",
-    "timestamp": 1764217259966
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "2e38b3af-131a-4595-9a44-146583a216ae",
-    "timestamp": 1764217259926
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "53d09e10-d476-4e72-be2c-708c5722da71",
-    "timestamp": 1764217195346
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "ce2c8195-5b92-495f-ad22-1956708d6c8b",
-    "timestamp": 1764217195112
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "f792c870-8ae7-4936-8433-9ec869a71717",
-    "timestamp": 1764217195074
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "c2ada263-cf8a-4664-947a-44be5c1a735b",
-    "timestamp": 1764217133136
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "bae4b476-abc2-4ba1-b61f-559141394a72",
-    "timestamp": 1764217132857
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "29f5c568-85cf-425a-9b4f-6ee8c7e9c203",
-    "timestamp": 1764217132821
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "4ea9331f-8c88-4b11-ac9f-4ffbbd98af5d",
-    "timestamp": 1764216946159
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "ac4b633c-8aaa-4457-8552-9685d28a1765",
-    "timestamp": 1764216945532
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "04faad92-76c8-4eca-be4d-5fd423d86711",
-    "timestamp": 1764216945491
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "d114efa1-cbe3-4cc0-87f4-0bb43e8ac4a6",
-    "timestamp": 1764216827417
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "68c1f457-4450-45c2-969b-04e4316953a5",
-    "timestamp": 1764216827092
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "1684f088-93e8-4d60-b3c9-0b7bff6036ae",
-    "timestamp": 1764216827051
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "36cc62bd-e16a-457b-8362-e9246ce71ca5",
-    "timestamp": 1764216777973
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "49e84c93-8eac-426f-9316-86d8e2be312c",
-    "timestamp": 1764216777493
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "63725c08-5db9-4fcc-b946-e9d229c7c1d1",
-    "timestamp": 1764216777458
-  },
-  {
-    "level": "info",
-    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
-    "source": "grabber",
-    "id": "99de8989-4970-4ca1-886d-0d535e26f244",
-    "timestamp": 1764216738282
   }
 ]
