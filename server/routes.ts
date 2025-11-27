@@ -1,21 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { scraper } from "./scraper";
-import { insertFeedSchema, insertLogSchema, settingsSchema, type JDStatus } from "@shared/schema";
+import { scraper, getJDConnectionStatus } from "./scraper";
+import { insertFeedSchema, insertLogSchema, settingsSchema } from "@shared/schema";
 import { log } from "./index";
-
-function getJDStatus(): JDStatus {
-  const email = process.env.MYJD_EMAIL || "";
-  const password = process.env.MYJD_PASSWORD || "";
-  const device = process.env.MYJD_DEVICE || "";
-  
-  return {
-    configured: !!(email && password),
-    email: email ? email.replace(/(.{2}).*@/, "$1***@") : undefined,
-    deviceName: device || undefined,
-  };
-}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -101,9 +89,9 @@ export async function registerRoutes(
     res.json(settings);
   });
 
-  // JDownloader status (reads from environment secrets)
+  // JDownloader status (reads from environment secrets and connection state)
   app.get("/api/jd-status", async (_req, res) => {
-    const status = getJDStatus();
+    const status = getJDConnectionStatus();
     res.json(status);
   });
 

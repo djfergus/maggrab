@@ -99,16 +99,29 @@ export default function Settings() {
         <CardContent className="space-y-6">
           <div className="flex items-center gap-3 p-4 border border-border bg-background/30">
             {jdStatus?.configured ? (
-              <>
-                <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
-                <div>
-                  <p className="font-medium text-green-500">Connected</p>
-                  <p className="text-sm text-muted-foreground">
-                    Account: {jdStatus.email}
-                    {jdStatus.deviceName && ` • Device: ${jdStatus.deviceName}`}
-                  </p>
-                </div>
-              </>
+              jdStatus.connected ? (
+                <>
+                  <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                  <div>
+                    <p className="font-medium text-green-500">Connected</p>
+                    <p className="text-sm text-muted-foreground">
+                      Account: {jdStatus.email}
+                      {jdStatus.deviceName && <> • Instance: <span className="text-primary font-mono">{jdStatus.deviceName}</span></>}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-5 w-5 text-cyan-500 shrink-0" />
+                  <div>
+                    <p className="font-medium text-cyan-500">Configured</p>
+                    <p className="text-sm text-muted-foreground">
+                      Account: {jdStatus.email} • Will connect on next scrape
+                      {jdStatus.deviceName && <> • Device: <span className="font-mono">{jdStatus.deviceName}</span></>}
+                    </p>
+                  </div>
+                </>
+              )
             ) : (
               <>
                 <XCircle className="h-5 w-5 text-yellow-500 shrink-0" />

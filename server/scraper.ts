@@ -12,6 +12,21 @@ const parser = new Parser();
 // Track JDownloader connection state
 let jdConnected = false;
 let jdDeviceId: string | null = null;
+let jdDeviceName: string | null = null;
+
+// Export connection status for API
+export function getJDConnectionStatus() {
+  const email = process.env.MYJD_EMAIL || "";
+  const password = process.env.MYJD_PASSWORD || "";
+  const configuredDevice = process.env.MYJD_DEVICE || "";
+  
+  return {
+    configured: !!(email && password),
+    connected: jdConnected,
+    email: email ? email.replace(/(.{2}).*@/, "$1***@") : undefined,
+    deviceName: jdDeviceName || configuredDevice || undefined,
+  };
+}
 
 export class Scraper {
   private intervals: Map<string, NodeJS.Timeout> = new Map();
@@ -301,6 +316,7 @@ export class Scraper {
     } finally {
       jdConnected = false;
       jdDeviceId = null;
+      jdDeviceName = null;
     }
   }
 
@@ -372,6 +388,7 @@ export class Scraper {
         );
         if (targetDevice) {
           jdDeviceId = targetDevice.id;
+          jdDeviceName = targetDevice.name;
         } else {
           await storage.addLog({
             level: "warn",
@@ -379,9 +396,11 @@ export class Scraper {
             source: "jdownloader",
           });
           jdDeviceId = devices[0].id;
+          jdDeviceName = devices[0].name;
         }
       } else {
         jdDeviceId = devices[0].id;
+        jdDeviceName = devices[0].name;
         await storage.addLog({
           level: "info",
           message: `Using JDownloader device: ${devices[0].name}`,

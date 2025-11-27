@@ -46,6 +46,7 @@ export type Settings = z.infer<typeof settingsSchema>;
 
 export const jdStatusSchema = z.object({
   configured: z.boolean(),
+  connected: z.boolean(),
   email: z.string().optional(),
   deviceName: z.string().optional(),
 });
