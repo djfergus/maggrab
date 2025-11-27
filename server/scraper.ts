@@ -523,7 +523,8 @@ export class Scraper {
       }
 
       // Add link to JDownloader with autostart enabled
-      await jdownloaderAPI.addLinks(url, jdDeviceId, true);
+      // Note: addLinks expects an array of links, not a single string
+      await jdownloaderAPI.addLinks([url], jdDeviceId, true);
 
       await storage.addLog({
         level: "success",

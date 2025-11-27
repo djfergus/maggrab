@@ -1,5 +1,115 @@
 [
   {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Haus of Wisdom - Winter 2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/452978-haus-of-wisdom-winter-2025.html",
+    "pubDate": "Thu, 20 Nov 2025 23:32:25 +0000",
+    "hasDownload": true,
+    "id": "075d3901-5f0b-4dc7-a034-04d354836cde",
+    "timestamp": 1764218883045
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Military Aviation Air Power - Harrier 2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/453101-military-aviation-air-power-harrier-2025.html",
+    "pubDate": "Fri, 21 Nov 2025 00:21:20 +0000",
+    "hasDownload": true,
+    "id": "cd5ccea8-35ea-45c4-bbe8-bd152a2da049",
+    "timestamp": 1764218777343
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Model Aviation CA - 07/08 2024",
+    "link": "https://downmagaz.net/aviation_magazine_space/453232-model-aviation-ca-0708-2024.html",
+    "pubDate": "Fri, 21 Nov 2025 21:43:50 +0000",
+    "hasDownload": true,
+    "id": "3087e62a-f636-4264-b512-c27332e84555",
+    "timestamp": 1764218776843
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Wings - Winter 2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/453233-wings-winter-2025.html",
+    "pubDate": "Fri, 21 Nov 2025 21:44:47 +0000",
+    "hasDownload": true,
+    "id": "1ee1f01a-7d85-44b2-ad05-34e0300199b8",
+    "timestamp": 1764218776347
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "FineScale Modeler - 01/02 2026",
+    "link": "https://downmagaz.net/aviation_magazine_space/453219-finescale-modeler-0102-2026.html",
+    "pubDate": "Fri, 21 Nov 2025 22:06:56 +0000",
+    "hasDownload": true,
+    "id": "39bff6e1-d1ae-430f-b92d-a316d5c655df",
+    "timestamp": 1764218775856
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Astronomy - 01.2026",
+    "link": "https://downmagaz.net/aviation_magazine_space/453239-astronomy-012026.html",
+    "pubDate": "Fri, 21 Nov 2025 22:07:11 +0000",
+    "hasDownload": true,
+    "id": "2028cb1e-574d-48a8-9e9e-4d6bd33bbe88",
+    "timestamp": 1764218775345
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Sky & Telescope - 01.2026",
+    "link": "https://downmagaz.net/aviation_magazine_space/453392-sky-telescope-012026.html",
+    "pubDate": "Mon, 24 Nov 2025 00:44:28 +0000",
+    "hasDownload": true,
+    "id": "f91749d6-47f5-46a9-bb31-d9e3e62597c8",
+    "timestamp": 1764218774834
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Airspeed - 12.2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/453537-airspeed-122025.html",
+    "pubDate": "Tue, 25 Nov 2025 09:01:05 +0000",
+    "hasDownload": true,
+    "id": "ac5440c3-ddd8-408a-a898-8bc225225b8f",
+    "timestamp": 1764218774333
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Jetpower - Is. 6 2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/453543-jetpower-is-6-2025.html",
+    "pubDate": "Tue, 25 Nov 2025 09:11:27 +0000",
+    "hasDownload": true,
+    "id": "554e445c-4a07-4718-bd22-f45cbc7567ba",
+    "timestamp": 1764218773815
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Airports International - Is. 4 2025",
+    "link": "https://downmagaz.net/aviation_magazine_space/453646-airports-international-is-4-2025.html",
+    "pubDate": "Wed, 26 Nov 2025 11:23:34 +0000",
+    "hasDownload": true,
+    "id": "8a05e514-3f49-4298-9cd5-2a4798eb8201",
+    "timestamp": 1764218773299
+  },
+  {
+    "feedId": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "feedName": "Feed (downmagaz.net)",
+    "title": "Air Classics - 01.2026",
+    "link": "https://downmagaz.net/aviation_magazine_space/453635-air-classics-012026.html",
+    "pubDate": "Wed, 26 Nov 2025 12:50:17 +0000",
+    "hasDownload": true,
+    "id": "16c0fb20-5f18-48b1-8f40-fa8a5850afa5",
+    "timestamp": 1764218772788
+  },
+  {
     "feedId": "3e408c21-d609-44e9-b749-808fe381136d",
     "feedName": "Feed (downmagaz.net)",
     "title": "Newsweek USA - 11.28.2025",

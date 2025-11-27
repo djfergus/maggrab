@@ -7,5 +7,14 @@
     "lastChecked": 1764218734553,
     "status": "idle",
     "totalFound": 170
+  },
+  {
+    "name": "Feed (downmagaz.net)",
+    "url": "https://downmagaz.net/aviation_magazine_space/rss.xml",
+    "interval": 15,
+    "id": "ba78f90d-60b1-4848-878f-21e07a26c466",
+    "lastChecked": 1764218882228,
+    "status": "scraping",
+    "totalFound": 50
   }
 ]
