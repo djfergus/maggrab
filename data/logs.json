@@ -3,6 +3,167 @@
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
+    "id": "4e4b02a7-c227-4c5e-a1e4-3716a7cc7cd9",
+    "timestamp": 1764214886770
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Newsweek USA - 11.28.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "c5265f64-d332-4200-80c0-02edf1107de9",
+    "timestamp": 1764214886767
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "29aec7ab-23f2-4372-890b-60674b35f0d2",
+    "timestamp": 1764214886596
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Open - 1.12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "9b03acf5-1a52-4203-90f4-6c953840b071",
+    "timestamp": 1764214886594
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "60cff804-c41b-4372-921c-1d22cd5dbc77",
+    "timestamp": 1764214886425
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Forbes ME - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "ed606412-50db-4c65-873d-70accf6f6de4",
+    "timestamp": 1764214886420
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e9816a76-d409-4b22-86bc-1168788efedb",
+    "timestamp": 1764214886236
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Inbound Logistics - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "7ec3144f-0a46-4b6d-ab4d-122d0d5ab7e6",
+    "timestamp": 1764214886232
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "ecaf372a-37e4-428e-872b-1e66f42a00d6",
+    "timestamp": 1764214886061
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: National Review - 01.2026 - using nfile.cc",
+    "source": "grabber",
+    "id": "86df12c2-dbfe-4f19-b54c-f4d1d7c8ac07",
+    "timestamp": 1764214886054
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "b37f3ae0-ed0f-4c89-91be-7b7224a5a5ab",
+    "timestamp": 1764214885039
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: India Today - 1.12.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "9c6d2eb6-41a5-4cbf-a19a-bd50bbe60cb7",
+    "timestamp": 1764214884860
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "01811cd7-5b83-4c55-b699-8042ccadfafb",
+    "timestamp": 1764214884347
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: InBound Sauth Africa Business - 10.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "b9c45e8a-4019-491e-a019-1f412f794897",
+    "timestamp": 1764214884341
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "a2d12748-b0f2-40ee-890d-129107463541",
+    "timestamp": 1764214884165
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: InBound Sauth Africa Business - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "db2d400b-2d26-43a0-9909-4e1946163caf",
+    "timestamp": 1764214884161
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e514737e-93a3-48fc-a673-ab4e10a6dcd0",
+    "timestamp": 1764214883977
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Investors India - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "04773b4d-6698-4dd0-81e3-36ceaca91bb0",
+    "timestamp": 1764214883951
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "a1d0159a-a5d3-4061-91df-9d81d83608b7",
+    "timestamp": 1764214883693
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 link(s) from: Hotelier IN - 11.2025 - using nfile.cc",
+    "source": "grabber",
+    "id": "05a2fdf7-bbb8-48ea-ac72-e7f75a29876d",
+    "timestamp": 1764214883688
+  },
+  {
+    "level": "success",
+    "message": "Found 10 new items in Feed (downmagaz.net) (20 already processed)",
+    "source": "grabber",
+    "id": "11292a43-41c7-4d16-9ec6-5b3295df23b5",
+    "timestamp": 1764214883342
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "a539a1cc-02b7-4d81-8145-4c853a19b25e",
+    "timestamp": 1764214882316
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "60f2b9f7-bee5-48e4-9efd-c8c89f96ef87",
+    "timestamp": 1764214882288
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
     "id": "08322b57-9038-4e32-8ddc-13a9326196ee",
     "timestamp": 1764214715918
   },

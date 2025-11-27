@@ -184,18 +184,24 @@ export default function Dashboard() {
           <DialogHeader>
             <DialogTitle className="font-display text-xl flex items-center gap-2">
               <LinkIcon className="h-5 w-5 text-purple-400" />
-              Extracted Links
+              Extracted Links ({extractedItems.length})
             </DialogTitle>
           </DialogHeader>
-          <ScrollArea className="h-[60vh] pr-4">
+          <ScrollArea className="h-[60vh]">
             {extractedItems.length === 0 ? (
               <div className="text-center text-muted-foreground py-12">
                 No links extracted yet. Add a feed and wait for the grabber to process articles.
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="border border-border bg-secondary/20">
+                <div className="flex items-center gap-3 py-1.5 px-3 bg-muted/30 border-b border-border text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="w-20 text-center">Host</span>
+                  <span className="flex-1">Article</span>
+                  <span className="max-w-[200px]">Download URL</span>
+                  <span className="w-14 text-right">Time</span>
+                </div>
                 {extractedItems.map((item) => (
-                  <ExtractedItemCard key={item.id} item={item} />
+                  <ExtractedItemRow key={item.id} item={item} />
                 ))}
               </div>
             )}
@@ -341,7 +347,7 @@ function StatCard({ label, value, icon: Icon, color = "text-primary", onClick, c
   );
 }
 
-function ExtractedItemCard({ item }: { item: ExtractedItem }) {
+function ExtractedItemRow({ item }: { item: ExtractedItem }) {
   const timeAgo = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 60) return `${seconds}s ago`;
@@ -354,34 +360,25 @@ function ExtractedItemCard({ item }: { item: ExtractedItem }) {
   };
 
   return (
-    <div className="bg-secondary/30 border border-border p-4 space-y-2" data-testid={`extracted-item-${item.id}`}>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-medium text-white truncate" title={item.articleTitle}>
-            {item.articleTitle}
-          </h4>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-[10px] font-mono px-2 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase">
-              {item.host}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {timeAgo(item.timestamp)}
-            </span>
-          </div>
-        </div>
-        <a
-          href={item.downloadUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-shrink-0 p-2 hover:bg-primary/20 hover:text-primary transition-colors"
-          title="Open download link"
-        >
-          <ExternalLink className="h-4 w-4" />
-        </a>
-      </div>
-      <div className="font-mono text-xs text-muted-foreground truncate" title={item.downloadUrl}>
-        {item.downloadUrl}
-      </div>
+    <div className="flex items-center gap-3 py-2 px-3 hover:bg-secondary/30 border-b border-border/50 last:border-b-0" data-testid={`extracted-item-${item.id}`}>
+      <span className="text-[9px] font-mono px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase flex-shrink-0 w-20 text-center truncate">
+        {item.host}
+      </span>
+      <span className="text-sm text-white truncate flex-1" title={item.articleTitle}>
+        {item.articleTitle}
+      </span>
+      <a
+        href={item.downloadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-mono text-xs text-primary hover:text-primary/80 hover:underline truncate max-w-[200px]"
+        title={item.downloadUrl}
+      >
+        {item.downloadUrl.replace(/^https?:\/\//, '')}
+      </a>
+      <span className="text-[10px] text-muted-foreground flex-shrink-0 w-14 text-right">
+        {timeAgo(item.timestamp)}
+      </span>
     </div>
   );
 }
