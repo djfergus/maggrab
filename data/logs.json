@@ -3,6 +3,230 @@
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
+    "id": "e1bac699-45d4-49a2-baeb-99883b5428f3",
+    "timestamp": 1764213560222
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "7e4d4a6d-e77e-4aab-8996-9163d50ca7c0",
+    "timestamp": 1764213560219
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Inbound Logistics - 11.2025",
+    "source": "grabber",
+    "id": "cddb41de-a87a-448a-b490-31c73c12a98d",
+    "timestamp": 1764213560217
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "46034f13-90da-4374-8f46-8da30ac8d9eb",
+    "timestamp": 1764213560050
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "55231108-b0c2-476b-9832-1f666ce274d2",
+    "timestamp": 1764213560048
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: National Review - 01.2026",
+    "source": "grabber",
+    "id": "eeda8e1b-076d-4a34-a5af-f984622292bb",
+    "timestamp": 1764213560045
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "2fed3af0-4b81-4299-b748-e1c4baa6911f",
+    "timestamp": 1764213559876
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "0dc76953-9958-4058-b0e9-a6fcc96ad6fe",
+    "timestamp": 1764213559873
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: India Today - 1.12.2025",
+    "source": "grabber",
+    "id": "fdeb880f-6e41-4948-a7eb-de9b5b6c6b98",
+    "timestamp": 1764213559870
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "8f72d9f1-812b-4f80-aab6-0ba8517e356f",
+    "timestamp": 1764213559701
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "a97795ec-f2cc-4d6c-b5a9-3919fa085236",
+    "timestamp": 1764213559699
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: InBound Sauth Africa Business - 10.2025",
+    "source": "grabber",
+    "id": "dd6fd122-5b15-476f-a294-59a054561a66",
+    "timestamp": 1764213559697
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "3f966e8f-1758-4d3a-a0b6-786d3aa4c81a",
+    "timestamp": 1764213559530
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "9e1d4d6b-37dc-440d-acea-89ca6aacb155",
+    "timestamp": 1764213559528
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: InBound Sauth Africa Business - 11.2025",
+    "source": "grabber",
+    "id": "bf934a9e-4308-455c-b222-7bd41e2f20fc",
+    "timestamp": 1764213559524
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "f20b4b4f-ae49-4fc6-a0e9-269724fe2647",
+    "timestamp": 1764213559349
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "2f4f65a5-a1d6-4ac2-b014-048db06e4dc6",
+    "timestamp": 1764213559347
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Investors India - 11.2025",
+    "source": "grabber",
+    "id": "7fa38258-7477-402d-a27b-b28e14c01bd3",
+    "timestamp": 1764213559344
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "6bec0542-0f98-4b0c-ae10-b63e63fcdb67",
+    "timestamp": 1764213559157
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "45d9df77-8cc2-4031-b2be-da0eedfe75f5",
+    "timestamp": 1764213559156
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Hotelier IN - 11.2025",
+    "source": "grabber",
+    "id": "9a33e99c-e482-456a-b572-c2faad32e912",
+    "timestamp": 1764213559153
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "55d55141-1d82-4ee4-8b43-9a725763beb6",
+    "timestamp": 1764213558965
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "563f28fd-59e3-4b0a-b72e-3423f463422b",
+    "timestamp": 1764213558958
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: India Legal - 11.24.2025",
+    "source": "grabber",
+    "id": "8c482091-faff-47a2-9c3e-466bea8d1da7",
+    "timestamp": 1764213558956
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "3c763b21-4672-4f2e-b802-0aab27f775e3",
+    "timestamp": 1764213558773
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e26ead17-6e43-45f1-8b91-d2d5f9700f7a",
+    "timestamp": 1764213558770
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: Iziar - 11.2025",
+    "source": "grabber",
+    "id": "9ac8e20a-049d-4e86-afda-f8ab1e45d39c",
+    "timestamp": 1764213558768
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "e8e5ab5b-628f-4a81-bf58-b23f81238ee6",
+    "timestamp": 1764213558561
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
+    "id": "351e461b-3e8e-4f9a-9094-e80548b2ce65",
+    "timestamp": 1764213558558
+  },
+  {
+    "level": "info",
+    "message": "Extracted 2 download link(s) from: ICT Connect - 10.2025",
+    "source": "grabber",
+    "id": "06346de6-f71e-4dab-bce4-64c0bb6c4625",
+    "timestamp": 1764213558556
+  },
+  {
+    "level": "success",
+    "message": "Found 13 new items in Feed (downmagaz.net) (17 already processed)",
+    "source": "grabber",
+    "id": "f08144a6-68cd-4556-99d6-a2c60eed5625",
+    "timestamp": 1764213558366
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "a557cfab-710c-465f-b746-432886b62376",
+    "timestamp": 1764213557322
+  },
+  {
+    "level": "warn",
+    "message": "JDownloader not configured, skipping submission",
+    "source": "jdownloader",
     "id": "9ef2668b-c41b-44c7-bea1-130051d676a2",
     "timestamp": 1764213486263
   },
@@ -474,229 +698,5 @@
     "source": "jdownloader",
     "id": "52d75991-a7b7-4e80-a2bc-ba3f5442537f",
     "timestamp": 1764213262012
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Technology - 12.2025",
-    "source": "grabber",
-    "id": "5151315b-cbb1-43e2-99fd-2c04b5b5c158",
-    "timestamp": 1764213262009
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "fe1e5907-57b7-4337-ac9f-f441728061b4",
-    "timestamp": 1764213261844
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "3393f0d8-ad3f-4993-85b9-c7c30ce8e8f9",
-    "timestamp": 1764213261843
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: AI Magazine - 12.2025",
-    "source": "grabber",
-    "id": "669539e6-83f7-45f1-a7b7-06d08ff7cb21",
-    "timestamp": 1764213261842
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "b66c69a0-fdda-43cf-a728-eef3f729eac5",
-    "timestamp": 1764213261639
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "b9044b4f-72de-4122-aef4-ad9671b63977",
-    "timestamp": 1764213260789
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "29461915-f189-48d4-ae20-51900105705a",
-    "timestamp": 1764213260770
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "7ce82c86-2a97-4127-add5-fc73765b1997",
-    "timestamp": 1764213090970
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "4dc41c3f-f692-4d9d-b0e7-bc4158a7075a",
-    "timestamp": 1764213090853
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Business Traveller IN - 11.2025",
-    "source": "grabber",
-    "id": "020f72bc-d78a-480a-96da-552f34b06092",
-    "timestamp": 1764213090350
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "0f3a85d5-dfdc-43fd-84f6-55cc746980f6",
-    "timestamp": 1764213089955
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "1d7262b9-fabf-4613-a779-403ece20b37f",
-    "timestamp": 1764213089925
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Thermal Control Business Update - 11.2025",
-    "source": "grabber",
-    "id": "4acacc15-7b45-4000-a943-f68f4f3e90cc",
-    "timestamp": 1764213089921
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "2ee43b48-6651-489c-a460-47c9e2ce775c",
-    "timestamp": 1764213089735
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "e807ee78-66eb-45e2-8616-47f689f4c700",
-    "timestamp": 1764213089734
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Business Today - 12.7.2025",
-    "source": "grabber",
-    "id": "1fb55a91-ec81-440c-b367-3f63335d42e8",
-    "timestamp": 1764213089731
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "9ac220ef-f966-4787-a106-d158f6c53d9f",
-    "timestamp": 1764213089551
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "8c5f12f0-47aa-4b42-83af-18e60e1d1048",
-    "timestamp": 1764213089544
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: Technology - 12.2025",
-    "source": "grabber",
-    "id": "427a4b00-4ccd-435a-a954-733ac79c96fa",
-    "timestamp": 1764213089542
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "3a6a959e-62ad-48fd-825f-fdaff252fa40",
-    "timestamp": 1764213089359
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "f2deadd5-8299-4dbd-a478-61ab1c2dd92b",
-    "timestamp": 1764213089207
-  },
-  {
-    "level": "info",
-    "message": "Extracted 2 download link(s) from: AI Magazine - 12.2025",
-    "source": "grabber",
-    "id": "df75a481-6878-4d95-b765-36e8c539ebb9",
-    "timestamp": 1764213089075
-  },
-  {
-    "level": "success",
-    "message": "Found 30 items in Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "11b0dfbf-f945-4e9a-bb46-7f8c1db9fc76",
-    "timestamp": 1764213088681
-  },
-  {
-    "level": "info",
-    "message": "Starting grab job for feed: Feed (downmagaz.net)",
-    "source": "grabber",
-    "id": "0fe06a95-b68e-4cda-a9b3-393dee29945d",
-    "timestamp": 1764213088464
-  },
-  {
-    "level": "info",
-    "message": "Daemon started - Maggrab v0.1.0",
-    "source": "daemon",
-    "id": "e794ea4e-ba21-42d7-9989-a3e7b2278163",
-    "timestamp": 1764213088445
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "b98dd2b6-4768-4fa3-8a2b-f82b9804dce0",
-    "timestamp": 1764213064204
-  },
-  {
-    "level": "info",
-    "message": "Extracted download link from: Business Traveller IN - 11.2025",
-    "source": "grabber",
-    "id": "cc80332f-544c-455b-8ee6-639e0bc4fe3f",
-    "timestamp": 1764213064202
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "27579dc8-ecd8-4c0c-8ddc-21d5f84442cc",
-    "timestamp": 1764213064039
-  },
-  {
-    "level": "info",
-    "message": "Extracted download link from: Thermal Control Business Update - 11.2025",
-    "source": "grabber",
-    "id": "bbccc17c-f5e6-4af4-a64c-f9b3d1187829",
-    "timestamp": 1764213064037
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "9a3dbf30-418e-466f-baf3-9e41ddc6b223",
-    "timestamp": 1764213063879
-  },
-  {
-    "level": "info",
-    "message": "Extracted download link from: Business Today - 12.7.2025",
-    "source": "grabber",
-    "id": "51f09da8-ee88-4603-a789-4592230af6ff",
-    "timestamp": 1764213063877
-  },
-  {
-    "level": "warn",
-    "message": "JDownloader not configured, skipping submission",
-    "source": "jdownloader",
-    "id": "8b4ea4fb-ea8b-42e6-b3ee-d5bb470136dc",
-    "timestamp": 1764213063708
   }
 ]
