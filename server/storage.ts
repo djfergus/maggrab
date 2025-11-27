@@ -1,4 +1,4 @@
-import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings, type ExtractedItem, type InsertExtractedItem } from "@shared/schema";
+import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings, type ExtractedItem, type InsertExtractedItem, type GrabbedItem, type InsertGrabbedItem } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
@@ -10,6 +10,7 @@ const STATS_FILE = path.join(DATA_DIR, "stats.json");
 const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 const PROCESSED_FILE = path.join(DATA_DIR, "processed.json");
 const EXTRACTED_FILE = path.join(DATA_DIR, "extracted.json");
+const GRABBED_FILE = path.join(DATA_DIR, "grabbed.json");
 
 export interface IStorage {
   // Feeds
@@ -38,6 +39,10 @@ export interface IStorage {
   // Extracted items
   getExtractedItems(limit?: number): Promise<ExtractedItem[]>;
   addExtractedItem(item: InsertExtractedItem): Promise<ExtractedItem>;
+  
+  // Grabbed items (all RSS items processed)
+  getGrabbedItems(limit?: number): Promise<GrabbedItem[]>;
+  addGrabbedItem(item: InsertGrabbedItem): Promise<GrabbedItem>;
   
   // Data management
   clearEntries(): Promise<void>;
@@ -195,12 +200,31 @@ export class FileStorage implements IStorage {
     return item;
   }
 
+  async getGrabbedItems(limit = 500): Promise<GrabbedItem[]> {
+    const items = await this.readJSON<GrabbedItem[]>(GRABBED_FILE, []);
+    return items.slice(0, limit);
+  }
+
+  async addGrabbedItem(insertItem: InsertGrabbedItem): Promise<GrabbedItem> {
+    const items = await this.getGrabbedItems(1000);
+    const item: GrabbedItem = {
+      ...insertItem,
+      id: randomUUID(),
+      timestamp: Date.now(),
+    };
+    items.unshift(item);
+    // Keep only the last 500 items
+    await this.writeJSON(GRABBED_FILE, items.slice(0, 500));
+    return item;
+  }
+
   async clearEntries(): Promise<void> {
-    // Clear logs, stats, processed URLs, and extracted items but keep feeds and settings
+    // Clear logs, stats, processed URLs, extracted items, and grabbed items but keep feeds and settings
     await this.writeJSON(LOGS_FILE, []);
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
     await this.writeJSON(PROCESSED_FILE, []);
     await this.writeJSON(EXTRACTED_FILE, []);
+    await this.writeJSON(GRABBED_FILE, []);
   }
 
   async resetAll(): Promise<void> {
@@ -216,6 +240,7 @@ export class FileStorage implements IStorage {
     });
     await this.writeJSON(PROCESSED_FILE, []);
     await this.writeJSON(EXTRACTED_FILE, []);
+    await this.writeJSON(GRABBED_FILE, []);
   }
 }
 

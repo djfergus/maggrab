@@ -1,5 +1,26 @@
 [
   {
+    "level": "info",
+    "message": "No new items in Feed (downmagaz.net) (30 already processed)",
+    "source": "grabber",
+    "id": "f1ede346-3923-40d0-9bf1-12cc36a1f8a4",
+    "timestamp": 1764215057874
+  },
+  {
+    "level": "info",
+    "message": "Starting grab job for feed: Feed (downmagaz.net)",
+    "source": "grabber",
+    "id": "170c1b8a-06d6-4185-bf7d-899ef8571b71",
+    "timestamp": 1764215057296
+  },
+  {
+    "level": "info",
+    "message": "Daemon started - Maggrab v0.1.0",
+    "source": "daemon",
+    "id": "4a17b466-3efb-460a-a790-7757f51e8e2c",
+    "timestamp": 1764215057268
+  },
+  {
     "level": "warn",
     "message": "JDownloader not configured, skipping submission",
     "source": "jdownloader",
