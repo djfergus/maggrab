@@ -2,9 +2,38 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 
 const app = express();
 const httpServer = createServer(app);
+
+// WebSocket setup for real-time updates
+const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+const clients: Set<WebSocket> = new Set();
+
+wss.on('connection', (ws) => {
+  clients.add(ws);
+  log('WebSocket client connected', 'websocket');
+  
+  ws.on('close', () => {
+    clients.delete(ws);
+    log('WebSocket client disconnected', 'websocket');
+  });
+  
+  ws.on('error', (err) => {
+    log(`WebSocket error: ${err.message}`, 'websocket');
+    clients.delete(ws);
+  });
+});
+
+export function broadcast(data: any) {
+  const message = JSON.stringify(data);
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
 
 declare module "http" {
   interface IncomingMessage {

@@ -179,5 +179,17 @@ export async function registerRoutes(
     res.json({ success: true });
   });
 
+  // Health check endpoint
+  app.get("/api/health", async (_req, res) => {
+    const health = scraper.getHealth();
+    res.status(health.healthy ? 200 : 503).json(health);
+  });
+
+  // Schedule info endpoint
+  app.get("/api/schedule", async (_req, res) => {
+    const schedule = await storage.getSchedule();
+    res.json(schedule);
+  });
+
   return httpServer;
 }

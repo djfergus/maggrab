@@ -1,8 +1,9 @@
 import Parser from "rss-parser";
 import { load } from "cheerio";
 import axios from "axios";
-import { storage } from "./storage";
-import { log } from "./index";
+import { storage, type ScheduleEntry } from "./storage";
+import { log, broadcast } from "./index";
+import * as cron from "node-cron";
 
 // @ts-ignore - jdownloader-api doesn't have type definitions
 import jdownloaderAPI from "jdownloader-api";
@@ -106,12 +107,17 @@ export async function testJDConnection(): Promise<{
 }
 
 export class Scraper {
-  private intervals: Map<string, NodeJS.Timeout> = new Map();
+  private cronJobs: Map<string, cron.ScheduledTask> = new Map();
+  private runningFeeds: Set<string> = new Set(); // Single-flight guard
   private isRunning = false;
+  private heartbeatTask: cron.ScheduledTask | null = null;
+  private cleanupTask: cron.ScheduledTask | null = null;
+  private lastHeartbeat: number = 0;
 
   async start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    this.lastHeartbeat = Date.now();
     
     await storage.addLog({
       level: "info",
@@ -124,26 +130,103 @@ export class Scraper {
     // Run cleanup on startup (remove entries older than 2 months)
     await this.runCleanup();
     
-    // Schedule daily cleanup (every 24 hours)
-    this.scheduleCleanup();
+    // Schedule daily cleanup at 3 AM
+    this.cleanupTask = cron.schedule('0 3 * * *', () => {
+      this.runCleanup();
+    });
+    
+    // Start heartbeat - logs every minute to prove daemon is alive
+    this.heartbeatTask = cron.schedule('* * * * *', () => {
+      this.heartbeat();
+    });
+    
+    // Load schedule and check for missed runs
+    await this.recoverSchedule();
     
     // Load all feeds and start monitoring
     const feeds = await storage.getFeeds();
     for (const feed of feeds) {
-      this.scheduleFeed(feed.id);
+      await this.scheduleFeed(feed.id);
+    }
+
+    log(`Scheduler initialized with ${feeds.length} feeds`, "daemon");
+  }
+
+  private async heartbeat() {
+    this.lastHeartbeat = Date.now();
+    const feeds = await storage.getFeeds();
+    const schedule = await storage.getSchedule();
+    
+    // Log heartbeat every 10 minutes (not every minute to reduce noise)
+    const now = new Date();
+    if (now.getMinutes() % 10 === 0) {
+      log(`Heartbeat: ${feeds.length} feeds monitored, ${this.cronJobs.size} jobs scheduled`, "daemon");
+    }
+    
+    // Broadcast status to connected WebSocket clients
+    broadcast({
+      type: 'heartbeat',
+      timestamp: this.lastHeartbeat,
+      feedCount: feeds.length,
+      jobCount: this.cronJobs.size,
+    });
+  }
+
+  getHealth() {
+    const now = Date.now();
+    const timeSinceHeartbeat = now - this.lastHeartbeat;
+    const healthy = this.isRunning && timeSinceHeartbeat < 120000; // 2 minutes threshold
+    
+    return {
+      healthy,
+      running: this.isRunning,
+      lastHeartbeat: this.lastHeartbeat,
+      timeSinceHeartbeat,
+      scheduledJobs: this.cronJobs.size,
+      runningJobs: this.runningFeeds.size,
+    };
+  }
+
+  private async recoverSchedule() {
+    const schedule = await storage.getSchedule();
+    const now = Date.now();
+    let missedRuns = 0;
+    
+    for (const entry of schedule) {
+      // Check if this feed still exists
+      const feed = await storage.getFeed(entry.feedId);
+      if (!feed) {
+        await storage.removeScheduleEntry(entry.feedId);
+        continue;
+      }
+      
+      // Check if we missed a run
+      if (entry.nextRun < now) {
+        missedRuns++;
+        log(`Catching up missed run for feed: ${feed.name}`, "daemon");
+        
+        // Update schedule entry FIRST to prevent repeated triggers
+        const intervalMs = feed.interval * 60 * 1000;
+        await storage.setScheduleEntry({
+          feedId: entry.feedId,
+          nextRun: now + intervalMs,
+          intervalMinutes: feed.interval,
+        });
+        
+        // Then run the catch-up scrape (don't await to avoid blocking)
+        this.scrapeFeed(entry.feedId);
+      }
+    }
+    
+    if (missedRuns > 0) {
+      await storage.addLog({
+        level: "info",
+        message: `Recovered ${missedRuns} missed grab job(s) from downtime`,
+        source: "daemon",
+      });
     }
   }
-  
-  private cleanupInterval: ReturnType<typeof setInterval> | null = null;
-  
-  private scheduleCleanup() {
-    // Run cleanup every 24 hours
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-    this.cleanupInterval = setInterval(() => {
-      this.runCleanup();
-    }, twentyFourHours);
-  }
-  
+
   private async runCleanup() {
     try {
       const result = await storage.cleanupOldData();
@@ -166,15 +249,23 @@ export class Scraper {
 
   async stop() {
     this.isRunning = false;
-    this.intervals.forEach((interval, id) => {
-      clearInterval(interval);
-      this.intervals.delete(id);
-    });
     
-    // Clear cleanup interval
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-      this.cleanupInterval = null;
+    // Stop all cron jobs
+    this.cronJobs.forEach((job, id) => {
+      job.stop();
+    });
+    this.cronJobs.clear();
+    
+    // Stop heartbeat
+    if (this.heartbeatTask) {
+      this.heartbeatTask.stop();
+      this.heartbeatTask = null;
+    }
+    
+    // Stop cleanup task
+    if (this.cleanupTask) {
+      this.cleanupTask.stop();
+      this.cleanupTask = null;
     }
     
     await storage.addLog({
@@ -190,36 +281,70 @@ export class Scraper {
     const feed = await storage.getFeed(feedId);
     if (!feed) return;
 
-    // Clear existing interval if any
-    const existing = this.intervals.get(feedId);
+    // Clear existing job if any
+    const existing = this.cronJobs.get(feedId);
     if (existing) {
-      clearInterval(existing);
+      existing.stop();
+      this.cronJobs.delete(feedId);
     }
 
-    // Schedule the scraping
+    // Calculate next run time
+    const now = Date.now();
     const intervalMs = feed.interval * 60 * 1000;
-    const interval = setInterval(() => {
-      this.scrapeFeed(feedId);
-    }, intervalMs);
+    const nextRun = now + intervalMs;
     
-    this.intervals.set(feedId, interval);
+    // Store schedule entry for recovery
+    await storage.setScheduleEntry({
+      feedId,
+      nextRun,
+      intervalMinutes: feed.interval,
+    });
+
+    // Create cron expression for interval (run every N minutes)
+    // node-cron doesn't directly support "every N minutes", so we use a workaround
+    // We'll check every minute and see if it's time to run
+    const job = cron.schedule('* * * * *', async () => {
+      const entry = (await storage.getSchedule()).find(s => s.feedId === feedId);
+      if (entry && Date.now() >= entry.nextRun) {
+        await this.scrapeFeed(feedId);
+      }
+    });
+    
+    this.cronJobs.set(feedId, job);
     
     // Run immediately on first schedule
-    this.scrapeFeed(feedId);
+    await this.scrapeFeed(feedId);
   }
 
   async unscheduleFeed(feedId: string) {
-    const interval = this.intervals.get(feedId);
-    if (interval) {
-      clearInterval(interval);
-      this.intervals.delete(feedId);
+    const job = this.cronJobs.get(feedId);
+    if (job) {
+      job.stop();
+      this.cronJobs.delete(feedId);
     }
+    await storage.removeScheduleEntry(feedId);
   }
 
   private async scrapeFeed(feedId: string) {
+    // Single-flight guard - prevent overlapping runs for same feed
+    if (this.runningFeeds.has(feedId)) {
+      log(`Skipping ${feedId} - already running`, "grabber");
+      return;
+    }
+    
     const feed = await storage.getFeed(feedId);
     if (!feed) return;
 
+    this.runningFeeds.add(feedId);
+    
+    // Update schedule entry at START to prevent cron from re-triggering during scrape
+    const intervalMs = feed.interval * 60 * 1000;
+    await storage.setScheduleEntry({
+      feedId,
+      nextRun: Date.now() + intervalMs,
+      intervalMinutes: feed.interval,
+    });
+    
     try {
       await storage.updateFeed(feedId, { status: "scraping", lastChecked: Date.now() });
       await storage.addLog({
@@ -229,6 +354,9 @@ export class Scraper {
       });
 
       log(`Grabbing feed: ${feed.name}`, "grabber");
+      
+      // Broadcast status update
+      broadcast({ type: 'feedStatus', feedId, status: 'scraping' });
 
       // Parse RSS feed
       let rssFeed;
@@ -250,6 +378,7 @@ export class Scraper {
           source: "grabber",
         });
         await storage.updateFeed(feedId, { status: "idle" });
+        broadcast({ type: 'feedStatus', feedId, status: 'idle' });
         return;
       }
 
@@ -282,6 +411,7 @@ export class Scraper {
           source: "grabber",
         });
         await storage.updateFeed(feedId, { status: "idle" });
+        broadcast({ type: 'feedStatus', feedId, status: 'idle' });
         return;
       }
 
@@ -298,6 +428,10 @@ export class Scraper {
         totalFound: feed.totalFound + newItems.length 
       });
 
+      // Broadcast stats update
+      const stats = await storage.getStats();
+      broadcast({ type: 'stats', data: stats });
+
       // Process each new item
       for (const item of newItems.slice(0, 10)) {
         if (item.link) {
@@ -307,7 +441,7 @@ export class Scraper {
             const hasDownload = downloadLinks.length > 0;
             
             // Store every grabbed item from the RSS feed
-            await storage.addGrabbedItem({
+            const grabbedItem = await storage.addGrabbedItem({
               feedId,
               feedName: feed.name,
               title: articleTitle,
@@ -315,6 +449,9 @@ export class Scraper {
               pubDate: item.pubDate || null,
               hasDownload,
             });
+            
+            // Broadcast new grabbed item
+            broadcast({ type: 'grabbed', data: grabbedItem });
             
             if (hasDownload) {
               // Prioritize novafile links, then nfile
@@ -338,6 +475,9 @@ export class Scraper {
                 submitted: false,
               });
               
+              // Broadcast new extracted item
+              broadcast({ type: 'extracted', data: extractedItem });
+              
               await storage.incrementStat("linksFound");
               
               // Only submit the preferred link to JDownloader
@@ -356,6 +496,16 @@ export class Scraper {
       }
 
       await storage.updateFeed(feedId, { status: "idle" });
+      broadcast({ type: 'feedStatus', feedId, status: 'idle' });
+      
+      // Update next run time
+      const intervalMs = feed.interval * 60 * 1000;
+      await storage.setScheduleEntry({
+        feedId,
+        nextRun: Date.now() + intervalMs,
+        intervalMinutes: feed.interval,
+      });
+      
     } catch (error: any) {
       await storage.updateFeed(feedId, { status: "error" });
       await storage.addLog({
@@ -364,6 +514,9 @@ export class Scraper {
         source: "grabber",
       });
       log(`Error grabbing feed ${feed.name}: ${error.message}`, "grabber");
+      broadcast({ type: 'feedStatus', feedId, status: 'error' });
+    } finally {
+      this.runningFeeds.delete(feedId);
     }
   }
 
@@ -606,6 +759,10 @@ export class Scraper {
       if (extractedItemId) {
         await storage.markExtractedItemSubmitted(extractedItemId);
       }
+      
+      // Broadcast stats update
+      const stats = await storage.getStats();
+      broadcast({ type: 'stats', data: stats });
       
       log(`Submitted to JDownloader: ${url}`, "grabber");
     } catch (error: any) {

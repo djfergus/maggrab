@@ -2,8 +2,10 @@ import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats,
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
+import { Mutex } from "async-mutex";
 
 const DATA_DIR = process.env.DATA_DIR || "./data";
+const BACKUP_DIR = path.join(DATA_DIR, "backups");
 const FEEDS_FILE = path.join(DATA_DIR, "feeds.json");
 const LOGS_FILE = path.join(DATA_DIR, "logs.json");
 const STATS_FILE = path.join(DATA_DIR, "stats.json");
@@ -11,6 +13,7 @@ const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 const PROCESSED_FILE = path.join(DATA_DIR, "processed.json");
 const EXTRACTED_FILE = path.join(DATA_DIR, "extracted.json");
 const GRABBED_FILE = path.join(DATA_DIR, "grabbed.json");
+const SCHEDULE_FILE = path.join(DATA_DIR, "schedule.json");
 
 interface ProcessedUrl {
   url: string;
@@ -22,6 +25,12 @@ interface CleanupResult {
   extracted: number;
   grabbed: number;
   processed: number;
+}
+
+export interface ScheduleEntry {
+  feedId: string;
+  nextRun: number;
+  intervalMinutes: number;
 }
 
 export interface IStorage {
@@ -57,12 +66,27 @@ export interface IStorage {
   getGrabbedItems(limit?: number): Promise<GrabbedItem[]>;
   addGrabbedItem(item: InsertGrabbedItem): Promise<GrabbedItem>;
   
+  // Schedule persistence
+  getSchedule(): Promise<ScheduleEntry[]>;
+  setScheduleEntry(entry: ScheduleEntry): Promise<void>;
+  removeScheduleEntry(feedId: string): Promise<void>;
+  
   // Data management
   clearEntries(): Promise<void>;
   resetAll(): Promise<void>;
   
   // Cleanup (log rotation)
   cleanupOldData(maxAgeMs?: number): Promise<CleanupResult>;
+}
+
+// Per-file mutexes to prevent concurrent writes
+const fileMutexes: Map<string, Mutex> = new Map();
+
+function getMutex(file: string): Mutex {
+  if (!fileMutexes.has(file)) {
+    fileMutexes.set(file, new Mutex());
+  }
+  return fileMutexes.get(file)!;
 }
 
 export class FileStorage implements IStorage {
@@ -72,26 +96,141 @@ export class FileStorage implements IStorage {
     if (!this.initialized) {
       try {
         await fs.mkdir(DATA_DIR, { recursive: true });
+        await fs.mkdir(BACKUP_DIR, { recursive: true });
         this.initialized = true;
       } catch (err) {
         console.error("Failed to create data directory:", err);
+        throw err;
       }
     }
   }
 
-  private async readJSON<T>(file: string, defaultValue: T): Promise<T> {
-    await this.ensureDataDir();
+  private async createBackup(file: string): Promise<void> {
     try {
-      const data = await fs.readFile(file, "utf-8");
-      return JSON.parse(data);
+      await fs.access(file);
+      const filename = path.basename(file);
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupFile = path.join(BACKUP_DIR, `${filename}.${timestamp}.bak`);
+      await fs.copyFile(file, backupFile);
+      
+      // Keep only last 5 backups per file
+      const backups = await fs.readdir(BACKUP_DIR);
+      const thisFileBackups = backups
+        .filter(b => b.startsWith(filename + '.') && b.endsWith('.bak'))
+        .sort()
+        .reverse();
+      
+      for (const old of thisFileBackups.slice(5)) {
+        await fs.unlink(path.join(BACKUP_DIR, old)).catch(() => {});
+      }
     } catch {
-      return defaultValue;
+      // File doesn't exist yet, no backup needed
     }
+  }
+
+  private async readJSON<T>(file: string, defaultValue: T, allowEmpty = false): Promise<T> {
+    await this.ensureDataDir();
+    const mutex = getMutex(file);
+    
+    return await mutex.runExclusive(async () => {
+      try {
+        const data = await fs.readFile(file, "utf-8");
+        
+        // Check for corrupted/empty file
+        const trimmed = data.trim();
+        if (!trimmed) {
+          if (allowEmpty) return defaultValue;
+          console.warn(`[Storage] Empty file detected: ${file}, using default`);
+          return defaultValue;
+        }
+        
+        try {
+          const parsed = JSON.parse(trimmed);
+          return parsed;
+        } catch (parseError) {
+          // JSON parse error - file is corrupted
+          console.error(`[Storage] CORRUPTED JSON in ${file}:`, parseError);
+          console.error(`[Storage] File content (first 200 chars): ${data.substring(0, 200)}`);
+          
+          // Try to restore from backup
+          const restored = await this.restoreFromBackup(file);
+          if (restored !== null) {
+            console.log(`[Storage] Restored ${file} from backup`);
+            return restored as T;
+          }
+          
+          // If no backup, use default but don't silently continue
+          console.error(`[Storage] No backup available for ${file}, using default value`);
+          return defaultValue;
+        }
+      } catch (err: any) {
+        if (err.code === 'ENOENT') {
+          // File doesn't exist - this is normal for first run
+          return defaultValue;
+        }
+        console.error(`[Storage] Error reading ${file}:`, err);
+        throw err;
+      }
+    });
+  }
+
+  private async restoreFromBackup<T>(file: string): Promise<T | null> {
+    try {
+      const filename = path.basename(file);
+      const backups = await fs.readdir(BACKUP_DIR);
+      const thisFileBackups = backups
+        .filter(b => b.startsWith(filename + '.') && b.endsWith('.bak'))
+        .sort()
+        .reverse();
+      
+      for (const backup of thisFileBackups) {
+        try {
+          const backupPath = path.join(BACKUP_DIR, backup);
+          const data = await fs.readFile(backupPath, "utf-8");
+          const parsed = JSON.parse(data);
+          
+          // Backup is valid - restore it
+          await fs.copyFile(backupPath, file);
+          return parsed;
+        } catch {
+          // This backup is also corrupted, try the next one
+          continue;
+        }
+      }
+    } catch {
+      // No backups available
+    }
+    return null;
   }
 
   private async writeJSON<T>(file: string, data: T): Promise<void> {
     await this.ensureDataDir();
-    await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
+    const mutex = getMutex(file);
+    
+    await mutex.runExclusive(async () => {
+      // Create backup before write
+      await this.createBackup(file);
+      
+      // Write to temp file first (atomic write)
+      const tempFile = `${file}.tmp.${Date.now()}`;
+      const content = JSON.stringify(data, null, 2);
+      
+      try {
+        await fs.writeFile(tempFile, content, "utf-8");
+        
+        // Verify the temp file is valid JSON
+        const verification = await fs.readFile(tempFile, "utf-8");
+        JSON.parse(verification);
+        
+        // Atomic rename
+        await fs.rename(tempFile, file);
+      } catch (err) {
+        // Clean up temp file on error
+        await fs.unlink(tempFile).catch(() => {});
+        console.error(`[Storage] Failed to write ${file}:`, err);
+        throw err;
+      }
+    });
   }
 
   async getFeeds(): Promise<Feed[]> {
@@ -141,7 +280,7 @@ export class FileStorage implements IStorage {
   }
 
   async addLog(insertLog: InsertLog): Promise<ScrapeLog> {
-    const logs = await this.getLogs(1000);
+    const logs = await this.readJSON<ScrapeLog[]>(LOGS_FILE, []);
     const log: ScrapeLog = {
       ...insertLog,
       id: randomUUID(),
@@ -234,7 +373,7 @@ export class FileStorage implements IStorage {
   }
 
   async addExtractedItem(insertItem: InsertExtractedItem): Promise<ExtractedItem> {
-    const items = await this.getExtractedItems(1000);
+    const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
     const item: ExtractedItem = {
       ...insertItem,
       id: randomUUID(),
@@ -262,7 +401,7 @@ export class FileStorage implements IStorage {
   }
 
   async addGrabbedItem(insertItem: InsertGrabbedItem): Promise<GrabbedItem> {
-    const items = await this.getGrabbedItems(1000);
+    const items = await this.readJSON<GrabbedItem[]>(GRABBED_FILE, []);
     const item: GrabbedItem = {
       ...insertItem,
       id: randomUUID(),
@@ -272,6 +411,28 @@ export class FileStorage implements IStorage {
     // Keep only the last 500 items
     await this.writeJSON(GRABBED_FILE, items.slice(0, 500));
     return item;
+  }
+
+  // Schedule persistence methods
+  async getSchedule(): Promise<ScheduleEntry[]> {
+    return this.readJSON<ScheduleEntry[]>(SCHEDULE_FILE, []);
+  }
+
+  async setScheduleEntry(entry: ScheduleEntry): Promise<void> {
+    const schedule = await this.getSchedule();
+    const index = schedule.findIndex(s => s.feedId === entry.feedId);
+    if (index >= 0) {
+      schedule[index] = entry;
+    } else {
+      schedule.push(entry);
+    }
+    await this.writeJSON(SCHEDULE_FILE, schedule);
+  }
+
+  async removeScheduleEntry(feedId: string): Promise<void> {
+    const schedule = await this.getSchedule();
+    const filtered = schedule.filter(s => s.feedId !== feedId);
+    await this.writeJSON(SCHEDULE_FILE, filtered);
   }
 
   async clearEntries(): Promise<void> {
@@ -292,6 +453,7 @@ export class FileStorage implements IStorage {
     await this.writeJSON(PROCESSED_FILE, []);
     await this.writeJSON(EXTRACTED_FILE, []);
     await this.writeJSON(GRABBED_FILE, []);
+    await this.writeJSON(SCHEDULE_FILE, []);
   }
 
   async cleanupOldData(maxAgeMs: number = 60 * 24 * 60 * 60 * 1000): Promise<CleanupResult> {

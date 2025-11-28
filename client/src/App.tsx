@@ -7,6 +7,12 @@ import { Layout } from "@/components/layout";
 import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Logs from "@/pages/logs";
+import { useWebSocket } from "@/lib/websocket";
+
+function WebSocketProvider({ children }: { children: React.ReactNode }) {
+  useWebSocket();
+  return <>{children}</>;
+}
 
 function Router() {
   return (
@@ -24,7 +30,9 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
+      <WebSocketProvider>
+        <Router />
+      </WebSocketProvider>
       <Toaster />
     </QueryClientProvider>
   );
