@@ -35,3 +35,4 @@ Thumbs.db
 # Misc
 vite.config.ts.*
 *.tar.gz
+.aider*
