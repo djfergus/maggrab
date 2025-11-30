@@ -1,6 +1,6 @@
 import Parser from "rss-parser";
 import { load } from "cheerio";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { storage, type ScheduleEntry } from "./storage";
 import { log, broadcast } from "./index";
 import * as cron from "node-cron";
@@ -10,10 +10,23 @@ import jdownloaderAPI from "jdownloader-api";
 
 const parser = new Parser();
 
+// Configuration constants
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000; // 5 seconds
+const RSS_TIMEOUT = 30000; // 30 seconds for RSS
+const PAGE_TIMEOUT = 20000; // 20 seconds for pages
+const HEARTBEAT_THRESHOLD = 120000; // 2 minutes
+const MAX_CONCURRENT_FEEDS = 5; // Limit concurrent scrapes
+
 // Track JDownloader connection state
 let jdConnected = false;
 let jdDeviceId: string | null = null;
 let jdDeviceName: string | null = null;
+let jdConnectionAttempts = 0;
+let lastJdErrorTime = 0;
+
+// Track running feeds with concurrency control
+let runningFeedCount = 0;
 
 // Export connection status for API
 export function getJDConnectionStatus() {
@@ -26,6 +39,8 @@ export function getJDConnectionStatus() {
     connected: jdConnected,
     email: email ? email.replace(/(.{2}).*@/, "$1***@") : undefined,
     deviceName: jdDeviceName || configuredDevice || undefined,
+    connectionAttempts: jdConnectionAttempts,
+    lastErrorTime: lastJdErrorTime,
   };
 }
 
@@ -119,37 +134,43 @@ export class Scraper {
     this.isRunning = true;
     this.lastHeartbeat = Date.now();
     
-    await storage.addLog({
-      level: "info",
-      message: "Daemon started - Maggrab v0.1.0",
-      source: "daemon",
-    });
+    try {
+      await storage.addLog({
+        level: "info",
+        message: "Daemon started - Maggrab v0.1.0",
+        source: "daemon",
+      });
 
-    log("Grabber daemon started", "grabber");
-    
-    // Run cleanup on startup (remove entries older than 2 months)
-    await this.runCleanup();
-    
-    // Schedule daily cleanup at 3 AM
-    this.cleanupTask = cron.schedule('0 3 * * *', () => {
-      this.runCleanup();
-    });
-    
-    // Start heartbeat - logs every minute to prove daemon is alive
-    this.heartbeatTask = cron.schedule('* * * * *', () => {
-      this.heartbeat();
-    });
-    
-    // Load schedule and check for missed runs
-    await this.recoverSchedule();
-    
-    // Load all feeds and start monitoring
-    const feeds = await storage.getFeeds();
-    for (const feed of feeds) {
-      await this.scheduleFeed(feed.id);
+      log("Grabber daemon started", "grabber");
+      
+      // Run cleanup on startup (remove entries older than 2 months)
+      await this.runCleanup();
+      
+      // Schedule daily cleanup at 3 AM
+      this.cleanupTask = cron.schedule('0 3 * * *', () => {
+        this.runCleanup();
+      });
+      
+      // Start heartbeat - logs every minute to prove daemon is alive
+      this.heartbeatTask = cron.schedule('* * * * *', () => {
+        this.heartbeat();
+      });
+      
+      // Load schedule and check for missed runs
+      await this.recoverSchedule();
+      
+      // Load all feeds and start monitoring
+      const feeds = await storage.getFeeds();
+      for (const feed of feeds) {
+        await this.scheduleFeed(feed.id);
+      }
+
+      log(`Scheduler initialized with ${feeds.length} feeds`, "daemon");
+    } catch (error: any) {
+      log(`Failed to start scraper: ${error.message}`, "daemon");
+      await this.stop();
+      throw error;
     }
-
-    log(`Scheduler initialized with ${feeds.length} feeds`, "daemon");
   }
 
   private async heartbeat() {
@@ -160,7 +181,7 @@ export class Scraper {
     // Log heartbeat every 10 minutes (not every minute to reduce noise)
     const now = new Date();
     if (now.getMinutes() % 10 === 0) {
-      log(`Heartbeat: ${feeds.length} feeds monitored, ${this.cronJobs.size} jobs scheduled`, "daemon");
+      log(`Heartbeat: ${feeds.length} feeds monitored, ${this.cronJobs.size} jobs scheduled, ${runningFeedCount} running`, "daemon");
     }
     
     // Broadcast status to connected WebSocket clients
@@ -169,13 +190,14 @@ export class Scraper {
       timestamp: this.lastHeartbeat,
       feedCount: feeds.length,
       jobCount: this.cronJobs.size,
+      runningCount: runningFeedCount,
     });
   }
 
   getHealth() {
     const now = Date.now();
     const timeSinceHeartbeat = now - this.lastHeartbeat;
-    const healthy = this.isRunning && timeSinceHeartbeat < 120000; // 2 minutes threshold
+    const healthy = this.isRunning && timeSinceHeartbeat < HEARTBEAT_THRESHOLD;
     
     return {
       healthy,
@@ -184,46 +206,55 @@ export class Scraper {
       timeSinceHeartbeat,
       scheduledJobs: this.cronJobs.size,
       runningJobs: this.runningFeeds.size,
+      runningCount: runningFeedCount,
     };
   }
 
   private async recoverSchedule() {
-    const schedule = await storage.getSchedule();
-    const now = Date.now();
-    let missedRuns = 0;
-    
-    for (const entry of schedule) {
-      // Check if this feed still exists
-      const feed = await storage.getFeed(entry.feedId);
-      if (!feed) {
-        await storage.removeScheduleEntry(entry.feedId);
-        continue;
+    try {
+      const schedule = await storage.getSchedule();
+      const now = Date.now();
+      let missedRuns = 0;
+      
+      for (const entry of schedule) {
+        try {
+          // Check if this feed still exists
+          const feed = await storage.getFeed(entry.feedId);
+          if (!feed) {
+            await storage.removeScheduleEntry(entry.feedId);
+            continue;
+          }
+          
+          // Check if we missed a run
+          if (entry.nextRun < now) {
+            missedRuns++;
+            log(`Catching up missed run for feed: ${feed.name}`, "daemon");
+            
+            // Update schedule entry FIRST to prevent repeated triggers
+            const intervalMs = feed.interval * 60 * 1000;
+            await storage.setScheduleEntry({
+              feedId: entry.feedId,
+              nextRun: now + intervalMs,
+              intervalMinutes: feed.interval,
+            });
+            
+            // Then run the catch-up scrape (don't await to avoid blocking)
+            this.scrapeFeed(entry.feedId);
+          }
+        } catch (error: any) {
+          log(`Error recovering schedule for feed ${entry.feedId}: ${error.message}`, "daemon");
+        }
       }
       
-      // Check if we missed a run
-      if (entry.nextRun < now) {
-        missedRuns++;
-        log(`Catching up missed run for feed: ${feed.name}`, "daemon");
-        
-        // Update schedule entry FIRST to prevent repeated triggers
-        const intervalMs = feed.interval * 60 * 1000;
-        await storage.setScheduleEntry({
-          feedId: entry.feedId,
-          nextRun: now + intervalMs,
-          intervalMinutes: feed.interval,
+      if (missedRuns > 0) {
+        await storage.addLog({
+          level: "info",
+          message: `Recovered ${missedRuns} missed grab job(s) from downtime`,
+          source: "daemon",
         });
-        
-        // Then run the catch-up scrape (don't await to avoid blocking)
-        this.scrapeFeed(entry.feedId);
       }
-    }
-    
-    if (missedRuns > 0) {
-      await storage.addLog({
-        level: "info",
-        message: `Recovered ${missedRuns} missed grab job(s) from downtime`,
-        source: "daemon",
-      });
+    } catch (error: any) {
+      log(`Error in schedule recovery: ${error.message}`, "daemon");
     }
   }
 
@@ -252,7 +283,11 @@ export class Scraper {
     
     // Stop all cron jobs
     this.cronJobs.forEach((job, id) => {
-      job.stop();
+      try {
+        job.stop();
+      } catch (error) {
+        log(`Error stopping cron job ${id}: ${error}`, "daemon");
+      }
     });
     this.cronJobs.clear();
     
@@ -267,6 +302,10 @@ export class Scraper {
       this.cleanupTask.stop();
       this.cleanupTask = null;
     }
+    
+    // Clear running feeds set
+    this.runningFeeds.clear();
+    runningFeedCount = 0;
     
     await storage.addLog({
       level: "info",
@@ -284,7 +323,11 @@ export class Scraper {
     // Clear existing job if any
     const existing = this.cronJobs.get(feedId);
     if (existing) {
-      existing.stop();
+      try {
+        existing.stop();
+      } catch (error) {
+        log(`Error stopping existing cron job for ${feedId}: ${error}`, "daemon");
+      }
       this.cronJobs.delete(feedId);
     }
 
@@ -294,19 +337,28 @@ export class Scraper {
     const nextRun = now + intervalMs;
     
     // Store schedule entry for recovery
-    await storage.setScheduleEntry({
-      feedId,
-      nextRun,
-      intervalMinutes: feed.interval,
-    });
+    try {
+      await storage.setScheduleEntry({
+        feedId,
+        nextRun,
+        intervalMinutes: feed.interval,
+      });
+    } catch (error: any) {
+      log(`Failed to store schedule entry for ${feedId}: ${error.message}`, "daemon");
+      return;
+    }
 
     // Create cron expression for interval (run every N minutes)
     // node-cron doesn't directly support "every N minutes", so we use a workaround
     // We'll check every minute and see if it's time to run
     const job = cron.schedule('* * * * *', async () => {
-      const entry = (await storage.getSchedule()).find(s => s.feedId === feedId);
-      if (entry && Date.now() >= entry.nextRun) {
-        await this.scrapeFeed(feedId);
+      try {
+        const entry = (await storage.getSchedule()).find(s => s.feedId === feedId);
+        if (entry && Date.now() >= entry.nextRun) {
+          await this.scrapeFeed(feedId);
+        }
+      } catch (error: any) {
+        log(`Error in cron job for ${feedId}: ${error.message}`, "daemon");
       }
     });
     
@@ -319,10 +371,18 @@ export class Scraper {
   async unscheduleFeed(feedId: string) {
     const job = this.cronJobs.get(feedId);
     if (job) {
-      job.stop();
+      try {
+        job.stop();
+      } catch (error) {
+        log(`Error stopping cron job ${feedId}: ${error}`, "daemon");
+      }
       this.cronJobs.delete(feedId);
     }
-    await storage.removeScheduleEntry(feedId);
+    try {
+      await storage.removeScheduleEntry(feedId);
+    } catch (error: any) {
+      log(`Failed to remove schedule entry for ${feedId}: ${error.message}`, "daemon");
+    }
   }
 
   private async scrapeFeed(feedId: string) {
@@ -332,18 +392,32 @@ export class Scraper {
       return;
     }
     
+    // Concurrency control
+    if (runningFeedCount >= MAX_CONCURRENT_FEEDS) {
+      log(`Skipping ${feedId} - max concurrent feeds reached (${MAX_CONCURRENT_FEEDS})`, "grabber");
+      return;
+    }
+    
     const feed = await storage.getFeed(feedId);
     if (!feed) return;
 
     this.runningFeeds.add(feedId);
-    
+    runningFeedCount++;
+
     // Update schedule entry at START to prevent cron from re-triggering during scrape
     const intervalMs = feed.interval * 60 * 1000;
-    await storage.setScheduleEntry({
-      feedId,
-      nextRun: Date.now() + intervalMs,
-      intervalMinutes: feed.interval,
-    });
+    try {
+      await storage.setScheduleEntry({
+        feedId,
+        nextRun: Date.now() + intervalMs,
+        intervalMinutes: feed.interval,
+      });
+    } catch (error: any) {
+      log(`Failed to update schedule for ${feedId}: ${error.message}`, "grabber");
+      this.runningFeeds.delete(feedId);
+      runningFeedCount--;
+      return;
+    }
     
     try {
       await storage.updateFeed(feedId, { status: "scraping", lastChecked: Date.now() });
@@ -358,10 +432,10 @@ export class Scraper {
       // Broadcast status update
       broadcast({ type: 'feedStatus', feedId, status: 'scraping' });
 
-      // Parse RSS feed
+      // Parse RSS feed with retry logic
       let rssFeed;
       try {
-        rssFeed = await parser.parseURL(feed.url);
+        rssFeed = await this.parseRSSWithRetry(feed.url);
       } catch (parseErr: any) {
         // Check if this looks like an HTML page instead of RSS
         const errMsg = parseErr.message || '';
@@ -437,7 +511,7 @@ export class Scraper {
         if (item.link) {
           try {
             const articleTitle = item.title || item.link;
-            const downloadLinks = await this.findDownloadLinks(item.link);
+            const downloadLinks = await this.findDownloadLinksWithRetry(item.link);
             const hasDownload = downloadLinks.length > 0;
             
             // Store every grabbed item from the RSS feed
@@ -500,11 +574,15 @@ export class Scraper {
       
       // Update next run time
       const intervalMs = feed.interval * 60 * 1000;
-      await storage.setScheduleEntry({
-        feedId,
-        nextRun: Date.now() + intervalMs,
-        intervalMinutes: feed.interval,
-      });
+      try {
+        await storage.setScheduleEntry({
+          feedId,
+          nextRun: Date.now() + intervalMs,
+          intervalMinutes: feed.interval,
+        });
+      } catch (error: any) {
+        log(`Failed to update schedule after completion for ${feedId}: ${error.message}`, "grabber");
+      }
       
     } catch (error: any) {
       await storage.updateFeed(feedId, { status: "error" });
@@ -517,7 +595,48 @@ export class Scraper {
       broadcast({ type: 'feedStatus', feedId, status: 'error' });
     } finally {
       this.runningFeeds.delete(feedId);
+      runningFeedCount = Math.max(0, runningFeedCount - 1);
     }
+  }
+
+  private async parseRSSWithRetry(url: string, retries: number = MAX_RETRIES): Promise<any> {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        return await parser.parseURL(url);
+      } catch (error: any) {
+        if (attempt === retries) {
+          throw error;
+        }
+        
+        log(`RSS parse attempt ${attempt} failed for ${url}: ${error.message}`, "grabber");
+        
+        // Exponential backoff
+        const delay = RETRY_DELAY * Math.pow(2, attempt - 1);
+        await this.sleep(delay);
+      }
+    }
+  }
+
+  private async findDownloadLinksWithRetry(url: string, retries: number = MAX_RETRIES): Promise<Array<{url: string, host: string}>> {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        return await this.findDownloadLinks(url);
+      } catch (error: any) {
+        if (attempt === retries) {
+          throw error;
+        }
+        
+        log(`Download link extraction attempt ${attempt} failed for ${url}: ${error.message}`, "grabber");
+        
+        // Exponential backoff
+        const delay = RETRY_DELAY * Math.pow(2, attempt - 1);
+        await this.sleep(delay);
+      }
+    }
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private getHostFromUrl(url: string): string {
@@ -536,9 +655,20 @@ export class Scraper {
 
   private async findDownloadLinks(url: string): Promise<Array<{url: string, host: string}>> {
     try {
-      const response = await axios.get(url, { timeout: 15000, headers: { 
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }});
+      const response = await axios.get(url, { 
+        timeout: PAGE_TIMEOUT, 
+        headers: { 
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        maxRedirects: 5,
+        validateStatus: (status) => status < 500, // Accept 4xx as we might get 403/429
+      });
+      
+      // Handle rate limiting
+      if (response.status === 429) {
+        throw new Error(`Rate limited by ${new URL(url).hostname}`);
+      }
+      
       const $ = load(response.data);
       const foundLinks: Array<{url: string, host: string}> = [];
       
@@ -599,8 +729,18 @@ export class Scraper {
         return true;
       });
     } catch (error: any) {
-      log(`Error finding download link: ${error.message}`, "grabber");
-      return [];
+      // Handle specific error types
+      if (error.code === 'ECONNABORTED') {
+        throw new Error(`Timeout fetching ${url}`);
+      } else if (error.code === 'ENOTFOUND') {
+        throw new Error(`DNS lookup failed for ${url}`);
+      } else if (error.response?.status === 403) {
+        throw new Error(`Access forbidden for ${url}`);
+      } else if (error.response?.status === 429) {
+        throw new Error(`Rate limited by ${new URL(url).hostname}`);
+      }
+      
+      throw new Error(`Error finding download link: ${error.message}`);
     }
   }
 
@@ -637,6 +777,12 @@ export class Scraper {
       return false;
     }
 
+    // Rate limiting check - don't retry too frequently
+    const now = Date.now();
+    if (jdConnectionAttempts > 0 && (now - lastJdErrorTime) < 60000) {
+      return false; // Wait at least 1 minute before retrying
+    }
+
     // Already connected
     if (jdConnected && jdDeviceId) {
       return true;
@@ -646,6 +792,7 @@ export class Scraper {
       // Connect to MyJDownloader
       await jdownloaderAPI.connect(credentials.email, credentials.password);
       jdConnected = true;
+      jdConnectionAttempts = 0;
 
       await storage.addLog({
         level: "success",
@@ -708,6 +855,9 @@ export class Scraper {
 
       return true;
     } catch (error: any) {
+      jdConnectionAttempts++;
+      lastJdErrorTime = Date.now();
+      
       await this.disconnectJD();
       await storage.addLog({
         level: "error",
