@@ -1,6 +1,9 @@
 import { Link, useLocation } from "wouter";
-import { Terminal, LayoutDashboard, Settings, Activity, Server } from "lucide-react";
+import { Terminal, LayoutDashboard, Settings, Activity, Server, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -11,59 +14,133 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { href: "/settings", icon: Settings, label: "Configuration" },
   ];
 
+  const isMobile = useIsMobile();
+  const currentNavItem = navItems.find((item) => item.href === location);
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans selection:bg-primary selection:text-primary-foreground">
-      {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-sm flex flex-col">
-        <div className="p-6 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 bg-primary/20 rounded-none border border-primary/50 flex items-center justify-center">
-              <Activity className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="font-display font-bold text-xl tracking-tight text-white">MAGGRAB</h1>
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">v0.1.0-beta</p>
+      {isMobile && (
+        <header className="w-full h-16 shrink-0 flex items-center p-4 border-b border-border bg-card/50 backdrop-blur-sm">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="-ml-1 mr-2 h-9 w-9">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0 bg-card/50 backdrop-blur-sm">
+              <div className="flex flex-col h-full">
+                {/* Logo header */}
+                <div className="p-6 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 bg-primary/20 rounded-none border border-primary/50 flex items-center justify-center">
+                      <Activity className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h1 className="font-display font-bold text-xl tracking-tight text-white">MAGGRAB</h1>
+                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">v0.1.0-beta</p>
+                    </div>
+                  </div>
+                </div>
+                {/* Nav */}
+                <nav className="flex-1 p-4 space-y-2">
+                  {navItems.map((item) => (
+                    <SheetClose key={item.href} asChild>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all border-l-2 cursor-pointer",
+                          location === item.href
+                            ? "border-primary bg-primary/5 text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground hover:bg-white/5"
+                        )}
+                      >
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        {item.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </nav>
+                {/* Daemon status footer */}
+                <div className="p-4 border-t border-border">
+                  <div className="bg-secondary/50 p-3 border border-border">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Server className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-mono text-muted-foreground">DAEMON STATUS</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-xs font-medium text-emerald-500">ONLINE</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <div className="flex-1 flex items-center justify-center">
+            <h1 className="font-display font-bold text-xl tracking-tight text-foreground truncate">
+              {currentNavItem?.label ?? "MAGGRAB"}
+            </h1>
+          </div>
+        </header>
+      )}
+      {!isMobile && (
+        <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-sm flex flex-col">
+          <div className="p-6 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 bg-primary/20 rounded-none border border-primary/50 flex items-center justify-center">
+                <Activity className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h1 className="font-display font-bold text-xl tracking-tight text-white">MAGGRAB</h1>
+                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">v0.1.0-beta</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          {navItems.map((item) => (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all border-l-2 cursor-pointer",
-                location === item.href 
-                  ? "border-primary bg-primary/5 text-primary" 
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-white/5"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <nav className="flex-1 p-4 space-y-2">
+            {navItems.map((item) => (
+              <Link 
+                key={item.href} 
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all border-l-2 cursor-pointer",
+                  location === item.href 
+                    ? "border-primary bg-primary/5 text-primary" 
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-white/5"
+                )}
+              >
+                <item.icon className="h-4 w-4 shrink-0" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="p-4 border-t border-border">
-          <div className="bg-secondary/50 p-3 border border-border">
-            <div className="flex items-center gap-2 mb-2">
-              <Server className="h-3 w-3 text-primary" />
-              <span className="text-xs font-mono text-muted-foreground">DAEMON STATUS</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-xs font-medium text-emerald-500">ONLINE</span>
+          <div className="p-4 border-t border-border">
+            <div className="bg-secondary/50 p-3 border border-border">
+              <div className="flex items-center gap-2 mb-2">
+                <Server className="h-3 w-3 text-primary" />
+                <span className="text-xs font-mono text-muted-foreground">DAEMON STATUS</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-xs font-medium text-emerald-500">ONLINE</span>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
-
+        </aside>
+      )}
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-background to-background">
+      <main className={cn(
+        "flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-background to-background",
+        isMobile ? "p-4" : "p-6"
+      )}>
         {children}
       </main>
     </div>
