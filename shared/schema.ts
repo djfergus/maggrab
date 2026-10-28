@@ -64,9 +64,21 @@ export const extractedItemSchema = z.object({
   host: z.string(),
   timestamp: z.number(),
   submitted: z.boolean().default(false),
+  // Submission retry tracking (optional so older stored items stay valid)
+  submitAttempts: z.number().optional(),
+  lastSubmitAttempt: z.number().nullable().optional(),
+  lastSubmitError: z.string().nullable().optional(),
+  abandoned: z.boolean().optional(),
 });
 
-export const insertExtractedItemSchema = extractedItemSchema.omit({ id: true, timestamp: true });
+export const insertExtractedItemSchema = extractedItemSchema.pick({
+  feedId: true,
+  articleTitle: true,
+  articleUrl: true,
+  downloadUrl: true,
+  host: true,
+  submitted: true,
+});
 export type InsertExtractedItem = z.infer<typeof insertExtractedItemSchema>;
 export type ExtractedItem = z.infer<typeof extractedItemSchema>;
 

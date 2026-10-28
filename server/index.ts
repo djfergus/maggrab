@@ -109,6 +109,13 @@ app.use((req, res, next) => {
     await setupVite(httpServer, app);
   }
 
+  // jdownloader-api can reject from inside its own error handlers, which
+  // Node would otherwise treat as fatal. Log it and keep the daemon running.
+  process.on("unhandledRejection", (reason) => {
+    const message = reason instanceof Error ? reason.stack || reason.message : String(reason);
+    log(`Unhandled promise rejection: ${message}`, "daemon");
+  });
+
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
