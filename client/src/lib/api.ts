@@ -65,6 +65,12 @@ export const api = {
     return res.json();
   },
 
+  async retryExtracted(id: string): Promise<{ submitted: boolean; error?: string | null }> {
+    const res = await fetch(`${API_BASE}/extracted/${id}/retry`, { method: "POST" });
+    if (!res.ok) throw new Error("Failed to retry submission");
+    return res.json();
+  },
+
   // Grabbed items (all RSS articles processed)
   async getGrabbed(limit = 100): Promise<GrabbedItem[]> {
     const res = await fetch(`${API_BASE}/grabbed?limit=${limit}`);

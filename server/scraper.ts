@@ -4,6 +4,7 @@ import axios, { AxiosError } from "axios";
 import { storage, type ScheduleEntry } from "./storage";
 import { log, broadcast } from "./index";
 import * as cron from "node-cron";
+import type { ExtractedItem } from "@shared/schema";
 
 // @ts-ignore - jdownloader-api doesn't have type definitions
 import jdownloaderAPI from "jdownloader-api";
@@ -18,12 +19,54 @@ const PAGE_TIMEOUT = 20000; // 20 seconds for pages
 const HEARTBEAT_THRESHOLD = 120000; // 2 minutes
 const MAX_CONCURRENT_FEEDS = 5; // Limit concurrent scrapes
 
+// JDownloader submission
+const JD_REQUEST_TIMEOUT = 30000; // jdownloader-api has no timeout of its own and can hang
+const JD_SESSION_MAX_IDLE = 30 * 60 * 1000; // Reconnect rather than reuse a session idle this long
+const SUBMIT_RETRY_CRON = '*/10 * * * *';
+const SUBMIT_RETRY_STARTUP_DELAY = 60000; // Give JDownloader time to come up after a host reboot
+const SUBMIT_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // Stop retrying items older than this
+// Wait before the next retry, indexed by attempts already made (last value repeats)
+const SUBMIT_BACKOFF = [0, 10, 30, 60, 360].map(minutes => minutes * 60 * 1000);
+
+function submitBackoff(attempts: number): number {
+  return SUBMIT_BACKOFF[Math.min(attempts, SUBMIT_BACKOFF.length - 1)];
+}
+
+// jdownloader-api rejects with whatever MyJDownloader returned, which is often
+// a string or plain object rather than an Error
+function describeError(error: unknown): string {
+  let text: string;
+  if (error instanceof Error) {
+    text = error.message || error.name;
+  } else if (typeof error === 'string') {
+    text = error;
+  } else {
+    try {
+      text = JSON.stringify(error);
+    } catch {
+      text = String(error);
+    }
+  }
+  // MyJDownloader errors arrive as pretty-printed JSON; keep log lines on one line
+  return text.replace(/\\n|\s+/g, ' ').replace(/ {2,}/g, ' ').trim().slice(0, 300) || 'Unknown error';
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: NodeJS.Timeout;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms / 1000}s`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 // Track JDownloader connection state
 let jdConnected = false;
 let jdDeviceId: string | null = null;
 let jdDeviceName: string | null = null;
 let jdConnectionAttempts = 0;
 let lastJdErrorTime = 0;
+let lastJdActivity = 0;
+let lastJdConnectError: string | null = null;
 
 // Track running feeds with concurrency control
 let runningFeedCount = 0;
@@ -127,6 +170,10 @@ export class Scraper {
   private isRunning = false;
   private heartbeatTask: cron.ScheduledTask | null = null;
   private cleanupTask: cron.ScheduledTask | null = null;
+  private submitRetryTask: cron.ScheduledTask | null = null;
+  private submitRetryTimer: NodeJS.Timeout | null = null;
+  private submitRetryRunning = false;
+  private submittingIds: Set<string> = new Set(); // Guards against double-submitting an item
   private lastHeartbeat: number = 0;
 
   async start() {
@@ -155,6 +202,15 @@ export class Scraper {
       this.heartbeatTask = cron.schedule('* * * * *', () => {
         this.heartbeat();
       });
+      
+      // Retry JDownloader submissions that failed earlier
+      this.submitRetryTask = cron.schedule(SUBMIT_RETRY_CRON, () => {
+        this.retryPendingSubmissions();
+      });
+      this.submitRetryTimer = setTimeout(() => {
+        this.submitRetryTimer = null;
+        this.retryPendingSubmissions();
+      }, SUBMIT_RETRY_STARTUP_DELAY);
       
       // Load schedule and check for missed runs
       await this.recoverSchedule();
@@ -301,6 +357,16 @@ export class Scraper {
     if (this.cleanupTask) {
       this.cleanupTask.stop();
       this.cleanupTask = null;
+    }
+    
+    // Stop submission retries
+    if (this.submitRetryTask) {
+      this.submitRetryTask.stop();
+      this.submitRetryTask = null;
+    }
+    if (this.submitRetryTimer) {
+      clearTimeout(this.submitRetryTimer);
+      this.submitRetryTimer = null;
     }
     
     // Clear running feeds set
@@ -554,8 +620,9 @@ export class Scraper {
               
               await storage.incrementStat("linksFound");
               
-              // Only submit the preferred link to JDownloader
-              await this.submitToJDownloader(preferredLink.url, articleTitle, extractedItem.id);
+              // Only submit the preferred link to JDownloader. If this fails the
+              // item stays unsubmitted and the retry job picks it up later.
+              await this.submitToJDownloader(extractedItem);
             }
             // Mark this item as processed (even if no links found)
             await storage.markProcessed(item.link);
@@ -633,6 +700,7 @@ export class Scraper {
         await this.sleep(delay);
       }
     }
+    throw new Error(`Download link extraction failed for ${url}`);
   }
 
   private sleep(ms: number): Promise<void> {
@@ -747,7 +815,7 @@ export class Scraper {
   private async disconnectJD(): Promise<void> {
     try {
       if (jdConnected) {
-        await jdownloaderAPI.disconnect();
+        await withTimeout(jdownloaderAPI.disconnect(), JD_REQUEST_TIMEOUT, "MyJDownloader disconnect");
       }
     } catch {
       // Ignore disconnect errors
@@ -777,22 +845,25 @@ export class Scraper {
       return false;
     }
 
-    // Rate limiting check - don't retry too frequently
-    const now = Date.now();
-    if (jdConnectionAttempts > 0 && (now - lastJdErrorTime) < 60000) {
-      return false; // Wait at least 1 minute before retrying
-    }
-
-    // Already connected
+    // Already connected, unless the session has sat idle long enough to have expired
     if (jdConnected && jdDeviceId) {
-      return true;
+      if (Date.now() - lastJdActivity < JD_SESSION_MAX_IDLE) {
+        return true;
+      }
+      log("MyJDownloader session idle, reconnecting", "jdownloader");
+      await this.disconnectJD();
     }
 
     try {
       // Connect to MyJDownloader
-      await jdownloaderAPI.connect(credentials.email, credentials.password);
+      await withTimeout(
+        jdownloaderAPI.connect(credentials.email, credentials.password),
+        JD_REQUEST_TIMEOUT,
+        "MyJDownloader connect",
+      );
       jdConnected = true;
       jdConnectionAttempts = 0;
+      lastJdActivity = Date.now();
 
       await storage.addLog({
         level: "success",
@@ -802,25 +873,29 @@ export class Scraper {
       log("Connected to MyJDownloader", "jdownloader");
 
       // Get available devices
-      let devices;
+      let devices: any[];
       try {
-        devices = await jdownloaderAPI.listDevices();
-      } catch (deviceError: any) {
+        devices = await withTimeout<any[]>(jdownloaderAPI.listDevices(), JD_REQUEST_TIMEOUT, "MyJDownloader listDevices");
+      } catch (deviceError: unknown) {
+        lastJdConnectError = `Failed to list devices: ${describeError(deviceError)}`;
         await storage.addLog({
           level: "error",
-          message: `Failed to list devices: ${deviceError.message}`,
+          message: lastJdConnectError,
           source: "jdownloader",
         });
+        log(lastJdConnectError, "jdownloader");
         await this.disconnectJD();
         return false;
       }
       
       if (!devices || devices.length === 0) {
+        lastJdConnectError = "No JDownloader devices online. Make sure JDownloader is running.";
         await storage.addLog({
           level: "error",
-          message: "No JDownloader devices found. Make sure JDownloader is running.",
+          message: lastJdConnectError,
           source: "jdownloader",
         });
+        log(lastJdConnectError, "jdownloader");
         await this.disconnectJD();
         return false;
       }
@@ -835,13 +910,18 @@ export class Scraper {
           jdDeviceId = targetDevice.id;
           jdDeviceName = targetDevice.name;
         } else {
+          // Don't fall back to another device: links sent there would be
+          // marked as submitted but never reach the intended JDownloader
+          const online = devices.map((d: any) => d.name).join(", ");
+          lastJdConnectError = `Device "${credentials.device}" is not online (online: ${online})`;
           await storage.addLog({
-            level: "warn",
-            message: `Device "${credentials.device}" not found, using first available: ${devices[0].name}`,
+            level: "error",
+            message: lastJdConnectError,
             source: "jdownloader",
           });
-          jdDeviceId = devices[0].id;
-          jdDeviceName = devices[0].name;
+          log(lastJdConnectError, "jdownloader");
+          await this.disconnectJD();
+          return false;
         }
       } else {
         jdDeviceId = devices[0].id;
@@ -853,78 +933,158 @@ export class Scraper {
         });
       }
 
+      lastJdConnectError = null;
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       jdConnectionAttempts++;
       lastJdErrorTime = Date.now();
+      lastJdConnectError = `Failed to connect to MyJDownloader: ${describeError(error)}`;
       
       await this.disconnectJD();
       await storage.addLog({
         level: "error",
-        message: `Failed to connect to MyJDownloader: ${error.message}`,
+        message: lastJdConnectError,
         source: "jdownloader",
       });
-      log(`MyJDownloader connection failed: ${error.message}`, "jdownloader");
+      log(lastJdConnectError, "jdownloader");
       return false;
     }
   }
 
-  private async submitToJDownloader(url: string, articleTitle: string, extractedItemId?: string) {
+  /**
+   * Send an extracted link to JDownloader. Tries twice, reconnecting in
+   * between, and records the outcome on the item so failures can be retried.
+   * Returns true if the link was accepted.
+   */
+  private async submitToJDownloader(item: ExtractedItem): Promise<boolean> {
+    if (this.submittingIds.has(item.id)) return false;
+    this.submittingIds.add(item.id);
+
     try {
-      const credentials = this.getJDCredentials();
-      
-      if (!credentials) {
-        await storage.addLog({
-          level: "warn",
-          message: "MyJDownloader not configured (add MYJD_EMAIL and MYJD_PASSWORD secrets)",
-          source: "jdownloader",
-        });
-        return;
+      const attempts = (item.submitAttempts ?? 0) + 1;
+      let lastError = "MyJDownloader not configured (add MYJD_EMAIL and MYJD_PASSWORD secrets)";
+
+      if (this.getJDCredentials()) {
+        for (let attempt = 1; attempt <= 2; attempt++) {
+          try {
+            const connected = await this.ensureJDConnection();
+            if (!connected || !jdDeviceId) {
+              throw new Error(lastJdConnectError || "Not connected to MyJDownloader");
+            }
+
+            // addLinks expects an array of links, not a single string
+            await withTimeout(
+              jdownloaderAPI.addLinks([item.downloadUrl], jdDeviceId, true),
+              JD_REQUEST_TIMEOUT,
+              "MyJDownloader addLinks",
+            );
+            lastJdActivity = Date.now();
+
+            await storage.updateExtractedItem(item.id, {
+              submitted: true,
+              submitAttempts: attempts,
+              lastSubmitAttempt: Date.now(),
+              lastSubmitError: null,
+            });
+            await storage.addLog({
+              level: "success",
+              message: `Submitted to JDownloader: ${item.articleTitle}`,
+              source: "jdownloader",
+            });
+            await storage.incrementStat("submitted");
+
+            const stats = await storage.getStats();
+            broadcast({ type: 'stats', data: stats });
+            broadcast({ type: 'extracted' });
+
+            log(`Submitted to JDownloader: ${item.downloadUrl}`, "grabber");
+            return true;
+          } catch (error: unknown) {
+            lastError = describeError(error);
+            // Drop the session so the next attempt starts fresh
+            await this.disconnectJD();
+            if (attempt === 1) {
+              log(`Submit failed for ${item.articleTitle}, reconnecting and retrying: ${lastError}`, "jdownloader");
+            }
+          }
+        }
       }
 
-      // Ensure we're connected
-      const connected = await this.ensureJDConnection();
-      if (!connected || !jdDeviceId) {
-        await storage.addLog({
-          level: "error",
-          message: "Cannot submit - not connected to MyJDownloader",
-          source: "jdownloader",
-        });
-        return;
-      }
-
-      // Add link to JDownloader with autostart enabled
-      // Note: addLinks expects an array of links, not a single string
-      await jdownloaderAPI.addLinks([url], jdDeviceId, true);
-
-      await storage.addLog({
-        level: "success",
-        message: `Submitted to JDownloader: ${articleTitle}`,
-        source: "jdownloader",
+      await storage.updateExtractedItem(item.id, {
+        submitAttempts: attempts,
+        lastSubmitAttempt: Date.now(),
+        lastSubmitError: lastError,
       });
-      
-      await storage.incrementStat("submitted");
-      
-      // Mark the extracted item as submitted
-      if (extractedItemId) {
-        await storage.markExtractedItemSubmitted(extractedItemId);
-      }
-      
-      // Broadcast stats update
-      const stats = await storage.getStats();
-      broadcast({ type: 'stats', data: stats });
-      
-      log(`Submitted to JDownloader: ${url}`, "grabber");
-    } catch (error: any) {
-      // Reset connection state on error to force reconnect
-      await this.disconnectJD();
-      
+      const nextRetryMinutes = Math.round(submitBackoff(attempts) / 60000);
+      const message = `Failed to submit to JDownloader (attempt ${attempts}, will retry in ~${nextRetryMinutes}m): ${item.articleTitle}: ${lastError}`;
       await storage.addLog({
         level: "error",
-        message: `Failed to submit to JDownloader: ${error.message}`,
+        message,
         source: "jdownloader",
       });
+      log(message, "jdownloader");
+      broadcast({ type: 'extracted' });
+      return false;
+    } finally {
+      this.submittingIds.delete(item.id);
     }
+  }
+
+  /**
+   * Resend extracted links that never reached JDownloader, with backoff.
+   * Gives up on items older than SUBMIT_MAX_AGE.
+   */
+  async retryPendingSubmissions() {
+    if (this.submitRetryRunning) return;
+    this.submitRetryRunning = true;
+
+    try {
+      const pending = await storage.getPendingSubmissions();
+      const now = Date.now();
+
+      for (const item of pending) {
+        if (this.submittingIds.has(item.id)) continue;
+
+        if (now - item.timestamp > SUBMIT_MAX_AGE) {
+          await storage.updateExtractedItem(item.id, { abandoned: true });
+          const reason = item.lastSubmitError ? ` (last error: ${item.lastSubmitError})` : "";
+          const message = `Gave up submitting to JDownloader, item older than ${SUBMIT_MAX_AGE / 86400000} days: ${item.articleTitle}${reason}`;
+          await storage.addLog({ level: "warn", message, source: "jdownloader" });
+          log(message, "jdownloader");
+          broadcast({ type: 'extracted' });
+          continue;
+        }
+
+        const attempts = item.submitAttempts ?? 0;
+        if (attempts > 0 && now - (item.lastSubmitAttempt ?? 0) < submitBackoff(attempts)) {
+          continue;
+        }
+
+        await storage.addLog({
+          level: "info",
+          message: `Retrying JDownloader submission (attempt ${attempts + 1}): ${item.articleTitle}`,
+          source: "jdownloader",
+        });
+        await this.submitToJDownloader(item);
+      }
+    } catch (error: unknown) {
+      log(`Submission retry job failed: ${describeError(error)}`, "jdownloader");
+    } finally {
+      this.submitRetryRunning = false;
+    }
+  }
+
+  /**
+   * Manually resend one extracted item now, including one that was given up on.
+   */
+  async retrySubmission(id: string): Promise<{ found: boolean; submitted: boolean; error?: string | null }> {
+    const item = await storage.updateExtractedItem(id, { abandoned: false });
+    if (!item) return { found: false, submitted: false };
+    if (item.submitted) return { found: true, submitted: true };
+
+    const submitted = await this.submitToJDownloader(item);
+    const updated = (await storage.getExtractedItems()).find(i => i.id === id);
+    return { found: true, submitted, error: updated?.lastSubmitError ?? null };
   }
 }
 

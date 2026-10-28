@@ -101,6 +101,15 @@ export async function registerRoutes(
     res.json(items);
   });
 
+  // Resend an extracted link to JDownloader now
+  app.post("/api/extracted/:id/retry", async (req, res) => {
+    const result = await scraper.retrySubmission(req.params.id);
+    if (!result.found) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+    res.json(result);
+  });
+
   // Grabbed items (all RSS items processed)
   app.get("/api/grabbed", async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;

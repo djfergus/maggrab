@@ -338,6 +338,7 @@ export default function Dashboard() {
                   <span className="w-20 text-center">Host</span>
                   <span className="flex-1">Article</span>
                   <span className="max-w-[200px]">Download URL</span>
+                  <span className="w-24 text-center">JD2</span>
                   <span className="w-14 text-right">Time</span>
                 </div>
                 {extractedItems.map((item) => (
@@ -546,6 +547,24 @@ function timeAgo(timestamp: number) {
 }
 
 function ExtractedItemRow({ item }: { item: ExtractedItem }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const retryMutation = useMutation({
+    mutationFn: () => api.retryExtracted(item.id),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["extracted"] });
+      toast({
+        title: result.submitted ? "Sent to JDownloader" : "Send failed",
+        description: result.submitted ? item.articleTitle : result.error || "Unknown error",
+        variant: result.submitted ? "default" : "destructive",
+      });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Send failed", description: error.message, variant: "destructive" });
+    },
+  });
+
   return (
     <div className="flex items-center gap-3 py-2 px-3 hover:bg-secondary/30 border-b border-border/50 last:border-b-0" data-testid={`extracted-item-${item.id}`}>
       <span className="text-[9px] font-mono px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase flex-shrink-0 w-20 text-center truncate">
@@ -563,11 +582,39 @@ function ExtractedItemRow({ item }: { item: ExtractedItem }) {
       >
         {item.downloadUrl.replace(/^https?:\/\//, '')}
       </a>
+      <span className="flex items-center justify-center gap-1 flex-shrink-0 w-24">
+        <SubmitStatusBadge item={item} />
+        {!item.submitted && (
+          <button
+            onClick={() => retryMutation.mutate()}
+            disabled={retryMutation.isPending}
+            className="text-muted-foreground hover:text-primary disabled:opacity-50"
+            title="Send to JDownloader now"
+            data-testid={`button-retry-${item.id}`}
+          >
+            <RefreshCw className={`h-3 w-3 ${retryMutation.isPending ? 'animate-spin' : ''}`} />
+          </button>
+        )}
+      </span>
       <span className="text-[10px] text-muted-foreground flex-shrink-0 w-14 text-right">
         {timeAgo(item.timestamp)}
       </span>
     </div>
   );
+}
+
+function SubmitStatusBadge({ item }: { item: ExtractedItem }) {
+  const base = "text-[9px] font-mono px-1.5 py-0.5 uppercase border";
+  if (item.submitted) {
+    return <span className={`${base} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`}>Sent</span>;
+  }
+  const detail = item.lastSubmitError
+    ? `${item.submitAttempts ?? 0} attempt(s). Last error: ${item.lastSubmitError}`
+    : "Not sent yet";
+  if (item.abandoned) {
+    return <span className={`${base} bg-red-500/10 text-red-400 border-red-500/20`} title={detail}>Gave up</span>;
+  }
+  return <span className={`${base} bg-amber-500/10 text-amber-400 border-amber-500/20`} title={detail}>Pending</span>;
 }
 
 function GrabbedItemRow({ item }: { item: GrabbedItem }) {

@@ -15,6 +15,9 @@ const EXTRACTED_FILE = path.join(DATA_DIR, "extracted.json");
 const GRABBED_FILE = path.join(DATA_DIR, "grabbed.json");
 const SCHEDULE_FILE = path.join(DATA_DIR, "schedule.json");
 
+// Enough history to diagnose failures after the fact (~1-2 days of polling)
+const MAX_LOGS = 1000;
+
 interface ProcessedUrl {
   url: string;
   timestamp: number;
@@ -61,6 +64,8 @@ export interface IStorage {
   getExtractedItems(limit?: number): Promise<ExtractedItem[]>;
   addExtractedItem(item: InsertExtractedItem): Promise<ExtractedItem>;
   markExtractedItemSubmitted(id: string): Promise<boolean>;
+  updateExtractedItem(id: string, updates: Partial<ExtractedItem>): Promise<ExtractedItem | undefined>;
+  getPendingSubmissions(): Promise<ExtractedItem[]>;
   
   // Grabbed items (all RSS items processed)
   getGrabbedItems(limit?: number): Promise<GrabbedItem[]>;
@@ -88,6 +93,11 @@ function getMutex(file: string): Mutex {
   }
   return fileMutexes.get(file)!;
 }
+
+// Serialises read-modify-write cycles on extracted.json. The feed grabber and
+// the submission retry job both update it, and the per-file mutex above only
+// covers a single read or write, not the whole cycle.
+const extractedLock = new Mutex();
 
 export class FileStorage implements IStorage {
   private initialized = false;
@@ -287,7 +297,7 @@ export class FileStorage implements IStorage {
       timestamp: Date.now(),
     };
     logs.unshift(log);
-    await this.writeJSON(LOGS_FILE, logs.slice(0, 100));
+    await this.writeJSON(LOGS_FILE, logs.slice(0, MAX_LOGS));
     return log;
   }
 
@@ -373,26 +383,44 @@ export class FileStorage implements IStorage {
   }
 
   async addExtractedItem(insertItem: InsertExtractedItem): Promise<ExtractedItem> {
-    const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
-    const item: ExtractedItem = {
-      ...insertItem,
-      id: randomUUID(),
-      timestamp: Date.now(),
-    };
-    items.unshift(item);
-    // Keep only the last 500 items
-    await this.writeJSON(EXTRACTED_FILE, items.slice(0, 500));
-    return item;
+    return extractedLock.runExclusive(async () => {
+      const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+      const item: ExtractedItem = {
+        ...insertItem,
+        id: randomUUID(),
+        timestamp: Date.now(),
+        submitAttempts: 0,
+        lastSubmitAttempt: null,
+        lastSubmitError: null,
+      };
+      items.unshift(item);
+      // Keep only the last 500 items
+      await this.writeJSON(EXTRACTED_FILE, items.slice(0, 500));
+      return item;
+    });
   }
 
   async markExtractedItemSubmitted(id: string): Promise<boolean> {
+    const updated = await this.updateExtractedItem(id, { submitted: true, lastSubmitError: null });
+    return updated !== undefined;
+  }
+
+  async updateExtractedItem(id: string, updates: Partial<ExtractedItem>): Promise<ExtractedItem | undefined> {
+    return extractedLock.runExclusive(async () => {
+      const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+      const index = items.findIndex(item => item.id === id);
+      if (index === -1) return undefined;
+
+      items[index] = { ...items[index], ...updates };
+      await this.writeJSON(EXTRACTED_FILE, items);
+      return items[index];
+    });
+  }
+
+  async getPendingSubmissions(): Promise<ExtractedItem[]> {
     const items = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
-    const index = items.findIndex(item => item.id === id);
-    if (index === -1) return false;
-    
-    items[index] = { ...items[index], submitted: true };
-    await this.writeJSON(EXTRACTED_FILE, items);
-    return true;
+    // Oldest first so retries go out in the order items were found
+    return items.filter(item => !item.submitted && !item.abandoned).reverse();
   }
 
   async getGrabbedItems(limit = 500): Promise<GrabbedItem[]> {
@@ -440,7 +468,7 @@ export class FileStorage implements IStorage {
     await this.writeJSON(LOGS_FILE, []);
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
     await this.writeJSON(PROCESSED_FILE, []);
-    await this.writeJSON(EXTRACTED_FILE, []);
+    await extractedLock.runExclusive(() => this.writeJSON(EXTRACTED_FILE, []));
     await this.writeJSON(GRABBED_FILE, []);
   }
 
@@ -451,7 +479,7 @@ export class FileStorage implements IStorage {
     await this.writeJSON(STATS_FILE, { totalScraped: 0, linksFound: 0, submitted: 0 });
     await this.writeJSON(SETTINGS_FILE, { checkInterval: 15 });
     await this.writeJSON(PROCESSED_FILE, []);
-    await this.writeJSON(EXTRACTED_FILE, []);
+    await extractedLock.runExclusive(() => this.writeJSON(EXTRACTED_FILE, []));
     await this.writeJSON(GRABBED_FILE, []);
     await this.writeJSON(SCHEDULE_FILE, []);
   }
@@ -470,12 +498,15 @@ export class FileStorage implements IStorage {
     }
 
     // Clean extracted items
-    const extracted = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
-    const freshExtracted = extracted.filter(item => item.timestamp > cutoffTime);
-    result.extracted = extracted.length - freshExtracted.length;
-    if (result.extracted > 0) {
-      await this.writeJSON(EXTRACTED_FILE, freshExtracted);
-    }
+    result.extracted = await extractedLock.runExclusive(async () => {
+      const extracted = await this.readJSON<ExtractedItem[]>(EXTRACTED_FILE, []);
+      const freshExtracted = extracted.filter(item => item.timestamp > cutoffTime);
+      const removed = extracted.length - freshExtracted.length;
+      if (removed > 0) {
+        await this.writeJSON(EXTRACTED_FILE, freshExtracted);
+      }
+      return removed;
+    });
 
     // Clean grabbed items
     const grabbed = await this.readJSON<GrabbedItem[]>(GRABBED_FILE, []);
