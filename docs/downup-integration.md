@@ -92,9 +92,16 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 - [x] Phase 3: real feed. Economist Audio 10.31 was stored with downloadUrl=nfile and
       downupUrl=dwp.la/d/ix0. A resolver hang gives up after 240s and defers the item.
 - [x] Phase 3: real resolver end-to-end (see Phase 1 test)
-- [~] Deploy step 1 (02:2x UTC): Unraid checkout switched to branch `feat/downup-resolver`; maggrab
-      rebuilt with no `DOWNUP_*` in `.env` (`/api/downup-status` reports enabled=false).
-      Verifying a feed cycle.
-- [ ] Deploy step 2: start downup-resolver, set `DOWNUP_RESOLVER_URL=http://downup-resolver:8080`
-      in `.env`, recreate maggrab; watch the next 2–3 issues; test the fallback by stopping the resolver
+- [x] Deploy step 1 (02:21 UTC): branch deployed with downup off; the catch-up check ran all 3 feeds
+      normally ("No new items"); healthy.
+- [x] Deploy step 2 (02:23 UTC): `DOWNUP_RESOLVER_URL=http://downup-resolver:8080` added to `.env`;
+      the `downup-resolver` service is running (image `maggrab-downup-resolver:latest`, tagged from the
+      tested `downup-resolver:test`); `/api/downup-status` reports reachable with the self-test ok.
+- [x] Bug found by the live end-to-end test and fixed (`1ed0c7d`): resolved links (host
+      s3.downup.me) were rejected as "unresolved". Redeployed at 02:25.
+- [x] Live end-to-end: a throwaway maggrab with real JD creds and the real resolver sent a test
+      item. JD got a package from host s3.downup.me, 225,751,263 bytes, downloading at ~100 KB/s
+      with no captcha. The test package and its .part file were then removed.
+- [ ] Watch the next 2–3 real issues (Country Life ~Wed, Economist ~Fri). Expect "via downup"
+      in the Extracted Links dialog and "Submitted to JDownloader via downup" in the logs.
 - [ ] PR to main, merge, update the memory note, clean up test artifacts
