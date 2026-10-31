@@ -606,7 +606,12 @@ function ExtractedItemRow({ item }: { item: ExtractedItem }) {
 function SubmitStatusBadge({ item }: { item: ExtractedItem }) {
   const base = "text-[9px] font-mono px-1.5 py-0.5 uppercase border";
   if (item.submitted) {
-    return <span className={`${base} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`}>Sent</span>;
+    const via = item.submittedVia && item.submittedVia !== 'other' ? ` via ${item.submittedVia}` : "";
+    return <span className={`${base} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`} title={`Sent${via}`}>{item.submittedVia === 'downup' ? 'Sent ⚡' : 'Sent'}</span>;
+  }
+  if (item.nextAttemptAt && item.nextAttemptAt > Date.now() && !item.abandoned) {
+    const minutes = Math.max(1, Math.round((item.nextAttemptAt - Date.now()) / 60000));
+    return <span className={`${base} bg-sky-500/10 text-sky-400 border-sky-500/20`} title={`${item.lastSubmitError ?? "Waiting"}. Next try in ~${minutes}m`}>Waiting</span>;
   }
   const detail = item.lastSubmitError
     ? `${item.submitAttempts ?? 0} attempt(s). Last error: ${item.lastSubmitError}`
