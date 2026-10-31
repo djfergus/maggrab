@@ -1,4 +1,4 @@
-import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem, JDStatus } from "@shared/schema";
+import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem, JDStatus, DownupStatus } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -89,6 +89,13 @@ export const api = {
   async getJDStatus(): Promise<JDStatus> {
     const res = await fetch(`${API_BASE}/jd-status`);
     if (!res.ok) throw new Error("Failed to fetch JD status");
+    return res.json();
+  },
+
+  // downup-resolver status
+  async getDownupStatus(): Promise<DownupStatus> {
+    const res = await fetch(`${API_BASE}/downup-status`);
+    if (!res.ok) throw new Error("Failed to fetch downup status");
     return res.json();
   },
 

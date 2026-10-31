@@ -32,6 +32,12 @@ export default function Settings() {
     refetchInterval: 10000,
   });
 
+  const { data: downupStatus } = useQuery({
+    queryKey: ["downupStatus"],
+    queryFn: api.getDownupStatus,
+    refetchInterval: 30000,
+  });
+
   const [formData, setFormData] = useState(defaultSettings);
   
   useEffect(() => {
@@ -208,6 +214,55 @@ export default function Settings() {
               </div>
             </CollapsibleContent>
           </Collapsible>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-card/50 border-border rounded-none">
+        <CardHeader className="py-3 px-4">
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-primary" />
+            <CardTitle className="font-display text-base">downup Resolver</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0">
+          <div className="flex items-center gap-3 p-3 border border-border bg-background/30" data-testid="downup-status">
+            {!downupStatus?.enabled ? (
+              <>
+                <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-muted-foreground text-sm">Off</p>
+                  <p className="text-xs text-muted-foreground">Set DOWNUP_RESOLVER_URL to send downup links first</p>
+                </div>
+              </>
+            ) : !downupStatus.reachable ? (
+              <>
+                <XCircle className="h-4 w-4 text-red-500 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-red-500 text-sm">Unreachable, using novafile after {downupStatus.maxDeferMinutes}m</p>
+                  <p className="text-xs text-muted-foreground truncate" title={downupStatus.error}>{downupStatus.error}</p>
+                </div>
+              </>
+            ) : downupStatus.selfTest?.ok === false ? (
+              <>
+                <XCircle className="h-4 w-4 text-yellow-500 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-yellow-500 text-sm">Captcha self-test failing</p>
+                  <p className="text-xs text-muted-foreground truncate" title={downupStatus.selfTest.message}>{downupStatus.selfTest.message}</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-green-500 text-sm">Ready{downupStatus.busy ? " (resolving)" : ""}</p>
+                  <p className="text-xs text-muted-foreground">
+                    downup first, novafile after {downupStatus.maxDeferMinutes}m
+                    {downupStatus.selfTest?.at && <> • self-test {new Date(downupStatus.selfTest.at * 1000).toLocaleString()}</>}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
 

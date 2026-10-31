@@ -72,10 +72,22 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 - [ ] Phase 1 test: run `downup-resolver:test`, then `POST /resolve` with a dwp.la link
       (mind the downup cooldown)
 - [x] Phase 2 code (server): schema fields, `server/scraper.ts` downup-first submission
-- [ ] Phase 2 code (rest): `/api/downup-status` route, client api, settings card,
+- [x] Phase 2 code (rest): `/api/downup-status` route, client api, settings card,
       dashboard badges, docker-compose service + env, `.dockerignore` (exclude `resolver/`)
-- [ ] Type check and build in a `node:20-alpine` container on Unraid
-- [ ] Phase 3 test instance: copy of data, fake resolver covering every status, then one real run
+- [x] Type check and build in a `node:20-alpine` container on Unraid (both pass)
+- [x] Phase 3 fake-resolver tests (`/tmp/p3/run.sh on|off` on Unraid; bad JD creds, so nothing reaches JD).
+      All passed:
+      - ok: link cached, then sent via downup
+      - cooldown: wait until it ends
+      - error: wait 10m
+      - not_found: fall back to novafile now
+      - item older than 180m: fall back to novafile
+      - downup-only item: keeps waiting
+      - legacy item: novafile path unchanged
+      - cached link reused on retry (no new resolver call)
+      - resolver off: novafile only, resolver never called
+- [ ] Phase 3: real-feed extraction + resolver-timeout test (`/tmp/p3/ext.sh`, log `/tmp/p3/ext.log`)
+- [ ] Phase 3: real resolver end-to-end (needs the `downup-resolver:test` image)
 - [ ] Deploy step 1: new maggrab with resolver **off**; verify a feed cycle behaves as before
 - [ ] Deploy step 2: start downup-resolver, set `DOWNUP_RESOLVER_URL=http://downup-resolver:8080`
       in `.env`, recreate maggrab; watch the next 2–3 issues; test the fallback by stopping the resolver

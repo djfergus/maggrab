@@ -1081,7 +1081,7 @@ export class Scraper {
         nextAttemptAt: null,
       });
       const nextRetryMinutes = Math.round(submitBackoff(attempts) / 60000);
-      const message = `Failed to submit to JDownloader (attempt ${attempts}, will retry in ~${nextRetryMinutes}m): ${item.articleTitle}: ${lastError}`;
+      const message = `Failed to submit to JDownloader via ${target.via} (attempt ${attempts}, will retry in ~${nextRetryMinutes}m): ${item.articleTitle}: ${lastError}`;
       await storage.addLog({
         level: "error",
         message,

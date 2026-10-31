@@ -12,8 +12,21 @@ services:
       - MYJD_EMAIL=${MYJD_EMAIL}
       - MYJD_PASSWORD=${MYJD_PASSWORD}
       - MYJD_DEVICE=${MYJD_DEVICE:-}
+      # downup first via downup-resolver; leave empty to use novafile only
+      - DOWNUP_RESOLVER_URL=${DOWNUP_RESOLVER_URL:-}
+      - DOWNUP_MAX_DEFER_MINUTES=${DOWNUP_MAX_DEFER_MINUTES:-180}
+      - DOWNUP_LINK_TTL_MINUTES=${DOWNUP_LINK_TTL_MINUTES:-60}
     volumes:
       - maggrab_data:/app/data
+
+  # Turns downup links into direct links (passes Cloudflare Turnstile with cfsolve).
+  # maggrab doesn't depend on it: if it's down, novafile is used after the defer window.
+  downup-resolver:
+    build: ./resolver
+    container_name: downup-resolver
+    restart: unless-stopped
+    expose:
+      - "8080"
 
 volumes:
   maggrab_data:

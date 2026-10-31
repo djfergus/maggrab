@@ -11,3 +11,5 @@ replit.nix
 .upm
 .config
 *.log
+resolver
+docs

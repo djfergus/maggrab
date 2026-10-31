@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { scraper, getJDConnectionStatus, testJDConnection } from "./scraper";
+import { scraper, getJDConnectionStatus, testJDConnection, getDownupStatus } from "./scraper";
 import { insertFeedSchema, insertLogSchema, settingsSchema } from "@shared/schema";
 import { log } from "./index";
 
@@ -127,6 +127,11 @@ export async function registerRoutes(
   app.get("/api/jd-status", async (_req, res) => {
     const status = getJDConnectionStatus();
     res.json(status);
+  });
+
+  // downup-resolver status (enabled, reachable, last self-test)
+  app.get("/api/downup-status", async (_req, res) => {
+    res.json(await getDownupStatus());
   });
 
   // Test JDownloader connection
