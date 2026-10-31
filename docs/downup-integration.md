@@ -46,6 +46,10 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 
 ## Facts measured so far (2026-10-31)
 
+- **Getting a link does NOT start the cooldown; downloading does.** Phase 0 got a link at
+  01:56 and the cooldown was already 0 at 02:01. The earlier "wait 18m51s" came from a test
+  that downloaded the whole 215 MB file.
+
 - cfsolve solved downup's Turnstile 7/8 times, ~7s each. The one failure was
   "probe 32 matches no known collector" (cfsolve profile gap).
 - Full flow: Free Download → 60s countdown → token → `download2` POST → 302 to
@@ -67,10 +71,9 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
       `/mnt/user/appdata/cfsolve-test/` also holds a built cfsolve (`src/target/release/challenge`)
       and the test scripts `flow.py`, `reliab.sh`, `probe.py`. Delete when done, plus the `cfsolve-cargo` volume.
 - [x] Phase 1 code: `resolver/server.py`, `resolver/Dockerfile` (branch `feat/downup-resolver`)
-- [ ] Phase 1 image build: started on Unraid from `/tmp/resolver-build`, log
-      `/tmp/resolver-build.log` (look for `BUILD_EXIT=0`), tag `downup-resolver:test`
-- [ ] Phase 1 test: run `downup-resolver:test`, then `POST /resolve` with a dwp.la link
-      (mind the downup cooldown)
+- [x] Phase 1 image build: `downup-resolver:test` (180 MB, ~15 min build)
+- [x] Phase 1 test: self-test solved Turnstile; `POST /resolve` for dwp.la/d/ix0 returned an `ok`
+      direct link (215 MB) in 72s; non-downup URLs are rejected; runs as non-root; healthy
 - [x] Phase 2 code (server): schema fields, `server/scraper.ts` downup-first submission
 - [x] Phase 2 code (rest): `/api/downup-status` route, client api, settings card,
       dashboard badges, docker-compose service + env, `.dockerignore` (exclude `resolver/`)
@@ -86,9 +89,12 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
       - legacy item: novafile path unchanged
       - cached link reused on retry (no new resolver call)
       - resolver off: novafile only, resolver never called
-- [ ] Phase 3: real-feed extraction + resolver-timeout test (`/tmp/p3/ext.sh`, log `/tmp/p3/ext.log`)
-- [ ] Phase 3: real resolver end-to-end (needs the `downup-resolver:test` image)
-- [ ] Deploy step 1: new maggrab with resolver **off**; verify a feed cycle behaves as before
+- [x] Phase 3: real feed. Economist Audio 10.31 was stored with downloadUrl=nfile and
+      downupUrl=dwp.la/d/ix0. A resolver hang gives up after 240s and defers the item.
+- [x] Phase 3: real resolver end-to-end (see Phase 1 test)
+- [~] Deploy step 1 (02:2x UTC): Unraid checkout switched to branch `feat/downup-resolver`; maggrab
+      rebuilt with no `DOWNUP_*` in `.env` (`/api/downup-status` reports enabled=false).
+      Verifying a feed cycle.
 - [ ] Deploy step 2: start downup-resolver, set `DOWNUP_RESOLVER_URL=http://downup-resolver:8080`
       in `.env`, recreate maggrab; watch the next 2–3 issues; test the fallback by stopping the resolver
 - [ ] PR to main, merge, update the memory note, clean up test artifacts
