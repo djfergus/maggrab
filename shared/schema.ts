@@ -55,6 +55,21 @@ export const jdStatusSchema = z.object({
 
 export type JDStatus = z.infer<typeof jdStatusSchema>;
 
+export const downupStatusSchema = z.object({
+  enabled: z.boolean(),
+  maxDeferMinutes: z.number(),
+  reachable: z.boolean().optional(),
+  busy: z.boolean().optional(),
+  selfTest: z.object({
+    ok: z.boolean().nullable(),
+    at: z.number().nullable(),
+    message: z.string(),
+  }).optional(),
+  error: z.string().optional(),
+});
+
+export type DownupStatus = z.infer<typeof downupStatusSchema>;
+
 export const extractedItemSchema = z.object({
   id: z.string(),
   feedId: z.string(),
@@ -69,6 +84,14 @@ export const extractedItemSchema = z.object({
   lastSubmitAttempt: z.number().nullable().optional(),
   lastSubmitError: z.string().nullable().optional(),
   abandoned: z.boolean().optional(),
+  // downup mirror (sent via downup-resolver when enabled)
+  downupUrl: z.string().nullable().optional(),
+  // Direct link from downup-resolver, reused on retry while still fresh
+  resolvedUrl: z.string().nullable().optional(),
+  resolvedAt: z.number().nullable().optional(),
+  // Earliest time the retry job should try again (e.g. after a downup cooldown)
+  nextAttemptAt: z.number().nullable().optional(),
+  submittedVia: z.enum(['novafile', 'downup', 'other']).nullable().optional(),
 });
 
 export const insertExtractedItemSchema = extractedItemSchema.pick({
@@ -78,6 +101,7 @@ export const insertExtractedItemSchema = extractedItemSchema.pick({
   downloadUrl: true,
   host: true,
   submitted: true,
+  downupUrl: true,
 });
 export type InsertExtractedItem = z.infer<typeof insertExtractedItemSchema>;
 export type ExtractedItem = z.infer<typeof extractedItemSchema>;

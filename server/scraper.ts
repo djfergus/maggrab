@@ -28,6 +28,36 @@ const SUBMIT_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // Stop retrying items older tha
 // Wait before the next retry, indexed by attempts already made (last value repeats)
 const SUBMIT_BACKOFF = [0, 10, 30, 60, 360].map(minutes => minutes * 60 * 1000);
 
+// downup via downup-resolver. Off unless DOWNUP_RESOLVER_URL is set, in which
+// case downup is tried first and novafile is the fallback.
+const DOWNUP_RESOLVER_URL = (process.env.DOWNUP_RESOLVER_URL || "").replace(/\/+$/, "");
+// How long to keep waiting for downup (cooldown or resolver failure) before using novafile
+const DOWNUP_MAX_DEFER = Number(process.env.DOWNUP_MAX_DEFER_MINUTES || 180) * 60 * 1000;
+// How long a resolved direct link is reused if sending it to JDownloader fails
+const DOWNUP_LINK_TTL = Number(process.env.DOWNUP_LINK_TTL_MINUTES || 60) * 60 * 1000;
+// The resolver serialises requests and each takes ~75s, so allow for a short queue
+const DOWNUP_RESOLVE_TIMEOUT = 240000;
+const DOWNUP_HOSTS = ['dwp.la', 'downup.me', 'downup.space'];
+
+function isDownupHost(host: string): boolean {
+  return DOWNUP_HOSTS.some(h => host === h || host.endsWith('.' + h));
+}
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '';
+  }
+}
+
+type DownupResult =
+  | { status: 'ok'; directUrl: string; filename: string; size: number | null }
+  | { status: 'cooldown'; waitSeconds: number; message: string }
+  | { status: 'not_found' | 'error'; message: string };
+
+type SubmitTarget = { url: string; via: 'novafile' | 'downup' | 'other'; packageName: string | null };
+
 function submitBackoff(attempts: number): number {
   return SUBMIT_BACKOFF[Math.min(attempts, SUBMIT_BACKOFF.length - 1)];
 }
@@ -85,6 +115,18 @@ export function getJDConnectionStatus() {
     connectionAttempts: jdConnectionAttempts,
     lastErrorTime: lastJdErrorTime,
   };
+}
+
+// downup-resolver status for the settings page
+export async function getDownupStatus() {
+  const base = { enabled: !!DOWNUP_RESOLVER_URL, maxDeferMinutes: DOWNUP_MAX_DEFER / 60000 };
+  if (!DOWNUP_RESOLVER_URL) return base;
+  try {
+    const res = await axios.get(`${DOWNUP_RESOLVER_URL}/health`, { timeout: 5000 });
+    return { ...base, reachable: true, busy: !!res.data.busy, selfTest: res.data.selfTest };
+  } catch (error: unknown) {
+    return { ...base, reachable: false, error: describeError(error) };
+  }
 }
 
 // Test JDownloader connection and get package count
@@ -577,8 +619,13 @@ export class Scraper {
         if (item.link) {
           try {
             const articleTitle = item.title || item.link;
-            const downloadLinks = await this.findDownloadLinksWithRetry(item.link);
-            const hasDownload = downloadLinks.length > 0;
+            const allLinks = await this.findDownloadLinksWithRetry(item.link);
+            // downup links only count when the resolver is enabled: JDownloader
+            // cannot pass downup's captcha on its own
+            const downupLink = allLinks.find(l => isDownupHost(l.host));
+            const downloadLinks = allLinks.filter(l => !isDownupHost(l.host));
+            const useDownup = !!(DOWNUP_RESOLVER_URL && downupLink);
+            const hasDownload = downloadLinks.length > 0 || useDownup;
             
             // Store every grabbed item from the RSS feed
             const grabbedItem = await storage.addGrabbedItem({
@@ -597,11 +644,15 @@ export class Scraper {
               // Prioritize novafile links, then nfile
               const preferredLink = downloadLinks.find(l => l.host.includes('novafile'))
                 || downloadLinks.find(l => l.host.includes('nfile'))
-                || downloadLinks[0];
+                || downloadLinks[0]
+                || downupLink!;
+              const using = useDownup && preferredLink !== downupLink
+                ? `downup, falling back to ${preferredLink.host}`
+                : preferredLink.host;
               
               await storage.addLog({
                 level: "info",
-                message: `Extracted ${downloadLinks.length} link(s) from: ${articleTitle} - using ${preferredLink.host}`,
+                message: `Extracted ${allLinks.length} link(s) from: ${articleTitle} - using ${using}`,
                 source: "grabber",
               });
               
@@ -613,6 +664,7 @@ export class Scraper {
                 downloadUrl: preferredLink.url,
                 host: preferredLink.host,
                 submitted: false,
+                downupUrl: downupLink?.url ?? null,
               });
               
               // Broadcast new extracted item
@@ -766,7 +818,8 @@ export class Scraper {
       const fileHostingDomains = [
         'nfile.cc', 'novafile.org', 'turbobit.net', 'trbt.cc',
         'rapidgator.net', 'nitroflare.com', 'mega.nz', 'mediafire.com',
-        'katfile.com', 'uploadgig.com', 'filefox.cc'
+        'katfile.com', 'uploadgig.com', 'filefox.cc',
+        ...DOWNUP_HOSTS,
       ];
       
       $('a[href]').each((_, el) => {
@@ -964,7 +1017,16 @@ export class Scraper {
       const attempts = (item.submitAttempts ?? 0) + 1;
       let lastError = "MyJDownloader not configured (add MYJD_EMAIL and MYJD_PASSWORD secrets)";
 
-      if (this.getJDCredentials()) {
+      let target: SubmitTarget = { url: item.downloadUrl, via: this.viaFor(item.downloadUrl), packageName: null };
+      if (DOWNUP_RESOLVER_URL && item.downupUrl) {
+        const choice = await this.chooseDownup(item, attempts);
+        if (choice === 'deferred') return false;
+        if (choice) target = choice;
+      }
+      if (isDownupHost(hostOf(target.url))) {
+        // Only a downup link and it could not be resolved: JDownloader can't use it directly
+        lastError = "downup link could not be resolved and there is no other link";
+      } else if (this.getJDCredentials()) {
         for (let attempt = 1; attempt <= 2; attempt++) {
           try {
             const connected = await this.ensureJDConnection();
@@ -974,7 +1036,7 @@ export class Scraper {
 
             // addLinks expects an array of links, not a single string
             await withTimeout(
-              jdownloaderAPI.addLinks([item.downloadUrl], jdDeviceId, true),
+              jdownloaderAPI.addLinks([target.url], jdDeviceId, true, target.packageName),
               JD_REQUEST_TIMEOUT,
               "MyJDownloader addLinks",
             );
@@ -985,10 +1047,12 @@ export class Scraper {
               submitAttempts: attempts,
               lastSubmitAttempt: Date.now(),
               lastSubmitError: null,
+              nextAttemptAt: null,
+              submittedVia: target.via,
             });
             await storage.addLog({
               level: "success",
-              message: `Submitted to JDownloader: ${item.articleTitle}`,
+              message: `Submitted to JDownloader via ${target.via}: ${item.articleTitle}`,
               source: "jdownloader",
             });
             await storage.incrementStat("submitted");
@@ -997,7 +1061,7 @@ export class Scraper {
             broadcast({ type: 'stats', data: stats });
             broadcast({ type: 'extracted' });
 
-            log(`Submitted to JDownloader: ${item.downloadUrl}`, "grabber");
+            log(`Submitted to JDownloader via ${target.via}: ${item.articleTitle}`, "grabber");
             return true;
           } catch (error: unknown) {
             lastError = describeError(error);
@@ -1014,6 +1078,7 @@ export class Scraper {
         submitAttempts: attempts,
         lastSubmitAttempt: Date.now(),
         lastSubmitError: lastError,
+        nextAttemptAt: null,
       });
       const nextRetryMinutes = Math.round(submitBackoff(attempts) / 60000);
       const message = `Failed to submit to JDownloader (attempt ${attempts}, will retry in ~${nextRetryMinutes}m): ${item.articleTitle}: ${lastError}`;
@@ -1028,6 +1093,75 @@ export class Scraper {
     } finally {
       this.submittingIds.delete(item.id);
     }
+  }
+
+  private viaFor(url: string): SubmitTarget['via'] {
+    const host = hostOf(url);
+    if (isDownupHost(host)) return 'downup';
+    if (host.includes('novafile') || host.includes('nfile')) return 'novafile';
+    return 'other';
+  }
+
+  private async resolveDownup(url: string): Promise<DownupResult> {
+    try {
+      const res = await axios.post(`${DOWNUP_RESOLVER_URL}/resolve`, { url }, { timeout: DOWNUP_RESOLVE_TIMEOUT });
+      return res.data as DownupResult;
+    } catch (error: unknown) {
+      return { status: 'error', message: `downup-resolver unreachable: ${describeError(error)}` };
+    }
+  }
+
+  /**
+   * Get a downup direct link for an item. Returns the target to send, null to
+   * fall back to the item's other link, or 'deferred' when the item should wait
+   * for downup (cooldown or resolver failure, within DOWNUP_MAX_DEFER).
+   */
+  private async chooseDownup(item: ExtractedItem, attempts: number): Promise<SubmitTarget | null | 'deferred'> {
+    const now = Date.now();
+    const target = (url: string): SubmitTarget => ({ url, via: 'downup', packageName: item.articleTitle });
+
+    // Reuse a recent link, e.g. when JDownloader was unreachable last time
+    if (item.resolvedUrl && item.resolvedAt && now - item.resolvedAt < DOWNUP_LINK_TTL) {
+      return target(item.resolvedUrl);
+    }
+
+    const result = await this.resolveDownup(item.downupUrl!);
+    if (result.status === 'ok') {
+      await storage.updateExtractedItem(item.id, { resolvedUrl: result.directUrl, resolvedAt: Date.now() });
+      const size = result.size ? ` (${Math.round(result.size / 1048576)} MB)` : "";
+      await storage.addLog({ level: "info", message: `downup link ready${size}: ${item.articleTitle}`, source: "grabber" });
+      return target(result.directUrl);
+    }
+
+    const hasFallback = !isDownupHost(item.host);
+    const deferUntil = item.timestamp + DOWNUP_MAX_DEFER;
+    if (result.status === 'not_found' || (hasFallback && now >= deferUntil)) {
+      const message = hasFallback
+        ? `downup not used (${result.message}), falling back to ${item.host}: ${item.articleTitle}`
+        : `downup not used (${result.message}): ${item.articleTitle}`;
+      await storage.addLog({ level: "warn", message, source: "grabber" });
+      log(message, "grabber");
+      return null;
+    }
+
+    // Wait for downup: until the cooldown ends, or on the normal backoff after an
+    // error, but never past the point where novafile should take over
+    const waitMs = result.status === 'cooldown'
+      ? result.waitSeconds * 1000 + 60000
+      : Math.max(submitBackoff(attempts), 10 * 60 * 1000);
+    const nextAttemptAt = hasFallback ? Math.min(now + waitMs, deferUntil) : now + waitMs;
+    await storage.updateExtractedItem(item.id, {
+      submitAttempts: attempts,
+      lastSubmitAttempt: now,
+      lastSubmitError: result.message,
+      nextAttemptAt,
+    });
+    const minutes = Math.round((nextAttemptAt - now) / 60000);
+    const message = `Waiting for downup (${result.message}), retry in ~${minutes}m: ${item.articleTitle}`;
+    await storage.addLog({ level: result.status === 'cooldown' ? "info" : "warn", message, source: "grabber" });
+    log(message, "grabber");
+    broadcast({ type: 'extracted' });
+    return 'deferred';
   }
 
   /**
@@ -1056,7 +1190,9 @@ export class Scraper {
         }
 
         const attempts = item.submitAttempts ?? 0;
-        if (attempts > 0 && now - (item.lastSubmitAttempt ?? 0) < submitBackoff(attempts)) {
+        if (item.nextAttemptAt) {
+          if (now < item.nextAttemptAt) continue;
+        } else if (attempts > 0 && now - (item.lastSubmitAttempt ?? 0) < submitBackoff(attempts)) {
           continue;
         }
 
@@ -1078,7 +1214,7 @@ export class Scraper {
    * Manually resend one extracted item now, including one that was given up on.
    */
   async retrySubmission(id: string): Promise<{ found: boolean; submitted: boolean; error?: string | null }> {
-    const item = await storage.updateExtractedItem(id, { abandoned: false });
+    const item = await storage.updateExtractedItem(id, { abandoned: false, nextAttemptAt: null });
     if (!item) return { found: false, submitted: false };
     if (item.submitted) return { found: true, submitted: true };
 
