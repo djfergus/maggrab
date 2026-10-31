@@ -57,19 +57,21 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
   - survived 2 HEADs and a partial GET,
   - ~90 KB/s,
   - **no Range support** (an interrupted download restarts from zero).
-- downup free cooldown exists, roughly 1h ("You have to wait 18 minutes, 51 seconds
-  till next download"). Exact length and link lifetime come from Phase 0.
+- downup has a free-download cooldown ("You have to wait 18 minutes, 51 seconds till next
+  download"). It starts when a file is downloaded, not when a link is issued; its exact length
+  after a full download wasn't measured. maggrab reads the remaining wait from the message.
+- **A direct link stays valid for at least 4 hours** (Phase 0: HEAD returned 200 with the full
+  size at 30, 60, 90, 120, 180 and 240 minutes). The 60-minute `DOWNUP_LINK_TTL_MINUTES`
+  default is well within that.
 - JDownloader's own DownupSpace plugin can't solve Turnstile ("No solver available"),
   and the MyJDownloader phone solver doesn't support Turnstile either.
 
 ## Status
 
 - [x] Snapshot: tag `pre-downup`, image tag, data backup
-- [ ] **Phase 0** (running): container `cfsolve-phase0` on Unraid, log at
-      `/mnt/user/appdata/cfsolve-test/phase0.log`. It ends with "PHASE0 DONE" (~4h).
-      Use the results to set `DOWNUP_LINK_TTL_MINUTES` (default 60) and confirm the cooldown.
-      `/mnt/user/appdata/cfsolve-test/` also holds a built cfsolve (`src/target/release/challenge`)
-      and the test scripts `flow.py`, `reliab.sh`, `probe.py`. Delete when done, plus the `cfsolve-cargo` volume.
+- [x] **Phase 0** (finished 05:57 UTC): link valid for ≥240 min; getting a link doesn't start
+      the cooldown. `DOWNUP_LINK_TTL_MINUTES` stays at 60. Test container, `/mnt/user/appdata/cfsolve-test`
+      and the `cfsolve-cargo` volume were deleted afterwards.
 - [x] Phase 1 code: `resolver/server.py`, `resolver/Dockerfile` (branch `feat/downup-resolver`)
 - [x] Phase 1 image build: `downup-resolver:test` (180 MB, ~15 min build)
 - [x] Phase 1 test: self-test solved Turnstile; `POST /resolve` for dwp.la/d/ix0 returned an `ok`
