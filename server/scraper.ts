@@ -1023,8 +1023,9 @@ export class Scraper {
         if (choice === 'deferred') return false;
         if (choice) target = choice;
       }
-      if (isDownupHost(hostOf(target.url))) {
-        // Only a downup link and it could not be resolved: JDownloader can't use it directly
+      if (target.via !== 'downup' && isDownupHost(hostOf(target.url))) {
+        // Only a downup page link and it could not be resolved: JDownloader can't use it directly.
+        // (A resolved direct link is also on a downup host, e.g. s3.downup.me, hence the via check.)
         lastError = "downup link could not be resolved and there is no other link";
       } else if (this.getJDCredentials()) {
         for (let attempt = 1; attempt <= 2; attempt++) {
