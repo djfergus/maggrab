@@ -71,6 +71,18 @@ export const api = {
     return res.json();
   },
 
+  // One-off download of a single downmagaz article page
+  async grabSingle(url: string): Promise<{ title: string; host: string; linkCount: number; extractedId: string }> {
+    const res = await fetch(`${API_BASE}/single`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Single download failed");
+    return data;
+  },
+
   // Grabbed items (all RSS articles processed)
   async getGrabbed(limit = 100): Promise<GrabbedItem[]> {
     const res = await fetch(`${API_BASE}/grabbed?limit=${limit}`);

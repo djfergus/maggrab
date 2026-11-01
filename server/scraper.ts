@@ -39,6 +39,18 @@ const DOWNUP_LINK_TTL = Number(process.env.DOWNUP_LINK_TTL_MINUTES || 60) * 60 *
 const DOWNUP_RESOLVE_TIMEOUT = 240000;
 const DOWNUP_HOSTS = ['dwp.la', 'downup.me', 'downup.space'];
 
+// Single downloads (dashboard button) are stored under this pseudo feed
+export const SINGLE_FEED_ID = "manual";
+const SINGLE_FEED_NAME = "Single download";
+const SINGLE_ALLOWED_HOSTS = ['downmagaz.net', 'downmagaz.org', 'downmagaz.com'];
+
+type FoundLink = { url: string; host: string };
+type PageLinks = { links: FoundLink[]; title: string | null };
+
+export type SingleGrabResult =
+  | { ok: true; title: string; host: string; linkCount: number; extractedId: string }
+  | { ok: false; code: 'invalid_url' | 'already_grabbed' | 'no_links' | 'fetch_failed'; error: string };
+
 function isDownupHost(host: string): boolean {
   return DOWNUP_HOSTS.some(h => host === h || host.endsWith('.' + h));
 }
@@ -216,6 +228,7 @@ export class Scraper {
   private submitRetryTimer: NodeJS.Timeout | null = null;
   private submitRetryRunning = false;
   private submittingIds: Set<string> = new Set(); // Guards against double-submitting an item
+  private singleInFlight: Set<string> = new Set(); // Single downloads being processed
   private lastHeartbeat: number = 0;
 
   async start() {
@@ -618,66 +631,13 @@ export class Scraper {
       for (const item of newItems.slice(0, 10)) {
         if (item.link) {
           try {
-            const articleTitle = item.title || item.link;
-            const allLinks = await this.findDownloadLinksWithRetry(item.link);
-            // downup links only count when the resolver is enabled: JDownloader
-            // cannot pass downup's captcha on its own
-            const downupLink = allLinks.find(l => isDownupHost(l.host));
-            const downloadLinks = allLinks.filter(l => !isDownupHost(l.host));
-            const useDownup = !!(DOWNUP_RESOLVER_URL && downupLink);
-            const hasDownload = downloadLinks.length > 0 || useDownup;
-            
-            // Store every grabbed item from the RSS feed
-            const grabbedItem = await storage.addGrabbedItem({
+            await this.processArticle({
               feedId,
               feedName: feed.name,
-              title: articleTitle,
+              title: item.title || item.link,
               link: item.link,
               pubDate: item.pubDate || null,
-              hasDownload,
             });
-            
-            // Broadcast new grabbed item
-            broadcast({ type: 'grabbed', data: grabbedItem });
-            
-            if (hasDownload) {
-              // Prioritize novafile links, then nfile
-              const preferredLink = downloadLinks.find(l => l.host.includes('novafile'))
-                || downloadLinks.find(l => l.host.includes('nfile'))
-                || downloadLinks[0]
-                || downupLink!;
-              const using = useDownup && preferredLink !== downupLink
-                ? `downup, falling back to ${preferredLink.host}`
-                : preferredLink.host;
-              
-              await storage.addLog({
-                level: "info",
-                message: `Extracted ${allLinks.length} link(s) from: ${articleTitle} - using ${using}`,
-                source: "grabber",
-              });
-              
-              // Store the preferred link as an extracted item
-              const extractedItem = await storage.addExtractedItem({
-                feedId,
-                articleTitle,
-                articleUrl: item.link,
-                downloadUrl: preferredLink.url,
-                host: preferredLink.host,
-                submitted: false,
-                downupUrl: downupLink?.url ?? null,
-              });
-              
-              // Broadcast new extracted item
-              broadcast({ type: 'extracted', data: extractedItem });
-              
-              await storage.incrementStat("linksFound");
-              
-              // Only submit the preferred link to JDownloader. If this fails the
-              // item stays unsubmitted and the retry job picks it up later.
-              await this.submitToJDownloader(extractedItem);
-            }
-            // Mark this item as processed (even if no links found)
-            await storage.markProcessed(item.link);
           } catch (err: any) {
             await storage.addLog({
               level: "warn",
@@ -718,6 +678,153 @@ export class Scraper {
     }
   }
 
+  /**
+   * Find the download links on one article page, record it as grabbed, store the
+   * preferred link and send it to JDownloader. Shared by feeds and single downloads.
+   * With submitInBackground the JDownloader send (which may wait minutes for
+   * downup) is not awaited.
+   */
+  private async processArticle(article: {
+    feedId: string;
+    feedName: string;
+    title: string | null;
+    link: string;
+    pubDate: string | null;
+    submitInBackground?: boolean;
+  }): Promise<{ title: string; linkCount: number; extractedItem: ExtractedItem | null }> {
+    const { feedId, feedName, link } = article;
+    const page = await this.findDownloadLinksWithRetry(link);
+    const allLinks = page.links;
+    const articleTitle = article.title || page.title || link;
+    // downup links only count when the resolver is enabled: JDownloader
+    // cannot pass downup's captcha on its own
+    const downupLink = allLinks.find(l => isDownupHost(l.host));
+    const downloadLinks = allLinks.filter(l => !isDownupHost(l.host));
+    const useDownup = !!(DOWNUP_RESOLVER_URL && downupLink);
+    const hasDownload = downloadLinks.length > 0 || useDownup;
+
+    // Store every grabbed article
+    const grabbedItem = await storage.addGrabbedItem({
+      feedId,
+      feedName,
+      title: articleTitle,
+      link,
+      pubDate: article.pubDate,
+      hasDownload,
+    });
+    broadcast({ type: 'grabbed', data: grabbedItem });
+
+    let extractedItem: ExtractedItem | null = null;
+    if (hasDownload) {
+      // Prioritize novafile links, then nfile
+      const preferredLink = downloadLinks.find(l => l.host.includes('novafile'))
+        || downloadLinks.find(l => l.host.includes('nfile'))
+        || downloadLinks[0]
+        || downupLink!;
+      const using = useDownup && preferredLink !== downupLink
+        ? `downup, falling back to ${preferredLink.host}`
+        : preferredLink.host;
+
+      await storage.addLog({
+        level: "info",
+        message: `Extracted ${allLinks.length} link(s) from: ${articleTitle} - using ${using}`,
+        source: "grabber",
+      });
+
+      // Store the preferred link as an extracted item
+      extractedItem = await storage.addExtractedItem({
+        feedId,
+        articleTitle,
+        articleUrl: link,
+        downloadUrl: preferredLink.url,
+        host: preferredLink.host,
+        submitted: false,
+        downupUrl: downupLink?.url ?? null,
+      });
+      broadcast({ type: 'extracted', data: extractedItem });
+
+      await storage.incrementStat("linksFound");
+
+      // Only submit the preferred link to JDownloader. If this fails the
+      // item stays unsubmitted and the retry job picks it up later.
+      if (article.submitInBackground) {
+        const item = extractedItem;
+        this.submitToJDownloader(item).catch((error: unknown) => {
+          log(`Background submission failed for ${item.articleTitle}: ${describeError(error)}`, "jdownloader");
+        });
+      } else {
+        await this.submitToJDownloader(extractedItem);
+      }
+    }
+    // Mark this article as processed (even if no links found)
+    await storage.markProcessed(link);
+
+    return { title: articleTitle, linkCount: allLinks.length, extractedItem };
+  }
+
+  /**
+   * One-off download of a single downmagaz article page (no feed subscription).
+   * Returns once the link is extracted; the JDownloader send continues in the background.
+   */
+  async grabSingle(rawUrl: string): Promise<SingleGrabResult> {
+    let url: string;
+    try {
+      const parsed = new URL(rawUrl.trim());
+      const hostname = parsed.hostname.replace(/^www\./, '');
+      if (!/^https?:$/.test(parsed.protocol) || !SINGLE_ALLOWED_HOSTS.includes(hostname)) {
+        return { ok: false, code: 'invalid_url', error: `Not a downmagaz page: ${rawUrl}` };
+      }
+      parsed.hash = '';
+      url = parsed.toString();
+    } catch {
+      return { ok: false, code: 'invalid_url', error: `Invalid URL: ${rawUrl}` };
+    }
+
+    if (this.singleInFlight.has(url) || await storage.isProcessed(url)) {
+      return { ok: false, code: 'already_grabbed', error: 'This page has already been grabbed' };
+    }
+
+    this.singleInFlight.add(url);
+    try {
+      await storage.addLog({ level: "info", message: `Single download requested: ${url}`, source: "grabber" });
+      log(`Single download: ${url}`, "grabber");
+
+      let result;
+      try {
+        result = await this.processArticle({
+          feedId: SINGLE_FEED_ID,
+          feedName: SINGLE_FEED_NAME,
+          title: null,
+          link: url,
+          pubDate: null,
+          submitInBackground: true,
+        });
+      } catch (error: unknown) {
+        const message = describeError(error);
+        await storage.addLog({ level: "error", message: `Single download failed: ${message}`, source: "grabber" });
+        return { ok: false, code: 'fetch_failed', error: message };
+      }
+
+      await storage.incrementStat("totalScraped");
+      broadcast({ type: 'stats', data: await storage.getStats() });
+
+      if (!result.extractedItem) {
+        const message = `No usable download links found on: ${result.title}`;
+        await storage.addLog({ level: "warn", message, source: "grabber" });
+        return { ok: false, code: 'no_links', error: message };
+      }
+      return {
+        ok: true,
+        title: result.title,
+        host: result.extractedItem.host,
+        linkCount: result.linkCount,
+        extractedId: result.extractedItem.id,
+      };
+    } finally {
+      this.singleInFlight.delete(url);
+    }
+  }
+
   private async parseRSSWithRetry(url: string, retries: number = MAX_RETRIES): Promise<any> {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
@@ -736,7 +843,7 @@ export class Scraper {
     }
   }
 
-  private async findDownloadLinksWithRetry(url: string, retries: number = MAX_RETRIES): Promise<Array<{url: string, host: string}>> {
+  private async findDownloadLinksWithRetry(url: string, retries: number = MAX_RETRIES): Promise<PageLinks> {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         return await this.findDownloadLinks(url);
@@ -773,7 +880,22 @@ export class Scraper {
     }
   }
 
-  private async findDownloadLinks(url: string): Promise<Array<{url: string, host: string}>> {
+  /** Article title from a downmagaz page, without the site name suffix. */
+  private pageTitle($: ReturnType<typeof load>): string | null {
+    const candidates = [
+      $('#news-title').first().text(),
+      $('h1').first().text(),
+      $('meta[property="og:title"]').attr('content') || '',
+      $('title').first().text(),
+    ];
+    for (const candidate of candidates) {
+      const title = candidate.split(' » ')[0].replace(/\s+/g, ' ').trim();
+      if (title) return title;
+    }
+    return null;
+  }
+
+  private async findDownloadLinks(url: string): Promise<PageLinks> {
     try {
       const response = await axios.get(url, { 
         timeout: PAGE_TIMEOUT, 
@@ -844,11 +966,13 @@ export class Scraper {
 
       // Remove duplicates based on URL
       const seen = new Set<string>();
-      return foundLinks.filter(link => {
+      const links = foundLinks.filter(link => {
         if (seen.has(link.url)) return false;
         seen.add(link.url);
         return true;
       });
+
+      return { links, title: this.pageTitle($) };
     } catch (error: any) {
       // Handle specific error types
       if (error.code === 'ECONNABORTED') {
