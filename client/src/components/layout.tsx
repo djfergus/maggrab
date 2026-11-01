@@ -18,7 +18,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const currentNavItem = navItems.find((item) => item.href === location);
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans selection:bg-primary selection:text-primary-foreground">
+    <div className={cn(
+      "flex h-screen bg-background text-foreground overflow-hidden font-sans selection:bg-primary selection:text-primary-foreground",
+      // Mobile stacks the header above the content; side by side, the full-width
+      // header left the content no width at all
+      isMobile && "flex-col",
+    )}>
       {isMobile && (
         <header className="w-full h-16 shrink-0 flex items-center p-4 border-b border-border bg-card/50 backdrop-blur-sm">
           <Sheet>
@@ -138,7 +143,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       )}
       {/* Main Content */}
       <main className={cn(
-        "flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-background to-background",
+        "flex-1 min-h-0 overflow-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-background to-background",
         isMobile ? "p-4" : "p-6"
       )}>
         {children}
