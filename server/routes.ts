@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { scraper, getJDConnectionStatus, testJDConnection, getDownupStatus } from "./scraper";
 import { insertFeedSchema, insertLogSchema, settingsSchema } from "@shared/schema";
+import { z } from "zod";
 import { log } from "./index";
 
 export async function registerRoutes(
@@ -108,6 +109,20 @@ export async function registerRoutes(
       return res.status(404).json({ error: "Item not found" });
     }
     res.json(result);
+  });
+
+  // One-off download of a single downmagaz article page (no feed subscription)
+  app.post("/api/single", async (req, res) => {
+    const parsed = z.object({ url: z.string().url() }).safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "A valid URL is required" });
+    }
+    const result = await scraper.grabSingle(parsed.data.url);
+    if (result.ok) {
+      return res.json(result);
+    }
+    const status = { invalid_url: 400, already_grabbed: 409, no_links: 422, fetch_failed: 502 }[result.code];
+    res.status(status).json(result);
   });
 
   // Grabbed items (all RSS items processed)

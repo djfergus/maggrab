@@ -1,4 +1,4 @@
-import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw, ExternalLink, Pencil, Filter } from "lucide-react";
+import { Activity, Database, Link as LinkIcon, HardDrive, CheckCircle2, AlertCircle, Clock, ArrowUpRight, Plus, Trash2, RefreshCw, ExternalLink, Pencil, Filter, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ export default function Dashboard() {
   const [newFeedName, setNewFeedName] = useState("");
   const [newFeedFilter, setNewFeedFilter] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isSingleOpen, setIsSingleOpen] = useState(false);
+  const [singleUrl, setSingleUrl] = useState("");
   const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
   const [isGrabbedModalOpen, setIsGrabbedModalOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<Feed | null>(null);
@@ -45,6 +47,30 @@ export default function Dashboard() {
     queryFn: () => api.getGrabbed(100),
     staleTime: 30000,
   });
+
+  const singleDownloadMutation = useMutation({
+    mutationFn: (url: string) => api.grabSingle(url),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["extracted"] });
+      queryClient.invalidateQueries({ queryKey: ["grabbed"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+      setIsSingleOpen(false);
+      setSingleUrl("");
+      toast({
+        title: "Download added",
+        description: `${result.title} (${result.host}), sending to JDownloader`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Single download failed", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const handleSingleDownload = () => {
+    const url = singleUrl.trim();
+    if (!url) return;
+    singleDownloadMutation.mutate(url);
+  };
 
   const createFeedMutation = useMutation({
     mutationFn: ({ url, name, filter }: { url: string; name: string; filter?: string }) => api.createFeed(url, name, filter),
@@ -150,12 +176,68 @@ export default function Dashboard() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <header className="flex justify-between items-end">
+      <header className="flex flex-wrap justify-between items-end gap-4">
         <div>
           <h2 className="text-3xl font-display font-bold text-white mb-2">Dashboard</h2>
           <p className="text-muted-foreground">Overview of grabbing operations and queue status.</p>
         </div>
         
+        <div className="flex flex-wrap gap-2">
+        <Dialog
+          open={isSingleOpen}
+          onOpenChange={(open) => {
+            // Keep the dialog open while a grab is running
+            if (!singleDownloadMutation.isPending) setIsSingleOpen(open);
+          }}
+        >
+          <DialogTrigger asChild>
+            <Button variant="outline" className="rounded-none border-primary/50 text-primary hover:bg-primary/10 font-medium px-6" data-testid="button-single-download">
+              <Download className="mr-2 h-4 w-4" />
+              Single Download
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-card border-border rounded-none">
+            <DialogHeader>
+              <DialogTitle className="font-display text-xl">Single Download</DialogTitle>
+            </DialogHeader>
+            <form
+              className="space-y-4 py-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSingleDownload();
+              }}
+            >
+              <div className="space-y-2">
+                <Label htmlFor="single-url">downmagaz page URL</Label>
+                <Input
+                  id="single-url"
+                  type="url"
+                  placeholder="https://downmagaz.net/..."
+                  value={singleUrl}
+                  onChange={(e) => setSingleUrl(e.target.value)}
+                  disabled={singleDownloadMutation.isPending}
+                  className="rounded-none bg-secondary/50 border-input focus:ring-primary"
+                  data-testid="input-single-url"
+                />
+                <p className="text-[10px] text-muted-foreground">Grabs this one issue and sends it to JDownloader. No feed is added.</p>
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none mt-4"
+                disabled={singleDownloadMutation.isPending || !singleUrl.trim()}
+                data-testid="button-submit-single"
+              >
+                {singleDownloadMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Grabbing...
+                  </>
+                ) : "Grab"}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none border border-primary/50 font-medium px-6" data-testid="button-add-feed">
@@ -216,6 +298,7 @@ export default function Dashboard() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </header>
 
       {/* Edit Feed Dialog */}
