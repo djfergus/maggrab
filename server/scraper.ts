@@ -3,6 +3,7 @@ import { load } from "cheerio";
 import axios, { AxiosError } from "axios";
 import { storage, type ScheduleEntry } from "./storage";
 import { log, broadcast } from "./index";
+import { notify } from "./notify";
 import * as cron from "node-cron";
 import type { ExtractedItem } from "@shared/schema";
 
@@ -25,6 +26,7 @@ const JD_SESSION_MAX_IDLE = 30 * 60 * 1000; // Reconnect rather than reuse a ses
 const SUBMIT_RETRY_CRON = '*/10 * * * *';
 const SUBMIT_RETRY_STARTUP_DELAY = 60000; // Give JDownloader time to come up after a host reboot
 const SUBMIT_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // Stop retrying items older than this
+const SUBMIT_FAILURE_ALERT_ATTEMPTS = 3; // Telegram alert after this many failed attempts
 // Wait before the next retry, indexed by attempts already made (last value repeats)
 const SUBMIT_BACKOFF = [0, 10, 30, 60, 360].map(minutes => minutes * 60 * 1000);
 
@@ -129,8 +131,17 @@ export function getJDConnectionStatus() {
   };
 }
 
+type DownupHealth = 'ok' | 'failing' | 'unreachable';
+
 // downup-resolver status for the settings page
-export async function getDownupStatus() {
+export async function getDownupStatus(): Promise<{
+  enabled: boolean;
+  maxDeferMinutes: number;
+  reachable?: boolean;
+  busy?: boolean;
+  selfTest?: { ok: boolean | null; at: number | null; message: string };
+  error?: string;
+}> {
   const base = { enabled: !!DOWNUP_RESOLVER_URL, maxDeferMinutes: DOWNUP_MAX_DEFER / 60000 };
   if (!DOWNUP_RESOLVER_URL) return base;
   try {
@@ -229,6 +240,9 @@ export class Scraper {
   private submitRetryRunning = false;
   private submittingIds: Set<string> = new Set(); // Guards against double-submitting an item
   private singleInFlight: Set<string> = new Set(); // Single downloads being processed
+  private submitFailureAlerted: Set<string> = new Set(); // Items already alerted about
+  private downupHealth: DownupHealth | null = null; // Last state confirmed by two checks
+  private downupHealthCandidate: DownupHealth | null = null;
   private lastHeartbeat: number = 0;
 
   async start() {
@@ -261,6 +275,7 @@ export class Scraper {
       // Retry JDownloader submissions that failed earlier
       this.submitRetryTask = cron.schedule(SUBMIT_RETRY_CRON, () => {
         this.retryPendingSubmissions();
+        this.checkDownupHealth();
       });
       this.submitRetryTimer = setTimeout(() => {
         this.submitRetryTimer = null;
@@ -1187,6 +1202,9 @@ export class Scraper {
             broadcast({ type: 'extracted' });
 
             log(`Submitted to JDownloader via ${target.via}: ${item.articleTitle}`, "grabber");
+            void notify(target.via === 'novafile'
+              ? `📥 ${item.articleTitle}\nSent via novafile. Solve the captcha in MyJDownloader.`
+              : `📥 ${item.articleTitle}\nSent via ${target.via}. No captcha needed.`);
             return true;
           } catch (error: unknown) {
             lastError = describeError(error);
@@ -1214,6 +1232,10 @@ export class Scraper {
       });
       log(message, "jdownloader");
       broadcast({ type: 'extracted' });
+      if (attempts >= SUBMIT_FAILURE_ALERT_ATTEMPTS && !this.submitFailureAlerted.has(item.id)) {
+        this.submitFailureAlerted.add(item.id);
+        void notify(`⚠️ ${item.articleTitle}\nCan't send to JDownloader after ${attempts} attempts. Still retrying.\n${lastError}`);
+      }
       return false;
     } finally {
       this.submittingIds.delete(item.id);
@@ -1290,6 +1312,36 @@ export class Scraper {
   }
 
   /**
+   * Alert when downup-resolver breaks or recovers. A state must show on two
+   * checks in a row, so a resolver restart doesn't send an alert. Failing states
+   * also alert after a maggrab restart; a healthy start stays quiet.
+   */
+  private async checkDownupHealth() {
+    if (!DOWNUP_RESOLVER_URL) return;
+
+    const status = await getDownupStatus();
+    let health: DownupHealth;
+    if (!status.reachable) health = 'unreachable';
+    else if (status.selfTest?.ok === true) health = 'ok';
+    else if (status.selfTest?.ok === false) health = 'failing';
+    else return; // Resolver just started and hasn't run its self-test yet
+
+    const confirmed = health === this.downupHealthCandidate;
+    this.downupHealthCandidate = health;
+    if (!confirmed || health === this.downupHealth) return;
+
+    const previous = this.downupHealth;
+    this.downupHealth = health;
+    if (health === 'failing') {
+      void notify("🔴 downup solver is failing its self-test, probably after a Cloudflare change. New issues will go to novafile after 3 hours until cfsolve is updated.");
+    } else if (health === 'unreachable') {
+      void notify("🔴 downup-resolver container can't be reached. New issues will go to novafile after 3 hours until it's back.");
+    } else if (previous) {
+      void notify("🟢 downup solver is working again.");
+    }
+  }
+
+  /**
    * Resend extracted links that never reached JDownloader, with backoff.
    * Gives up on items older than SUBMIT_MAX_AGE.
    */
@@ -1311,6 +1363,7 @@ export class Scraper {
           await storage.addLog({ level: "warn", message, source: "jdownloader" });
           log(message, "jdownloader");
           broadcast({ type: 'extracted' });
+          void notify(`❌ ${item.articleTitle}\nGave up after ${SUBMIT_MAX_AGE / 86400000} days without reaching JDownloader. Use the retry button on the dashboard to try again.${reason}`);
           continue;
         }
 
