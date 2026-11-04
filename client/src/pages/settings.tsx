@@ -1,18 +1,29 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Server, Trash2, RotateCcw, CheckCircle2, XCircle, ChevronDown, Info, Zap, Loader2, Package } from "lucide-react";
+import { Save, Server, Trash2, RotateCcw, CheckCircle2, XCircle, ChevronDown, Info, Zap, Loader2, Package, Bell } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { DEFAULT_ALERTS, type AlertKey } from "@shared/schema";
 
 const defaultSettings = {
   checkInterval: 15,
 };
+
+const ALERT_OPTIONS: { key: AlertKey; label: string; description: string }[] = [
+  { key: "sentDownup", label: "Sent via downup", description: "An issue went to JDownloader with no captcha needed" },
+  { key: "sentNovafile", label: "Sent via novafile or another host", description: "An issue went to JDownloader and probably needs a captcha" },
+  { key: "submitFailed", label: "JDownloader failures", description: "3 failed attempts to send an item (still retrying)" },
+  { key: "gaveUp", label: "Gave up", description: "An item didn't reach JDownloader within 7 days" },
+  { key: "solverDown", label: "downup solver broken", description: "The self-test is failing or the resolver can't be reached" },
+  { key: "solverRecovered", label: "downup solver recovered", description: "The solver is working again" },
+];
 
 export default function Settings() {
   const { toast } = useToast();
@@ -38,6 +49,11 @@ export default function Settings() {
     refetchInterval: 30000,
   });
 
+  const { data: telegramStatus } = useQuery({
+    queryKey: ["telegramStatus"],
+    queryFn: api.getTelegramStatus,
+  });
+
   const [formData, setFormData] = useState(defaultSettings);
   
   useEffect(() => {
@@ -56,6 +72,17 @@ export default function Settings() {
         title: "Configuration Saved",
         description: "Daemon will reload with new settings automatically.",
       });
+    },
+  });
+
+  const updateAlertMutation = useMutation({
+    mutationFn: ({ key, enabled }: { key: AlertKey; enabled: boolean }) =>
+      api.updateSettings({ alerts: { [key]: enabled } }),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["settings"], updated);
+    },
+    onError: () => {
+      toast({ title: "Alert setting not saved", description: "Please try again.", variant: "destructive" });
     },
   });
 
@@ -263,6 +290,38 @@ export default function Settings() {
               </>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-card/50 border-border rounded-none">
+        <CardHeader className="py-3 px-4">
+          <div className="flex items-center gap-2">
+            <Bell className="h-4 w-4 text-primary" />
+            <CardTitle className="font-display text-base">Telegram Alerts</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="px-4 pb-4 pt-0 space-y-3">
+          {telegramStatus && !telegramStatus.configured && (
+            <p className="text-xs text-yellow-500" data-testid="telegram-not-configured">
+              Not sending: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID to turn alerts on
+            </p>
+          )}
+          {ALERT_OPTIONS.map(({ key, label, description }) => (
+            <div key={key} className="flex items-start gap-3">
+              <Checkbox
+                id={`alert-${key}`}
+                className="mt-0.5"
+                checked={(settings?.alerts ?? DEFAULT_ALERTS)[key]}
+                disabled={!settings || updateAlertMutation.isPending}
+                onCheckedChange={(checked) => updateAlertMutation.mutate({ key, enabled: checked === true })}
+                data-testid={`checkbox-alert-${key}`}
+              />
+              <div className="min-w-0">
+                <Label htmlFor={`alert-${key}`} className="text-sm cursor-pointer">{label}</Label>
+                <p className="text-xs text-muted-foreground">{description}</p>
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
 

@@ -1,4 +1,4 @@
-import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings, type ExtractedItem, type InsertExtractedItem, type GrabbedItem, type InsertGrabbedItem } from "@shared/schema";
+import { type Feed, type InsertFeed, type ScrapeLog, type InsertLog, type Stats, type Settings, type SettingsUpdate, DEFAULT_ALERTS, type ExtractedItem, type InsertExtractedItem, type GrabbedItem, type InsertGrabbedItem } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
@@ -54,7 +54,7 @@ export interface IStorage {
   
   // Settings
   getSettings(): Promise<Settings>;
-  updateSettings(updates: Partial<Settings>): Promise<Settings>;
+  updateSettings(updates: SettingsUpdate): Promise<Settings>;
   
   // Processed URLs (deduplication)
   isProcessed(url: string): Promise<boolean>;
@@ -98,6 +98,7 @@ function getMutex(file: string): Mutex {
 // the submission retry job both update it, and the per-file mutex above only
 // covers a single read or write, not the whole cycle.
 const extractedLock = new Mutex();
+const settingsLock = new Mutex();
 
 export class FileStorage implements IStorage {
   private initialized = false;
@@ -319,6 +320,7 @@ export class FileStorage implements IStorage {
   async getSettings(): Promise<Settings> {
     const defaults: Settings = {
       checkInterval: 15,
+      alerts: DEFAULT_ALERTS,
     };
     
     const stored = await this.readJSON<any>(SETTINGS_FILE, {});
@@ -327,22 +329,28 @@ export class FileStorage implements IStorage {
     const settings: Settings = {
       ...defaults,
       checkInterval: stored.checkInterval ?? defaults.checkInterval,
+      alerts: { ...defaults.alerts, ...stored.alerts },
     };
     
     // Clean up legacy credential fields if they exist (one-time migration)
     if (stored.jdEmail || stored.jdPassword || stored.jdDevice || stored.jdUrl || stored.jdUser) {
-      const cleanSettings = { checkInterval: settings.checkInterval };
+      const cleanSettings = { checkInterval: settings.checkInterval, alerts: settings.alerts };
       await this.writeJSON(SETTINGS_FILE, cleanSettings);
     }
     
     return settings;
   }
 
-  async updateSettings(updates: Partial<Settings>): Promise<Settings> {
-    const settings = await this.getSettings();
-    const newSettings = { ...settings, ...updates };
-    await this.writeJSON(SETTINGS_FILE, newSettings);
-    return newSettings;
+  async updateSettings(updates: SettingsUpdate): Promise<Settings> {
+    return settingsLock.runExclusive(async () => {
+      const settings = await this.getSettings();
+      const newSettings: Settings = {
+        checkInterval: updates.checkInterval ?? settings.checkInterval,
+        alerts: { ...settings.alerts, ...updates.alerts },
+      };
+      await this.writeJSON(SETTINGS_FILE, newSettings);
+      return newSettings;
+    });
   }
 
   async isProcessed(url: string): Promise<boolean> {

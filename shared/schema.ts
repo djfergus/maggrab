@@ -40,11 +40,42 @@ export const statsSchema = z.object({
 
 export type Stats = z.infer<typeof statsSchema>;
 
+// Which Telegram alerts are sent. All on unless turned off in Settings.
+export const alertSettingsSchema = z.object({
+  sentDownup: z.boolean(),
+  sentNovafile: z.boolean(),
+  submitFailed: z.boolean(),
+  gaveUp: z.boolean(),
+  solverDown: z.boolean(),
+  solverRecovered: z.boolean(),
+});
+
+export type AlertSettings = z.infer<typeof alertSettingsSchema>;
+export type AlertKey = keyof AlertSettings;
+
+export const DEFAULT_ALERTS: AlertSettings = {
+  sentDownup: true,
+  sentNovafile: true,
+  submitFailed: true,
+  gaveUp: true,
+  solverDown: true,
+  solverRecovered: true,
+};
+
 export const settingsSchema = z.object({
   checkInterval: z.number().default(15),
+  alerts: alertSettingsSchema.default(DEFAULT_ALERTS),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
+
+// One alert can be changed without sending the others
+export const settingsUpdateSchema = z.object({
+  checkInterval: z.number().optional(),
+  alerts: alertSettingsSchema.partial().optional(),
+});
+
+export type SettingsUpdate = z.infer<typeof settingsUpdateSchema>;
 
 export const jdStatusSchema = z.object({
   configured: z.boolean(),
