@@ -1202,9 +1202,13 @@ export class Scraper {
             broadcast({ type: 'extracted' });
 
             log(`Submitted to JDownloader via ${target.via}: ${item.articleTitle}`, "grabber");
-            void notify(target.via === 'novafile'
-              ? `📥 ${item.articleTitle}\nSent via novafile. Solve the captcha in MyJDownloader.`
-              : `📥 ${item.articleTitle}\nSent via ${target.via}. No captcha needed.`);
+            if (target.via === 'downup') {
+              void notify('sentDownup', `📥 ${item.articleTitle}\nSent via downup. No captcha needed.`);
+            } else if (target.via === 'novafile') {
+              void notify('sentNovafile', `📥 ${item.articleTitle}\nSent via novafile. Solve the captcha in MyJDownloader.`);
+            } else {
+              void notify('sentNovafile', `📥 ${item.articleTitle}\nSent via ${hostOf(target.url)}. It may need a captcha in MyJDownloader.`);
+            }
             return true;
           } catch (error: unknown) {
             lastError = describeError(error);
@@ -1234,7 +1238,7 @@ export class Scraper {
       broadcast({ type: 'extracted' });
       if (attempts >= SUBMIT_FAILURE_ALERT_ATTEMPTS && !this.submitFailureAlerted.has(item.id)) {
         this.submitFailureAlerted.add(item.id);
-        void notify(`⚠️ ${item.articleTitle}\nCan't send to JDownloader after ${attempts} attempts. Still retrying.\n${lastError}`);
+        void notify('submitFailed', `⚠️ ${item.articleTitle}\nCan't send to JDownloader after ${attempts} attempts. Still retrying.\n${lastError}`);
       }
       return false;
     } finally {
@@ -1333,11 +1337,11 @@ export class Scraper {
     const previous = this.downupHealth;
     this.downupHealth = health;
     if (health === 'failing') {
-      void notify("🔴 downup solver is failing its self-test, probably after a Cloudflare change. New issues will go to novafile after 3 hours until cfsolve is updated.");
+      void notify('solverDown', "🔴 downup solver is failing its self-test, probably after a Cloudflare change. New issues will go to novafile after 3 hours until cfsolve is updated.");
     } else if (health === 'unreachable') {
-      void notify("🔴 downup-resolver container can't be reached. New issues will go to novafile after 3 hours until it's back.");
+      void notify('solverDown', "🔴 downup-resolver container can't be reached. New issues will go to novafile after 3 hours until it's back.");
     } else if (previous) {
-      void notify("🟢 downup solver is working again.");
+      void notify('solverRecovered', "🟢 downup solver is working again.");
     }
   }
 
@@ -1363,7 +1367,7 @@ export class Scraper {
           await storage.addLog({ level: "warn", message, source: "jdownloader" });
           log(message, "jdownloader");
           broadcast({ type: 'extracted' });
-          void notify(`❌ ${item.articleTitle}\nGave up after ${SUBMIT_MAX_AGE / 86400000} days without reaching JDownloader. Use the retry button on the dashboard to try again.${reason}`);
+          void notify('gaveUp', `❌ ${item.articleTitle}\nGave up after ${SUBMIT_MAX_AGE / 86400000} days without reaching JDownloader. Use the retry button on the dashboard to try again.${reason}`);
           continue;
         }
 

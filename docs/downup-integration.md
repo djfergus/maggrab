@@ -72,7 +72,8 @@ Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` (empty = off). Code: `
 Alerts: item sent (via downup, or via novafile with a captcha reminder), 3 failed sends to
 JDownloader, gave up after 7 days, and the resolver failing, unreachable or recovered (checked
 every 10 min; a state must show twice in a row before it alerts). maggrab doesn't know when a
-download finishes, so there is no "completed" alert.
+download finishes, so there is no "completed" alert. Each alert has its own checkbox in Settings
+(`alerts` in `settings.json`, all on by default).
 
 ## Status
 

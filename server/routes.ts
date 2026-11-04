@@ -2,7 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { scraper, getJDConnectionStatus, testJDConnection, getDownupStatus } from "./scraper";
-import { insertFeedSchema, insertLogSchema, settingsSchema } from "@shared/schema";
+import { insertFeedSchema, insertLogSchema, settingsUpdateSchema } from "@shared/schema";
+import { isTelegramConfigured } from "./notify";
 import { z } from "zod";
 import { log } from "./index";
 
@@ -149,6 +150,11 @@ export async function registerRoutes(
     res.json(await getDownupStatus());
   });
 
+  // Whether Telegram alerts can be sent (the token itself is never returned)
+  app.get("/api/telegram-status", (_req, res) => {
+    res.json({ configured: isTelegramConfigured() });
+  });
+
   // Test JDownloader connection
   app.post("/api/jd-test", async (_req, res) => {
     const result = await testJDConnection();
@@ -157,7 +163,7 @@ export async function registerRoutes(
 
   app.put("/api/settings", async (req, res) => {
     try {
-      const updates = settingsSchema.partial().parse(req.body);
+      const updates = settingsUpdateSchema.parse(req.body);
       const settings = await storage.updateSettings(updates);
       
       await storage.addLog({

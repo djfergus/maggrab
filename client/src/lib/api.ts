@@ -1,4 +1,4 @@
-import type { Feed, ScrapeLog, Stats, Settings, ExtractedItem, GrabbedItem, JDStatus, DownupStatus } from "@shared/schema";
+import type { Feed, ScrapeLog, Stats, Settings, SettingsUpdate, ExtractedItem, GrabbedItem, JDStatus, DownupStatus } from "@shared/schema";
 
 const API_BASE = "/api";
 
@@ -111,6 +111,13 @@ export const api = {
     return res.json();
   },
 
+  // Whether Telegram alerts can be sent
+  async getTelegramStatus(): Promise<{ configured: boolean }> {
+    const res = await fetch(`${API_BASE}/telegram-status`);
+    if (!res.ok) throw new Error("Failed to fetch Telegram status");
+    return res.json();
+  },
+
   // Test JDownloader connection
   async testJDConnection(): Promise<{ success: boolean; error?: string; deviceName?: string; packageCount?: number }> {
     const res = await fetch(`${API_BASE}/jd-test`, { method: "POST" });
@@ -118,7 +125,7 @@ export const api = {
     return res.json();
   },
 
-  async updateSettings(updates: Partial<Settings>): Promise<Settings> {
+  async updateSettings(updates: SettingsUpdate): Promise<Settings> {
     const res = await fetch(`${API_BASE}/settings`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
