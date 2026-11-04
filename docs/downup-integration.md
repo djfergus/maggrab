@@ -25,7 +25,7 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 ## Design
 
 - `resolver/`: **downup-resolver** container. cfsolve built from pinned commit
-  `98240dd`, plus `server.py` (stdlib HTTP).
+  `ee4031f`, plus `server.py` (stdlib HTTP).
   - `POST /resolve {url}` returns `ok {directUrl, filename, size}`, `cooldown {waitSeconds}`,
     `not_found`, or `error`.
   - `GET /health` reports the result of a Turnstile self-test, run every 6h.
@@ -46,9 +46,10 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 
 ## Facts measured so far (2026-10-31)
 
-- **Getting a link does NOT start the cooldown; downloading does.** Phase 0 got a link at
-  01:56 and the cooldown was already 0 at 02:01. The earlier "wait 18m51s" came from a test
-  that downloaded the whole 215 MB file.
+- **Getting a link may start a cooldown of about 60 minutes.** On 2026-11-04 a resolve returned a
+  link, and the next resolve 4s later reported `cooldown: 3595s`. This contradicts Phase 0, which got
+  a link at 01:56 and saw no cooldown at 02:01, so downup's behaviour may vary or have changed.
+  maggrab handles it either way: it waits until the cooldown ends, then falls back at the 180m limit.
 
 - cfsolve solved downup's Turnstile 7/8 times, ~7s each. The one failure was
   "probe 32 matches no known collector" (cfsolve profile gap).
@@ -58,8 +59,8 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
   - ~90 KB/s,
   - **no Range support** (an interrupted download restarts from zero).
 - downup has a free-download cooldown ("You have to wait 18 minutes, 51 seconds till next
-  download"). It starts when a file is downloaded, not when a link is issued; its exact length
-  after a full download wasn't measured. maggrab reads the remaining wait from the message.
+  download"). maggrab reads the remaining wait from the message. See the first fact above for
+  what starts it.
 - **A direct link stays valid for at least 4 hours** (Phase 0: HEAD returned 200 with the full
   size at 30, 60, 90, 120, 180 and 240 minutes). The 60-minute `DOWNUP_LINK_TTL_MINUTES`
   default is well within that.
@@ -74,6 +75,15 @@ JDownloader, gave up after 7 days, and the resolver failing, unreachable or reco
 every 10 min; a state must show twice in a row before it alerts). maggrab doesn't know when a
 download finishes, so there is no "completed" alert. Each alert has its own checkbox in Settings
 (`alerts` in `settings.json`, all on by default).
+
+## Solver breakage log
+
+- 2026-11-02 12:38 UTC: self-test started failing ("the initial VM program does not build the key
+  transform"), Cloudflare builds `d0d7f3571048` and `5c2e6b612edd`. Country Life 11.4 fell back to
+  novafile on 11-04. Fixed upstream on 11-03; pin moved from `98240dd` to `ee4031f` on 11-04.
+
+To update: set `CFSOLVE_COMMIT` in `resolver/Dockerfile`, build a test image, check its self-test and
+`POST /resolve` (no download), then `docker compose up -d --build downup-resolver`.
 
 ## Status
 
