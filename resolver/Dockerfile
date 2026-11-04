@@ -3,7 +3,7 @@ FROM rust:1-bookworm AS cfsolve
 
 ARG CFSOLVE_REPO=https://github.com/chris124567/cfsolve
 # Pinned: cfsolve follows Cloudflare changes, so update deliberately and re-test
-ARG CFSOLVE_COMMIT=98240dd
+ARG CFSOLVE_COMMIT=ee4031f
 
 RUN apt-get update -qq \
     && apt-get install -y -qq --no-install-recommends cmake clang libclang-dev git \
