@@ -16,6 +16,9 @@ services:
       - DOWNUP_RESOLVER_URL=${DOWNUP_RESOLVER_URL:-}
       - DOWNUP_MAX_DEFER_MINUTES=${DOWNUP_MAX_DEFER_MINUTES:-180}
       - DOWNUP_LINK_TTL_MINUTES=${DOWNUP_LINK_TTL_MINUTES:-60}
+      # Telegram alerts; leave empty to turn them off
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
     volumes:
       - maggrab_data:/app/data
 

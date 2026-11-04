@@ -66,6 +66,14 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 - JDownloader's own DownupSpace plugin can't solve Turnstile ("No solver available"),
   and the MyJDownloader phone solver doesn't support Turnstile either.
 
+## Telegram alerts
+
+Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` (empty = off). Code: `server/notify.ts`.
+Alerts: item sent (via downup, or via novafile with a captcha reminder), 3 failed sends to
+JDownloader, gave up after 7 days, and the resolver failing, unreachable or recovered (checked
+every 10 min; a state must show twice in a row before it alerts). maggrab doesn't know when a
+download finishes, so there is no "completed" alert.
+
 ## Status
 
 - [x] Snapshot: tag `pre-downup`, image tag, data backup
