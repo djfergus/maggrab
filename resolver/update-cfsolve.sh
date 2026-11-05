@@ -116,7 +116,14 @@ case "$latest" in
 esac
 echo "testing $short (installed: $current_short)"
 
-trap remove_candidate EXIT
+# Runs on every exit, so failed builds don't fill the disk
+clean_up() {
+  remove_candidate
+  docker image prune -f --filter label=app=link-resolver >/dev/null
+  docker builder prune -f --filter until=168h >/dev/null
+}
+
+trap clean_up EXIT
 remove_candidate
 compose_candidate build >>"$STATE/build.log" 2>&1 || reject "the build failed"
 compose_candidate up -d --no-build || reject "it wouldn't start"
@@ -148,6 +155,3 @@ else
   echo "$latest" >"$STATE/rejected"
   notify "⚠️ cfsolve $short passed its tests but failed once installed, so $current_short was restored."
 fi
-
-docker image prune -f --filter label=app=link-resolver >/dev/null
-docker builder prune -f --filter until=168h >/dev/null
