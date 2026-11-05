@@ -23,6 +23,7 @@ const ALERT_OPTIONS: { key: AlertKey; label: string; description: string }[] = [
   { key: "gaveUp", label: "Gave up", description: "An item didn't reach JDownloader within 7 days" },
   { key: "solverDown", label: "downup solver broken", description: "The self-test is failing or the resolver can't be reached" },
   { key: "solverRecovered", label: "downup solver recovered", description: "The solver is working again" },
+  { key: "solverUpdate", label: "Solver auto-updates", description: "The daily check installed a new cfsolve, or a new version failed its tests" },
 ];
 
 export default function Settings() {

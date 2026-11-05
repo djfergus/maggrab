@@ -48,6 +48,7 @@ export const alertSettingsSchema = z.object({
   gaveUp: z.boolean(),
   solverDown: z.boolean(),
   solverRecovered: z.boolean(),
+  solverUpdate: z.boolean(),
 });
 
 export type AlertSettings = z.infer<typeof alertSettingsSchema>;
@@ -60,6 +61,7 @@ export const DEFAULT_ALERTS: AlertSettings = {
   gaveUp: true,
   solverDown: true,
   solverRecovered: true,
+  solverUpdate: true,
 };
 
 export const settingsSchema = z.object({
@@ -115,14 +117,14 @@ export const extractedItemSchema = z.object({
   lastSubmitAttempt: z.number().nullable().optional(),
   lastSubmitError: z.string().nullable().optional(),
   abandoned: z.boolean().optional(),
-  // downup mirror (sent via downup-resolver when enabled)
+  // Page link on a resolver host such as downup (sent via link-resolver when enabled)
   downupUrl: z.string().nullable().optional(),
-  // Direct link from downup-resolver, reused on retry while still fresh
+  // Direct link from link-resolver, reused on retry while still fresh
   resolvedUrl: z.string().nullable().optional(),
   resolvedAt: z.number().nullable().optional(),
   // Earliest time the retry job should try again (e.g. after a downup cooldown)
   nextAttemptAt: z.number().nullable().optional(),
-  submittedVia: z.enum(['novafile', 'downup', 'other']).nullable().optional(),
+  submittedVia: z.string().nullable().optional(),
 });
 
 export const insertExtractedItemSchema = extractedItemSchema.pick({

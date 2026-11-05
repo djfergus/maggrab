@@ -7,6 +7,9 @@ User choice (2026-10-31): **wait for downup** rather than fall back quickly
 
 If this session is interrupted, resume from "Status" below.
 
+> The resolver is now the generic `link-resolver`, documented in [link-resolver.md](link-resolver.md).
+> References to `downup-resolver` below are history.
+
 ## Rollback (current working state is preserved)
 
 | What | Where |
@@ -25,7 +28,7 @@ Data restore if ever needed: `docker cp <backup>/. maggrab:/app/data/` then rest
 ## Design
 
 - `resolver/`: **downup-resolver** container. cfsolve built from pinned commit
-  `ee4031f`, plus `server.py` (stdlib HTTP).
+  `CFSOLVE_COMMIT`, plus `server.py` (stdlib HTTP).
   - `POST /resolve {url}` returns `ok {directUrl, filename, size}`, `cooldown {waitSeconds}`,
     `not_found`, or `error`.
   - `GET /health` reports the result of a Turnstile self-test, run every 6h.
@@ -82,8 +85,7 @@ download finishes, so there is no "completed" alert. Each alert has its own chec
   transform"), Cloudflare builds `d0d7f3571048` and `5c2e6b612edd`. Country Life 11.4 fell back to
   novafile on 11-04. Fixed upstream on 11-03; pin moved from `98240dd` to `ee4031f` on 11-04.
 
-To update: set `CFSOLVE_COMMIT` in `resolver/Dockerfile`, build a test image, check its self-test and
-`POST /resolve` (no download), then `docker compose up -d --build downup-resolver`.
+Updates are now automatic: see [link-resolver.md](link-resolver.md).
 
 ## Status
 
