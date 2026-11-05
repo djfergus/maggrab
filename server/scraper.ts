@@ -30,7 +30,7 @@ const SUBMIT_FAILURE_ALERT_ATTEMPTS = 3; // Telegram alert after this many faile
 // Wait before the next retry, indexed by attempts already made (last value repeats)
 const SUBMIT_BACKOFF = [0, 10, 30, 60, 360].map(minutes => minutes * 60 * 1000);
 
-// downup via downup-resolver. Off unless DOWNUP_RESOLVER_URL is set, in which
+// downup via link-resolver. Off unless DOWNUP_RESOLVER_URL is set, in which
 // case downup is tried first and novafile is the fallback.
 const DOWNUP_RESOLVER_URL = (process.env.DOWNUP_RESOLVER_URL || "").replace(/\/+$/, "");
 // How long to keep waiting for downup (cooldown or resolver failure) before using novafile
@@ -39,7 +39,12 @@ const DOWNUP_MAX_DEFER = Number(process.env.DOWNUP_MAX_DEFER_MINUTES || 180) * 6
 const DOWNUP_LINK_TTL = Number(process.env.DOWNUP_LINK_TTL_MINUTES || 60) * 60 * 1000;
 // The resolver serialises requests and each takes ~75s, so allow for a short queue
 const DOWNUP_RESOLVE_TIMEOUT = 240000;
-const DOWNUP_HOSTS = ['dwp.la', 'downup.me', 'downup.space'];
+// Download hosts handled by link-resolver. To add one, add a site file in resolver/sites/
+// and an entry here (docs/link-resolver.md). linkHosts is checked here as well as in the
+// resolver, so a compromised resolver can't send JDownloader anywhere else.
+const RESOLVER_SITES = [
+  { name: 'downup', hosts: ['dwp.la', 'downup.me', 'downup.space'], linkHosts: ['downup.me', 'downup.space'] },
+];
 
 // Single downloads (dashboard button) are stored under this pseudo feed
 export const SINGLE_FEED_ID = "manual";
@@ -53,8 +58,27 @@ export type SingleGrabResult =
   | { ok: true; title: string; host: string; linkCount: number; extractedId: string }
   | { ok: false; code: 'invalid_url' | 'already_grabbed' | 'no_links' | 'fetch_failed'; error: string };
 
-function isDownupHost(host: string): boolean {
-  return DOWNUP_HOSTS.some(h => host === h || host.endsWith('.' + h));
+function hostMatches(host: string, allowed: string[]): boolean {
+  return allowed.some(h => host === h || host.endsWith('.' + h));
+}
+
+function resolverSiteFor(host: string) {
+  return RESOLVER_SITES.find(site => hostMatches(host, site.hosts));
+}
+
+function isResolverHost(host: string): boolean {
+  return !!resolverSiteFor(host);
+}
+
+function isAllowedDirectLink(directUrl: unknown, pageUrl: string): boolean {
+  const site = resolverSiteFor(hostOf(pageUrl));
+  if (!site || typeof directUrl !== 'string') return false;
+  try {
+    const url = new URL(directUrl);
+    return url.protocol === 'https:' && hostMatches(url.hostname, site.linkHosts);
+  } catch {
+    return false;
+  }
 }
 
 function hostOf(url: string): string {
@@ -70,7 +94,7 @@ type DownupResult =
   | { status: 'cooldown'; waitSeconds: number; message: string }
   | { status: 'not_found' | 'error'; message: string };
 
-type SubmitTarget = { url: string; via: 'novafile' | 'downup' | 'other'; packageName: string | null };
+type SubmitTarget = { url: string; via: string; packageName: string | null; resolved: boolean };
 
 function submitBackoff(attempts: number): number {
   return SUBMIT_BACKOFF[Math.min(attempts, SUBMIT_BACKOFF.length - 1)];
@@ -133,7 +157,7 @@ export function getJDConnectionStatus() {
 
 type DownupHealth = 'ok' | 'failing' | 'unreachable';
 
-// downup-resolver status for the settings page
+// link-resolver status for the settings page
 export async function getDownupStatus(): Promise<{
   enabled: boolean;
   maxDeferMinutes: number;
@@ -146,7 +170,7 @@ export async function getDownupStatus(): Promise<{
   if (!DOWNUP_RESOLVER_URL) return base;
   try {
     const res = await axios.get(`${DOWNUP_RESOLVER_URL}/health`, { timeout: 5000 });
-    return { ...base, reachable: true, busy: !!res.data.busy, selfTest: res.data.selfTest };
+    return { ...base, reachable: true, busy: !!res.data.busy, selfTest: res.data.sites?.downup ?? res.data.selfTest };
   } catch (error: unknown) {
     return { ...base, reachable: false, error: describeError(error) };
   }
@@ -713,8 +737,8 @@ export class Scraper {
     const articleTitle = article.title || page.title || link;
     // downup links only count when the resolver is enabled: JDownloader
     // cannot pass downup's captcha on its own
-    const downupLink = allLinks.find(l => isDownupHost(l.host));
-    const downloadLinks = allLinks.filter(l => !isDownupHost(l.host));
+    const downupLink = allLinks.find(l => isResolverHost(l.host));
+    const downloadLinks = allLinks.filter(l => !isResolverHost(l.host));
     const useDownup = !!(DOWNUP_RESOLVER_URL && downupLink);
     const hasDownload = downloadLinks.length > 0 || useDownup;
 
@@ -956,7 +980,7 @@ export class Scraper {
         'nfile.cc', 'novafile.org', 'turbobit.net', 'trbt.cc',
         'rapidgator.net', 'nitroflare.com', 'mega.nz', 'mediafire.com',
         'katfile.com', 'uploadgig.com', 'filefox.cc',
-        ...DOWNUP_HOSTS,
+        ...RESOLVER_SITES.flatMap(site => site.hosts),
       ];
       
       $('a[href]').each((_, el) => {
@@ -1156,15 +1180,15 @@ export class Scraper {
       const attempts = (item.submitAttempts ?? 0) + 1;
       let lastError = "MyJDownloader not configured (add MYJD_EMAIL and MYJD_PASSWORD secrets)";
 
-      let target: SubmitTarget = { url: item.downloadUrl, via: this.viaFor(item.downloadUrl), packageName: null };
+      let target: SubmitTarget = { url: item.downloadUrl, via: this.viaFor(item.downloadUrl), packageName: null, resolved: false };
       if (DOWNUP_RESOLVER_URL && item.downupUrl) {
         const choice = await this.chooseDownup(item, attempts);
         if (choice === 'deferred') return false;
         if (choice) target = choice;
       }
-      if (target.via !== 'downup' && isDownupHost(hostOf(target.url))) {
-        // Only a downup page link and it could not be resolved: JDownloader can't use it directly.
-        // (A resolved direct link is also on a downup host, e.g. s3.downup.me, hence the via check.)
+      if (!target.resolved && isResolverHost(hostOf(target.url))) {
+        // Only a page link and it could not be resolved: JDownloader can't use it directly.
+        // (A resolved direct link is also on a resolver host, e.g. s3.downup.me, hence the flag.)
         lastError = "downup link could not be resolved and there is no other link";
       } else if (this.getJDCredentials()) {
         for (let attempt = 1; attempt <= 2; attempt++) {
@@ -1202,8 +1226,8 @@ export class Scraper {
             broadcast({ type: 'extracted' });
 
             log(`Submitted to JDownloader via ${target.via}: ${item.articleTitle}`, "grabber");
-            if (target.via === 'downup') {
-              void notify('sentDownup', `📥 ${item.articleTitle}\nSent via downup. No captcha needed.`);
+            if (target.resolved) {
+              void notify('sentDownup', `📥 ${item.articleTitle}\nSent via ${target.via}. No captcha needed.`);
             } else if (target.via === 'novafile') {
               void notify('sentNovafile', `📥 ${item.articleTitle}\nSent via novafile. Solve the captcha in MyJDownloader.`);
             } else {
@@ -1246,19 +1270,27 @@ export class Scraper {
     }
   }
 
-  private viaFor(url: string): SubmitTarget['via'] {
+  private viaFor(url: string): string {
     const host = hostOf(url);
-    if (isDownupHost(host)) return 'downup';
+    const site = resolverSiteFor(host);
+    if (site) return site.name;
     if (host.includes('novafile') || host.includes('nfile')) return 'novafile';
     return 'other';
   }
 
   private async resolveDownup(url: string): Promise<DownupResult> {
     try {
-      const res = await axios.post(`${DOWNUP_RESOLVER_URL}/resolve`, { url }, { timeout: DOWNUP_RESOLVE_TIMEOUT });
-      return res.data as DownupResult;
+      const res = await axios.post(`${DOWNUP_RESOLVER_URL}/resolve`, { url }, {
+        timeout: DOWNUP_RESOLVE_TIMEOUT,
+        maxContentLength: 1024 * 1024,
+      });
+      const result = res.data as DownupResult;
+      if (result.status === 'ok' && !isAllowedDirectLink(result.directUrl, url)) {
+        return { status: 'error', message: `Resolver returned a link on an unexpected host: ${hostOf(String(result.directUrl))}` };
+      }
+      return result;
     } catch (error: unknown) {
-      return { status: 'error', message: `downup-resolver unreachable: ${describeError(error)}` };
+      return { status: 'error', message: `link-resolver unreachable: ${describeError(error)}` };
     }
   }
 
@@ -1269,7 +1301,7 @@ export class Scraper {
    */
   private async chooseDownup(item: ExtractedItem, attempts: number): Promise<SubmitTarget | null | 'deferred'> {
     const now = Date.now();
-    const target = (url: string): SubmitTarget => ({ url, via: 'downup', packageName: item.articleTitle });
+    const target = (url: string): SubmitTarget => ({ url, via: this.viaFor(item.downupUrl!), packageName: item.articleTitle, resolved: true });
 
     // Reuse a recent link, e.g. when JDownloader was unreachable last time
     if (item.resolvedUrl && item.resolvedAt && now - item.resolvedAt < DOWNUP_LINK_TTL) {
@@ -1284,7 +1316,7 @@ export class Scraper {
       return target(result.directUrl);
     }
 
-    const hasFallback = !isDownupHost(item.host);
+    const hasFallback = !isResolverHost(item.host);
     const deferUntil = item.timestamp + DOWNUP_MAX_DEFER;
     if (result.status === 'not_found' || (hasFallback && now >= deferUntil)) {
       const message = hasFallback
@@ -1316,7 +1348,7 @@ export class Scraper {
   }
 
   /**
-   * Alert when downup-resolver breaks or recovers. A state must show on two
+   * Alert when link-resolver breaks or recovers. A state must show on two
    * checks in a row, so a resolver restart doesn't send an alert. Failing states
    * also alert after a maggrab restart; a healthy start stays quiet.
    */
@@ -1339,7 +1371,7 @@ export class Scraper {
     if (health === 'failing') {
       void notify('solverDown', "🔴 downup solver is failing its self-test, probably after a Cloudflare change. New issues will go to novafile after 3 hours until cfsolve is updated.");
     } else if (health === 'unreachable') {
-      void notify('solverDown', "🔴 downup-resolver container can't be reached. New issues will go to novafile after 3 hours until it's back.");
+      void notify('solverDown', "🔴 link-resolver container can't be reached. New issues will go to novafile after 3 hours until it's back.");
     } else if (previous) {
       void notify('solverRecovered', "🟢 downup solver is working again.");
     }

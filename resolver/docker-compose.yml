@@ -1,0 +1,55 @@
+# link-resolver and its firewall, as their own project so any container can use them.
+# Project name is set here; run from this folder with `docker compose up -d --build`.
+# Settings live in resolver/.env (see resolver/.env.example).
+name: ${RESOLVER_PROJECT:-link-resolver}
+
+services:
+  # Holds the shared network and sets its firewall. Only this container can change the rules.
+  guard:
+    build: ./guard
+    image: resolver-guard:latest
+    container_name: ${RESOLVER_NAME:-link-resolver}-guard
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, NET_RAW]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/run"]
+    dns: [1.1.1.1, 9.9.9.9]
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    environment:
+      - DNS_SERVERS=1.1.1.1,9.9.9.9
+      # Add a port here if a new download host needs one
+      - ALLOWED_TCP_PORTS=${RESOLVER_ALLOWED_TCP_PORTS:-80,443,183}
+      - SERVICE_PORT=8080
+      - READY_PORT=8081
+    networks:
+      resolver-net:
+        aliases: [link-resolver]
+
+  link-resolver:
+    build:
+      context: .
+      args:
+        CFSOLVE_COMMIT: ${CFSOLVE_COMMIT:-ee4031f}
+    image: ${RESOLVER_IMAGE:-link-resolver:latest}
+    container_name: ${RESOLVER_NAME:-link-resolver}
+    restart: unless-stopped
+    network_mode: service:guard
+    depends_on:
+      guard:
+        condition: service_healthy
+        restart: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    mem_limit: 1g
+    pids_limit: 128
+    cpus: 2
+
+# Other containers join this network to use http://link-resolver:8080
+networks:
+  resolver-net:
+    name: ${RESOLVER_NETWORK:-resolver-net}
